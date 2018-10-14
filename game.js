@@ -1,15 +1,4 @@
-wx.onTouchStart(function (e) {
-  console.log(e.touches)
-})
+import './js/libs/weapp-adapter'
+import Main from './js/main'
 
-wx.onTouchMove(function (e) {
-  console.log(e.touches)
-})
-
-wx.onTouchEnd(function (e) {
-  console.log(e.touches)
-})
-
-wx.onTouchCancel(function (e) {
-  console.log(e.touches)
-})
+new Main()
