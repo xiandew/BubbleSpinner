@@ -16,15 +16,14 @@ export default class Sprite {
                 if (!this.visible){
                         return
                 }
-                this.img.onload = function () {
-                        ctx.drawImage(
-                                this.img,
-                                this.x,
-                                this.y,
-                                this.width,
-                                this.height
-                        )  
-                }.bind(this)
+
+                ctx.drawImage(
+                        this.img,
+                        this.x,
+                        this.y,
+                        this.width,
+                        this.height
+                )
         }
 
         isCollideWith(sp) {
