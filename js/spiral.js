@@ -1,44 +1,50 @@
 import Ball, {BALL_SIZE} from './ball'
 
-export default class Spiral{
-        constructor(layer){
-		this.setupBalls(layer)
+export default class Spiral {
+        constructor(layer) {
+                this.setupBalls(layer)
         }
 
-        setupBalls(layer){
+        setupBalls(layer) {
                 this.balls = []
+                let centX = canvas.width / 2
+                let centY = canvas.height / 2
+                let initX = centX - BALL_SIZE * (layer + 1) / 2
+                let initY = centY - BALL_SIZE * (layer + 1)
 
-		let centY = canvas.height / 2
-                let initY = centY - BALL_SIZE * layer
-		let centX = canvas.width / 2
-                let initX = centX - BALL_SIZE * layer / 2
+                for (let y = initY; y < centY; y += BALL_SIZE) {
+                        for (var x = initX - (y - initY) / Math.sqrt(3),
+                                 xRightEnd = canvas.width - x,
+                                 xSeparation = BALL_SIZE / Math.sqrt(3) * 2;
+				 x < xRightEnd;
+				 x += xSeparation) {
+                                this.balls.push(new Ball(x, y))
+                        }
+                }
 
-		let side = BALL_SIZE * (layer + 1)
+                // x offset of the next row
+                let xOffset = canvas.width - xRightEnd + BALL_SIZE / Math.sqrt(3)
 
-		for (let y = initY; y < centY; y += BALL_SIZE) {
-			for (let
-				x = initX - (y - initY) / 2;
-				x < initX + (y - initY) / 2 + side;
-				x += BALL_SIZE + 2) {
-				this.balls.push(new Ball(x, y))
-			}
-		}
-		for (let y = centY; y < centY + initY - BALL_SIZE; y += BALL_SIZE) {
-			for (let
-				x = centX - side + BALL_SIZE + (y - centY) / 2;
-				x < centX + side - (y - centY) / 2;
-				x += BALL_SIZE + 2) {
-				this.balls.push(new Ball(x, y))
-			}
-		}
+                for (let y = centY; y < canvas.height - initY - BALL_SIZE; y += BALL_SIZE) {
+                        for (var x = xOffset + (y - centY) / Math.sqrt(3),
+                                 xRightEnd = canvas.width - x;
+				 x < xRightEnd;
+				 x += xSeparation) {
+                                this.balls.push(new Ball(x, y))
+                        }
+                }
 
         }
 
-	render(ctx){
+        update() {
 
-		ctx.clearRect(0, 0, canvas.width, canvas.height)
-		this.balls.forEach((ball) => { ball.render(ctx) })
-	}
+        }
+
+        render(ctx) {
+                this.balls.forEach((ball) => {
+                        ball.draw(ctx)
+                })
+        }
 
 
 
