@@ -1,4 +1,4 @@
-import Ball from './ball'
+import Spiral from './spiral'
 
 let ctx = canvas.getContext('2d')
 
@@ -6,11 +6,11 @@ let ctx = canvas.getContext('2d')
 export default class Main{
         constructor(){
                 this.i = 0
-                this.initialise()
+                this.setup()
         }
-        initialise(){
-                // balls on the spiral
-                this.balls = []
+        setup(){
+                // initialise the spiral with the number of layers
+                this.spiral = new Spiral(5)
                 // the shoot ball controlled by the player
                 // this.shooter = new Shooter()
 
@@ -19,14 +19,11 @@ export default class Main{
 
         }
         update(){
-                this.balls.splice(0, 1, new Ball(this.i, 0))
-                this.i ++
                 
         }
 
         render(){
-                ctx.clearRect(0, 0, canvas.width, canvas.height)
-                this.balls.forEach((ball) => {ball.render(ctx)})
+                this.spiral.render(ctx)
                 
         }
 
