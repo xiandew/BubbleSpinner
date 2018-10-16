@@ -6,7 +6,6 @@ let ctx = canvas.getContext('2d')
 // The entry class of the game
 export default class Main{
         constructor(){
-		
                 this.setup()
         }
         setup(){

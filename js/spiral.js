@@ -1,4 +1,6 @@
-import Ball, {BALL_SIZE} from './ball'
+import Ball, {
+        BALL_SIZE
+} from './ball'
 
 export default class Spiral {
         constructor(layer) {
@@ -7,33 +9,31 @@ export default class Spiral {
 
         setupBalls(layer) {
                 this.balls = []
-                let centX = canvas.width / 2
-                let centY = canvas.height / 2
-                let initX = centX - BALL_SIZE * (layer + 1) / 2
-                let initY = centY - BALL_SIZE * (layer + 1)
 
-                for (let y = initY; y < centY; y += BALL_SIZE) {
-                        for (var x = initX - (y - initY) / Math.sqrt(3),
-                                 xRightEnd = canvas.width - x,
-                                 xSeparation = BALL_SIZE / Math.sqrt(3) * 2;
-				 x < xRightEnd;
-				 x += xSeparation) {
-                                this.balls.push(new Ball(x, y))
+                let xOffset = BALL_SIZE / Math.sqrt(3)
+                let xSeparation = BALL_SIZE / Math.sqrt(3) * 2
+
+                let initX = canvas.width / 2 - BALL_SIZE * (layer + 1) / 2
+                let initY = canvas.height / 2 - BALL_SIZE * (layer + 1)
+
+                for (let row = 0; row <= layer; row++) {
+                        for (let col = 0; col <= layer + row; col++) {
+                                this.balls.push(new Ball(
+                                        initX - row * xOffset + col * xSeparation,
+                                        initY + row * BALL_SIZE))
                         }
                 }
 
-                // x offset of the next row
-                let xOffset = canvas.width - xRightEnd + BALL_SIZE / Math.sqrt(3)
+                initX = initX - (layer - 1) * xOffset
+                initY = initY + (layer + 1) * BALL_SIZE
 
-                for (let y = centY; y < canvas.height - initY - BALL_SIZE; y += BALL_SIZE) {
-                        for (var x = xOffset + (y - centY) / Math.sqrt(3),
-                                 xRightEnd = canvas.width - x;
-				 x < xRightEnd;
-				 x += xSeparation) {
-                                this.balls.push(new Ball(x, y))
+                for (let row = layer; row > 0; row--) {
+                        for (let col = 0; col < layer + row; col++) {
+                                this.balls.push(new Ball(
+                                        initX + (layer - row) * xOffset + col * xSeparation,
+                                        initY + (layer - row) * BALL_SIZE))
                         }
                 }
-
         }
 
         update() {
