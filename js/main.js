@@ -1,7 +1,8 @@
 import Spiral from './spiral'
+import Shooter from './shooter'
 
 let ctx = canvas.getContext('2d')
-//ctx.imageSmoothingQuality = "high"
+// ctx.imageSmoothingQuality = "high"
 
 // The entry class of the game
 export default class Main{
@@ -10,7 +11,8 @@ export default class Main{
         }
         setup(){
                 // initialise the spiral with the number of layers
-                this.spiral = new Spiral(6)
+                this.spiral = new Spiral(5)
+		this.shooter = new Shooter()
                 // the shoot ball controlled by the player
                 // this.shooter = new Shooter()
 
@@ -19,7 +21,9 @@ export default class Main{
 
         }
         update(){
-                
+                if(this.shooter.shooted){
+			this.shooter.update()
+		}
         }
 
         render(){
@@ -27,8 +31,8 @@ export default class Main{
 		ctx.fillStyle = "#ffffff"
 		ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-                this.spiral.render(ctx)
-                
+		this.spiral.render(ctx)
+		this.shooter.render(ctx)
         }
 
         // loop all the frames

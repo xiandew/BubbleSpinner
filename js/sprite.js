@@ -1,13 +1,14 @@
 // avoid typos
 export const IMAGE = 'IMAGE'
 export const SHAPE = 'SHAPE'
+
 export default class Sprite {
         constructor(imgData = '', width = 0, height = 0, x = 0, y = 0, opts = []) {
-                if (opts.indexOf(IMAGE) >= 0) {
+                if (opts.includes(IMAGE)) {
                         this.img = new Image()
 			this.img.src = imgData
                 }
-                if (opts.indexOf(SHAPE) >= 0) {
+                if (opts.includes(SHAPE)) {
 			this.colour = imgData
                 }
                 this.width = width
@@ -31,22 +32,6 @@ export default class Sprite {
                         this.width,
                         this.height
                 )
-        }
-        // draw a circle shape
-        draw(ctx) {
-		if (!this.visible) {
-			return
-		}
-
-		ctx.beginPath()
-		ctx.fillStyle = this.colour
-		ctx.arc(this.x, this.y, this.width / 2, 0, 2 * Math.PI)
-		ctx.fill()
-		
-		ctx.beginPath()
-		ctx.fillStyle = 'rgba(255,255,255,0.5)'
-		ctx.arc(this.x - this.width / 6, this.y + this.width / 6, this.width / 6, 0, 2 * Math.PI)
-		ctx.fill()
         }
 
         isCollideWith(sp) {
