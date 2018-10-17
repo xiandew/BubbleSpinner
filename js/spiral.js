@@ -10,8 +10,8 @@ export default class Spiral {
 
         setupBalls(layer) {
 		// adjust the ball size according to the screen width.
-		// diameterSpiral = 0.75 * screenWidth
-		ballSize = 0.75 * canvas.width / (1 + layer * 4 / Math.sqrt(3))
+		// diameterSpiral = 0.75 * screenWidth with layer = 5.5
+		ballSize = 0.75 * canvas.width / (1 + 5.5 * 4 / Math.sqrt(3))
 		
                 this.balls = []
 
