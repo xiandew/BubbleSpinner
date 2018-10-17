@@ -1,8 +1,7 @@
 import Ball from './ball'
 import Pivot from './pivot'
 
-export let ballSize = 20
-
+export let ballSize
 export default class Spiral {
         constructor(layer) {
                 this.setupBalls(layer)
@@ -10,6 +9,10 @@ export default class Spiral {
         }
 
         setupBalls(layer) {
+		// adjust the ball size according to the screen width.
+		// diameterSpiral = 0.75 * screenWidth
+		ballSize = 0.75 * canvas.width / (1 + layer * 4 / Math.sqrt(3))
+		
                 this.balls = []
 
                 let xOffset = ballSize / Math.sqrt(3)

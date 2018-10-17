@@ -6,8 +6,8 @@ export default class Pivot extends Sprite {
         }
 
 	render(ctx){
-
-		let vertices = 6, length = 10
+		// a hexagon pivot
+		let vertices = 6, length = this.width / 2
 		let getDegree = function (vertices, i) { return 360 / vertices * (i + 0.5) + 90 }
 		let getRadian = function (degree) { return degree * Math.PI / 180 }
 
