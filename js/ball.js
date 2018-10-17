@@ -18,11 +18,19 @@ export default class Ball extends Sprite {
 		ctx.arc(this.x, this.y, this.width / 2, 0, 2 * Math.PI)
 		ctx.fill()
 		ctx.closePath()
-
+		
 		ctx.beginPath()
-		ctx.fillStyle = 'rgba(255,255,255,0.5)'
+		ctx.fillStyle = 'rgba(255, 255, 255, 0.5)'
 		ctx.arc(this.x - this.width / 6, this.y + this.width / 6, this.width / 6, 0, 2 * Math.PI)
 		ctx.fill()
 		ctx.closePath()
+	}
+
+	update(){
+
+	}
+
+	onCollision(spiral){
+		//console.log(spiral)
 	}
 }

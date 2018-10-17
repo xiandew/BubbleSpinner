@@ -17,7 +17,6 @@ export default class Pivot extends Sprite {
 			let x = Math.cos(radian) * length + this.x
 			let y = Math.sin(radian) * length + this.y
 			ctx.lineTo(x, y)
-			
 		}
 		
 		ctx.fillStyle = '#888888'

@@ -7,7 +7,7 @@ export default class Shooter extends Ball {
 		this.touched = false
 		this.initEvent()
 		this.speed = 15
-		this.shooted = false
+		this.shooting = false
         }
 
 	render(ctx){
@@ -68,20 +68,37 @@ export default class Shooter extends Ball {
 			this.touched = false
 
 			this.initSpeed();
-			this.shooted = true
+			this.shooting = true
 		}).bind(this))
 	}
 
-	update(){
-		
+	update(spiral){
+		if (!this.shooting) {
+			return
+		}
+
+		let prevX = this.x
+		let prevY = this.y
+
 		if ((this.x + this.width / 2) >= canvas.width || (this.x - this.width / 2) <= 0) {
-			this.speedX = -this.speedX;
+			this.speedX *= (-1);
 		}
 		if ((this.y + this.height / 2) >= canvas.height || (this.y - this.height / 2) <= 0) {
-			this.speedY = -(this.speedY);
+			this.speedY *= (-1);
 		}
-		this.x += this.speedX;
-		this.y += this.speedY;
+
+		this.x += this.speedX
+		this.y += this.speedY
+
+		for (let i = 0; i < spiral.balls.length; i++) {
+			if (spiral.balls[i].isCollideWith(this)) {
+				//spiral.onCollision()
+				this.shooting = false
+				this.x = prevX
+				this.y = prevY
+				return
+			}
+		}
 	}
 
 	initSpeed(){

@@ -34,16 +34,21 @@ export default class Sprite {
                 )
         }
 
-        isCollideWith(sp) {
-                let spX = sp.x + sp.width / 2
-                let spY = sp.y + sp.height / 2
+        isCollideWith(other) {
+		/*let otherLeft = other.x - other.width / 2
+		let otherRight = other.x + other.width / 2
+		let otherTop = other.y - other.height / 2
+                let otherBottom = other.y + other.height / 2
 
-                if (!this.visible || !sp.visible)
+		
+                if (!this.visible || !other.visible)
                         return false
 
-                return !!(spX >= this.x &&
-                        spX <= this.x + this.width &&
-                        spY >= this.y &&
-                        spY <= this.y + this.height)
+		return otherLeft < this.x + this.width / 2 &&
+			otherRight > this.x - this.width / 2 &&
+			otherTop < this.y + this.height / 2 &&
+			otherBottom > this.y - this.height /2*/
+		
+		return (other.x-this.x)**2 + (other.y - this.y)**2 <= this.width**2
         }
 }

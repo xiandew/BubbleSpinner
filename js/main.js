@@ -21,9 +21,8 @@ export default class Main{
 
         }
         update(){
-                if(this.shooter.shooted){
-			this.shooter.update()
-		}
+		this.spiral.update()
+		this.shooter.update(this.spiral)
         }
 
         render(){
@@ -37,8 +36,6 @@ export default class Main{
 
         // loop all the frames
         loop() {
-                
-                
                 this.update()
                 this.render()
                 

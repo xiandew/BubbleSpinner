@@ -57,4 +57,8 @@ export default class Spiral {
                 })
 	}
 
+	onCollision(){
+		this.balls.forEach(ball => ball.onCollision(this))
+	}
+
 }
