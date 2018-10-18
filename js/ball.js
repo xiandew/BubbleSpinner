@@ -4,7 +4,7 @@ export const COLOURS = ['#1da2da', '#014765', '#01986a', '#d392ba', '#b14701', '
 
 // adjust the ball size according to the screen width.
 // diameterSpiral = 0.75 * screenWidth with layer = 5.5
-// ps. 5.5 is a magic number which I think gives the best view on the screen
+// where 5.5 is a magic number which I think gives the best view on the screen
 export const BALLSIZE = 0.75 * canvas.width / (1 + 5.5 * 4 / Math.sqrt(3))
 
 export default class Ball extends Sprite {
