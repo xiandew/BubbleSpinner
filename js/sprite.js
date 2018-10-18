@@ -3,19 +3,19 @@ export const IMAGE = 'IMAGE'
 export const SHAPE = 'SHAPE'
 
 export default class Sprite {
-        constructor(imgData = '', width = 0, height = 0, x = 0, y = 0, opts = []) {
-                if (opts.includes(IMAGE)) {
+        constructor(imgData, width, height, x, y, visible, opts) {
+                if (opts.includes(IMAGE) && visible) {
                         this.img = new Image()
 			this.img.src = imgData
                 }
-                if (opts.includes(SHAPE)) {
+                if (opts.includes(SHAPE) && visible) {
 			this.colour = imgData
                 }
                 this.width = width
                 this.height = height
                 this.x = x
                 this.y = y
-                this.visible = true
+                this.visible = visible
         }
 
         // render an image
@@ -49,6 +49,6 @@ export default class Sprite {
 			otherTop < this.y + this.height / 2 &&
 			otherBottom > this.y - this.height /2*/
 		
-		return (other.x-this.x)**2 + (other.y - this.y)**2 <= this.width**2
+		return this.visible && (other.x-this.x)**2 + (other.y - this.y)**2 <= this.width**2
         }
 }

@@ -1,37 +1,40 @@
-import Ball from './ball'
+import Ball, {BALLSIZE} from './ball'
 import Pivot from './pivot'
+import Shooter from './shooter'
 
-// adjust the ball size according to the screen width.
-// diameterSpiral = 0.75 * screenWidth with layer = 5.5
-export let ballSize = 0.75 * canvas.width / (1 + 5.5 * 4 / Math.sqrt(3))
+let ctx = canvas.getContext('2d')
 
 export default class Spiral {
         constructor(layers) {
-                this.setupBalls(layers)
-                //this.setupBalls(Math.floor(0.5 * canvas.width / ballSize))
-                // this.hasShownUp = false
+                this.initSpiral(layers)
         }
 
-        setupBalls(layers) {
-
-
-                this.balls = []
-                let xOffset = ballSize / Math.sqrt(3)
-                // Make sure the distance between the centers of two adjacent rows equals to ballSize
-                let separation = ballSize / Math.sqrt(3) * 2
-
+        initSpiral(layers) {
                 this.pivot = new Pivot(canvas.width / 2, canvas.height / 2)
-                for (let layer = 1; layer <= layers; layer++) {
+		
+                let maxLayers = Math.floor(canvas.width / BALLSIZE)
+
+                //contains both invisible and visible balls
+                this.balls = []
+                // Make sure the distance between the centers of two adjacent rows equals to BALLSIZE
+                let separation = BALLSIZE / Math.sqrt(3) * 2
+                for (let layer = 1; layer <= maxLayers; layer++) {
                         for (let angle = 0; angle < 2 * Math.PI; angle += Math.PI / 3) {
                                 // draw a ball on the diagonal of the hexagon
                                 let x = this.pivot.x - Math.cos(angle) * separation * layer
                                 let y = this.pivot.y - Math.sin(angle) * separation * layer
-                                this.balls.push(new Ball(x, y, ballSize))
+				
+                                let visible = false
+                                if (layer <= layers) {
+                                        visible = true
+                                }
+
+                                this.balls.push(new Ball(x, y, layer, visible))
                                 // balls in between the diagonal
                                 for (let n = 1; n < layer; n++) {
                                         this.balls.push(new Ball(
                                                 x + Math.cos(angle + Math.PI / 3) * n * separation,
-                                                y + Math.sin(angle + Math.PI / 3) * n * separation, ballSize))
+                                                y + Math.sin(angle + Math.PI / 3) * n * separation,  layer, visible))
                                 }
                         }
                 }
@@ -49,13 +52,28 @@ export default class Spiral {
                 }*/
 
                 this.pivot.render(ctx)
-                this.balls.forEach((ball) => {
-                        ball.render(ctx)
-                })
+                this.balls.forEach(ball => ball.render(ctx))
         }
 
-        onCollision() {
-                this.balls.forEach(ball => ball.onCollision(this))
+        onCollision(shooter) {
+                let minSquare = canvas.width ** 2
+                let closest
+                this.balls.forEach(ball => {
+                        // square of the distance
+                        let square = (shooter.x - ball.x) ** 2 + (shooter.y - ball.y) ** 2
+                        if (!ball.visible && square <= minSquare) {
+                                minSquare = square
+                                closest = ball
+                        }
+                })
+                if (closest) {
+                        closest.visible = true
+			closest.colour = shooter.colour
+
+			shooter.initShooter()
+                } else {
+			//
+                }
         }
 
 }

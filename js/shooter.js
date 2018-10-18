@@ -1,14 +1,46 @@
-import Ball from './ball'
-import { ballSize } from './spiral'
+import Ball, {BALLSIZE, COLOURS} from './ball'
 
 export default class Shooter extends Ball {
         constructor() {
-		super(canvas.width / 2, canvas.height - ballSize, ballSize)
-		this.touched = false
+		super(canvas.width / 2, canvas.height - BALLSIZE, -1, true)
 		this.initEvent()
-		this.speed = 15
-		this.shooting = false
+		this.initShooter()
         }
+
+	initShooter(){
+		this.x = canvas.width / 2
+		this.y = canvas.height - BALLSIZE
+		this.colour = COLOURS[Math.floor(Math.random() * COLOURS.length)]
+		this.speed = 15
+		this.touched = false
+		this.shooting = false
+	}
+
+	initEvent() {
+		canvas.addEventListener('touchstart', ((e) => {
+			e.preventDefault()
+			this.touched = true
+			this.touchX = e.touches[0].clientX
+			this.touchY = e.touches[0].clientY
+
+		}).bind(this))
+
+		canvas.addEventListener('touchmove', ((e) => {
+			e.preventDefault()
+			if (this.touched) {
+				this.touchX = e.touches[0].clientX
+				this.touchY = e.touches[0].clientY
+			}
+
+		}).bind(this))
+
+		canvas.addEventListener('touchend', ((e) => {
+			e.preventDefault()
+			this.touched = false
+			this.initSpeed();
+			this.shooting = true
+		}).bind(this))
+	}
 
 	render(ctx){
 		super.render(ctx)
@@ -16,7 +48,6 @@ export default class Shooter extends Ball {
 		if(this.touched){
 			this.renderArrow(ctx)
 		}
-
 	}
 
 	renderArrow(ctx){
@@ -45,40 +76,10 @@ export default class Shooter extends Ball {
 		ctx.closePath();
 	}
 
-	initEvent() {
-		canvas.addEventListener('touchstart', ((e) => {
-			e.preventDefault()
-			this.touched = true
-			this.touchX = e.touches[0].clientX
-			this.touchY = e.touches[0].clientY
-			
-		}).bind(this))
-
-		canvas.addEventListener('touchmove', ((e) => {
-			e.preventDefault()
-			if(this.touched){
-				this.touchX = e.touches[0].clientX
-				this.touchY = e.touches[0].clientY
-			}
-
-		}).bind(this))
-
-		canvas.addEventListener('touchend', ((e) => {
-			e.preventDefault()
-			this.touched = false
-
-			this.initSpeed();
-			this.shooting = true
-		}).bind(this))
-	}
-
 	update(spiral){
 		if (!this.shooting) {
 			return
 		}
-
-		let prevX = this.x
-		let prevY = this.y
 
 		if ((this.x + this.width / 2) >= canvas.width || (this.x - this.width / 2) <= 0) {
 			this.speedX *= (-1);
@@ -92,10 +93,8 @@ export default class Shooter extends Ball {
 
 		for (let i = 0; i < spiral.balls.length; i++) {
 			if (spiral.balls[i].isCollideWith(this)) {
-				//spiral.onCollision()
 				this.shooting = false
-				this.x = prevX
-				this.y = prevY
+				spiral.onCollision(this)
 				return
 			}
 		}
