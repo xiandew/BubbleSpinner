@@ -1,8 +1,9 @@
 import Sprite, {SHAPE} from './sprite'
+import {ballSize} from './spiral'
 
 export default class Pivot extends Sprite {
-        constructor(ball){
-		super('', ball.width, ball.height, ball.x, ball.y, [SHAPE])
+        constructor(x, y){
+		super('', ballSize, ballSize, x, y, [SHAPE])
         }
 
 	render(ctx){
