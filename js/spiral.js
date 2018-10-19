@@ -39,7 +39,7 @@ export default class Spiral {
         }
 
         update() {
-
+		this.balls.forEach(ball => ball.slideOutScreen(this.newBall))
         }
 
         render(ctx) {
@@ -57,8 +57,9 @@ export default class Spiral {
                 // adjust the shooter ball's position to align with the hexagon properly
                 // then erase balls which have the same colour and connections to it
 		this.sameColours = []
-		this.findSameColours(this.closestPosition(shooter))
 
+		this.newBall = this.closestPosition(shooter)
+		this.findSameColours(this.newBall)
 		this.eraseSameColours()
 		this.revertVisitied()
 		this.eraseFloatBalls()
@@ -100,7 +101,6 @@ export default class Spiral {
 			let ball = balls.pop()
 			ball.visited = true
 			this.sameColours.push(ball)
-
 			this.findSameColours(ball)
 		}
 	}
@@ -120,8 +120,7 @@ export default class Spiral {
 	eraseSameColours(){
 		if (this.sameColours.length >= 3) {
 			this.sameColours.forEach(ball => {
-				//ball.visible = false
-				//-----------------------------------------------ball.fly()
+				ball.visible = false
 			})
 		}
 	}

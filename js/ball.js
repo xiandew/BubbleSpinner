@@ -14,6 +14,10 @@ export default class Ball extends Sprite {
                 // record the layer of the ball to compute its neighbours
                 this.layer = layer
 		this.visited = false
+		this.toBeErased = false
+
+		this.prevX = this.x
+		this.prevY = this.y
         }
 
         // render a circle shape
@@ -38,4 +42,9 @@ export default class Ball extends Sprite {
         update() {
 
         }
+
+	// TODO a slide out animation
+	slideOutScreen(newBall){
+
+	}
 }

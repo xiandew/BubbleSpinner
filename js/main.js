@@ -21,8 +21,8 @@ export default class Main{
 
         }
         update(){
-		this.spiral.update()
 		this.shooter.update(this.spiral)
+		this.spiral.update()
         }
 
         render(){
@@ -30,8 +30,8 @@ export default class Main{
 		ctx.fillStyle = "#ffffff"
 		ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-		this.spiral.render(ctx)
 		this.shooter.render(ctx)
+		this.spiral.render(ctx)
         }
 
         // loop all the frames
