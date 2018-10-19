@@ -16,10 +16,10 @@ export default class Spiral {
                 this.balls = []
                 // Make sure the distance between the centers of two adjacent rows equals to BALLSIZE
                 this.separation = BALLSIZE / Math.sqrt(3) * 2
-		for (let layer = 1; layer <= maxLayers; layer++) {
-			for (let diagonal = 0; diagonal < 6; diagonal++) {
-				// draw a ball on the diagonal of the hexagon
-				let angle = Math.PI / 3 * diagonal
+                for (let layer = 1; layer <= maxLayers; layer++) {
+                        for (let diagonal = 0; diagonal < 6; diagonal++) {
+                                // draw a ball on the diagonal of the hexagon
+                                let angle = Math.PI / 3 * diagonal
                                 let x = this.pivot.x - Math.cos(angle) * this.separation * layer
                                 let y = this.pivot.y - Math.sin(angle) * this.separation * layer
                                 let visible = false
@@ -55,9 +55,14 @@ export default class Spiral {
 
         onCollision(shooter) {
                 // adjust the shooter ball's position to align with the hexagon properly
-                // then remove balls which have the same colour and connections to it
-		this.closestPosition(shooter)
-                //this.removeSameColour()
+                // then erase balls which have the same colour and connections to it
+		this.sameColours = []
+		this.findSameColours(this.closestPosition(shooter))
+
+		this.eraseSameColours()
+		this.revertVisitied()
+		this.eraseFloatBalls()
+
         }
 
         closestPosition(shooter) {
@@ -72,7 +77,9 @@ export default class Spiral {
                         }
                 })
                 if (closest) {
+
                         closest.visible = true
+			closest.visited = false
                         closest.colour = shooter.colour
 
                         shooter.initShooter()
@@ -81,24 +88,72 @@ export default class Spiral {
                 }
                 return closest
         }
-
-        removeSameColour(target) {
-                this.ballsAround(target).forEach(ball => {
-			if(ball.colour === target.colour){
-				ball.visible = false
-				this.removeSameColour(ball)
+	
+	findSameColours(target){
+		let balls = []
+		this.findAround(target).forEach(ball => {
+			if (ball.colour === target.colour) {
+				balls.push(ball)
 			}
 		})
+		while (balls.length != 0) {
+			let ball = balls.pop()
+			ball.visited = true
+			this.sameColours.push(ball)
 
-        }
+			this.findSameColours(ball)
+		}
+	}
 
-        ballsAround(target) {
+        findAround(target) {
+		// balls next to the target
                 let balls = []
                 this.balls.forEach(ball => {
-                        if (ball.visible && (ball.x - target.x) ** 2 + (ball.y - target.y) ** 2 <= this.separation ** 2) {
+			if (ball.visible && !ball.visited && ball !== target &&
+				Math.floor((ball.x - target.x) ** 2 + (ball.y - target.y) ** 2) <= this.separation ** 2) {
                                 balls.push(ball)
                         }
                 })
                 return balls
         }
+
+	eraseSameColours(){
+		if (this.sameColours.length >= 3) {
+			this.sameColours.forEach(ball => {
+				//ball.visible = false
+				//-----------------------------------------------ball.fly()
+			})
+		}
+	}
+
+	eraseFloatBalls(){
+		// visit balls that attached to the pivot
+		this.visitAttachedBalls(this.pivot)
+		// find balls not attached to the pivot
+		this.balls.forEach(ball => {
+			if (ball.visible && !ball.visited) {
+				ball.visible = false
+			}
+		})
+		this.revertVisitied()
+	}
+
+	visitAttachedBalls(target) {
+		let around = []
+		around = this.findAround(target)
+		around.forEach(ball => {
+			if (ball.visible) {
+				ball.visited = true
+				this.visitAttachedBalls(ball)
+			}
+		})
+	}
+	// Ensure every visible balls are not visited
+	revertVisitied(){
+		this.balls.forEach(ball => {
+			if (ball.visible) {
+				ball.visited = false
+			}
+		})
+	}
 }

@@ -13,6 +13,7 @@ export default class Ball extends Sprite {
 
                 // record the layer of the ball to compute its neighbours
                 this.layer = layer
+		this.visited = false
         }
 
         // render a circle shape
