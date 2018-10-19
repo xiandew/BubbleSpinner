@@ -5,11 +5,12 @@ import Shooter from './shooter'
 export default class Spiral {
         constructor(layers) {
                 this.initSpiral(layers)
+		this.rotating = false
+		this.angle = 0
         }
 
         initSpiral(layers) {
                 this.pivot = new Pivot(canvas.width / 2, canvas.height / 2)
-
                 let maxLayers = Math.floor(canvas.width / BALLSIZE)
 
                 //contains both invisible and visible balls
@@ -39,7 +40,11 @@ export default class Spiral {
         }
 
         update() {
-		this.balls.forEach(ball => ball.slideOutScreen(this.newBall))
+		//this.balls.forEach(ball => ball.slideOutScreen())
+		if(this.rotating){
+			this.rotate()
+		}
+
         }
 
         render(ctx) {
@@ -57,13 +62,29 @@ export default class Spiral {
                 // adjust the shooter ball's position to align with the hexagon properly
                 // then erase balls which have the same colour and connections to it
 		this.sameColours = []
-
+		
 		this.newBall = this.closestPosition(shooter)
+
 		this.findSameColours(this.newBall)
 		this.eraseSameColours()
 		this.revertVisitied()
 		this.eraseFloatBalls()
 
+		this.rotating = true
+		if (this.newBall.x <= canvas.width / 2) {
+			this.speed = -15
+			this.friction = 0.01
+		} else {
+			this.speed = 15
+			this.friction = -0.01
+		}
+		let nballs = 0
+		this.balls.forEach(ball => {
+			if (ball.visible) {
+				nballs++
+			}
+		})
+		this.angleSpeed = this.speed / nballs
         }
 
         closestPosition(shooter) {
@@ -154,5 +175,15 @@ export default class Spiral {
 				ball.visited = false
 			}
 		})
+	}
+
+	rotate(){
+		// add friction
+		this.angleSpeed += this.friction
+
+		if(this.angleSpeed < 0 && this.friction < 0 || this.angleSpeed > 0 && this.friction > 0){
+			this.rotating = false
+		}
+		this.balls.forEach(ball => ball.rotate(this.angleSpeed))
 	}
 }
