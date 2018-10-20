@@ -1,5 +1,8 @@
 import Sprite, {SHAPE} from './sprite'
 
+export const BALLS =
+	['./images/b_blue.png', './images/b_cyan.png', './images/b_green.png',
+	 './images/b_pink.png', './images/b_red.png', './images/b_yellow.png']
 export const COLOURS = ['#1da2da', '#014765', '#01986a', '#d392ba', '#b14701', '#ecd613']
 
 // adjust the ball size according to the screen width.
