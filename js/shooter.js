@@ -1,17 +1,17 @@
-import Ball, {BALLSIZE, COLOURS} from './ball'
+import Ball, {BALL_SIZE, BALLS} from './ball'
 
+export const LINEAR_SPEED = 15
 export default class Shooter extends Ball {
-        constructor() {
-		super(canvas.width / 2, canvas.height - BALLSIZE, -1, true)
+	constructor() {
+		super(canvas.width / 2, canvas.height - BALL_SIZE, -1, true)
 		this.initEvent()
 		this.initShooter()
-        }
+	}
 
-	initShooter(){
+	initShooter() {
 		this.x = canvas.width / 2
-		this.y = canvas.height - BALLSIZE
-		this.colour = COLOURS[Math.floor(Math.random() * COLOURS.length)]
-		this.speed = 15
+		this.y = canvas.height - BALL_SIZE
+		this.img.src = BALLS[Math.floor(Math.random() * BALLS.length)]
 		this.touched = false
 		this.shooting = false
 	}
@@ -19,15 +19,17 @@ export default class Shooter extends Ball {
 	initEvent() {
 		canvas.addEventListener('touchstart', ((e) => {
 			e.preventDefault()
-			this.touched = true
-			this.touchX = e.touches[0].clientX
-			this.touchY = e.touches[0].clientY
+			if (!this.shooting) {
+				this.touched = true
+				this.touchX = e.touches[0].clientX
+				this.touchY = e.touches[0].clientY
+			}
 
 		}).bind(this))
 
 		canvas.addEventListener('touchmove', ((e) => {
 			e.preventDefault()
-			if (this.touched) {
+			if (!this.shooting && this.touched) {
 				this.touchX = e.touches[0].clientX
 				this.touchY = e.touches[0].clientY
 			}
@@ -36,21 +38,23 @@ export default class Shooter extends Ball {
 
 		canvas.addEventListener('touchend', ((e) => {
 			e.preventDefault()
-			this.touched = false
-			this.initSpeed();
-			this.shooting = true
+			if (!this.shooting) {
+				this.touched = false
+				this.initSpeed();
+				this.shooting = true
+			}
 		}).bind(this))
 	}
 
-	render(ctx){
+	render(ctx) {
 		super.render(ctx)
 
-		if(this.touched){
+		if (this.touched) {
 			this.renderArrow(ctx)
 		}
 	}
 
-	renderArrow(ctx){
+	renderArrow(ctx) {
 		ctx.beginPath();
 		ctx.strokeStyle = 'green';
 
@@ -61,7 +65,7 @@ export default class Shooter extends Ball {
 
 		let headLenth = 10
 		let headAngle = Math.atan2(this.touchY - this.y, this.touchX - this.x)
-		
+
 		// form a little triangle for the arrow head
 		// from touch point to right side of the head
 		ctx.lineTo(this.touchX - headLenth * Math.cos(headAngle - Math.PI / 6),
@@ -76,7 +80,7 @@ export default class Shooter extends Ball {
 		ctx.closePath();
 	}
 
-	update(spiral){
+	update(spiral) {
 		if (!this.shooting) {
 			return
 		}
@@ -100,10 +104,10 @@ export default class Shooter extends Ball {
 		}
 	}
 
-	initSpeed(){
+	initSpeed() {
 		let angle = Math.atan2(this.touchY - this.y, this.touchX - this.x)
-		this.speedX = this.speed * Math.cos(angle)
-		this.speedY = this.speed * Math.sin(angle)
+		this.speedX = LINEAR_SPEED * Math.cos(angle)
+		this.speedY = LINEAR_SPEED * Math.sin(angle)
 	}
 
 }
