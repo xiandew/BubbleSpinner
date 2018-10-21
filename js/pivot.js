@@ -3,15 +3,15 @@ import {BALLSIZE} from './ball'
 
 export default class Pivot extends Sprite {
         constructor(x, y){
-		super('', BALLSIZE, BALLSIZE, x, y, true)
+		super('images/pivot.jpg', BALLSIZE, BALLSIZE, x, y, true)
         }
 
-	render(ctx){
+	/*render(ctx){
 		// a hexagon pivot
 		let vertices = 6, length = this.width / 2
 		let getDegree = function (vertices, i) { return 360 / vertices * (i + 0.5) + 90 }
 		let getRadian = function (degree) { return degree * Math.PI / 180 }
-		
+
 		ctx.beginPath()
 		for (let i = 0; i <= vertices; i++) {
 			let degree = getDegree(vertices, i), radian = getRadian(degree)
@@ -25,6 +25,6 @@ export default class Pivot extends Sprite {
 		ctx.strokeStyle = '#000000'
 		ctx.stroke()
 		ctx.closePath()
-	}
+	}*/
 
 }
