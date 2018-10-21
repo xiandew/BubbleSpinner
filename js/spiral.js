@@ -61,11 +61,11 @@ export default class Spiral {
         onCollision(shooter) {
                 // adjust the shooter ball's position to align with the hexagon properly
                 // then erase balls which have the same colour and connections to it
-		this.sameColours = []
+		this.sameBalls = []
 		
 		this.newBall = this.closestPosition(shooter)
 
-		this.findSameColours(this.newBall)
+		this.findSameBalls(this.newBall)
 		this.eraseSameColours()
 		this.revertVisitied()
 		this.eraseFloatBalls()
@@ -99,10 +99,9 @@ export default class Spiral {
                         }
                 })
                 if (closest) {
-
                         closest.visible = true
 			closest.visited = false
-                        closest.colour = shooter.colour
+			closest.img.src = shooter.img.src
 
                         shooter.initShooter()
                 } else {
@@ -111,18 +110,18 @@ export default class Spiral {
                 return closest
         }
 	
-	findSameColours(target){
+	findSameBalls(target){
 		let balls = []
 		this.findAround(target).forEach(ball => {
-			if (ball.colour === target.colour) {
+			if (ball.img.src === target.img.src) {
 				balls.push(ball)
 			}
 		})
 		while (balls.length != 0) {
 			let ball = balls.pop()
 			ball.visited = true
-			this.sameColours.push(ball)
-			this.findSameColours(ball)
+			this.sameBalls.push(ball)
+			this.findSameBalls(ball)
 		}
 	}
 
@@ -139,8 +138,8 @@ export default class Spiral {
         }
 
 	eraseSameColours(){
-		if (this.sameColours.length >= 3) {
-			this.sameColours.forEach(ball => {
+		if (this.sameBalls.length >= 3) {
+			this.sameBalls.forEach(ball => {
 				ball.visible = false
 			})
 		}

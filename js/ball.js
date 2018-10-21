@@ -1,9 +1,9 @@
-import Sprite, {SHAPE} from './sprite'
+import Sprite from './sprite'
 
 export const BALLS =
-	['./images/b_blue.png', './images/b_cyan.png', './images/b_green.png',
-	 './images/b_pink.png', './images/b_red.png', './images/b_yellow.png']
-export const COLOURS = ['#1da2da', '#014765', '#01986a', '#d392ba', '#b14701', '#ecd613']
+	['images/b_blue.png', 'images/b_cyan.png', 'images/b_green.png',
+	 'images/b_pink.png', 'images/b_red.png', 'images/b_yellow.png']
+// export const COLOURS = ['#1da2da', '#014765', '#01986a', '#d392ba', '#b14701', '#ecd613']
 
 // adjust the ball size according to the screen width.
 // diameterSpiral = 0.75 * screenWidth with layer = 5.5
@@ -12,19 +12,17 @@ export const BALLSIZE = 0.75 * canvas.width / (1 + 5.5 * 4 / Math.sqrt(3))
 
 export default class Ball extends Sprite {
         constructor(x, y, layer, visible) {
-		super(COLOURS[Math.floor(Math.random() * COLOURS.length)], BALLSIZE, BALLSIZE, x, y, visible, [SHAPE])
-
-                // record the layer of the ball to compute its neighbours
+		super(BALLS[Math.floor(Math.random() * BALLS.length)], BALLSIZE, BALLSIZE, x, y, visible)
+		
                 this.layer = layer
 		this.visited = false
-		this.toBeErased = false
 
 		this.prevX = this.x
 		this.prevY = this.y
         }
 
-        // render a circle shape
-        render(ctx) {
+        // draw a circle shape instead of image. Not display well on the phone
+        /*render(ctx) {
                 if (!this.visible) {
                         return
                 }
@@ -40,7 +38,7 @@ export default class Ball extends Sprite {
                 ctx.arc(this.x - this.width / 6, this.y + this.width / 6, this.width / 6, 0, 2 * Math.PI)
                 ctx.fill()
                 ctx.closePath()
-        }
+        }*/
 
         update() {
 

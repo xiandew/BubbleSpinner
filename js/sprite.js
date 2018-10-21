@@ -1,16 +1,8 @@
-// avoid typos
-export const IMAGE = 'IMAGE'
-export const SHAPE = 'SHAPE'
-
+// Top level `abstract` class for the game
 export default class Sprite {
-        constructor(imgData, width, height, x, y, visible, opts) {
-                if (opts.includes(IMAGE) && visible) {
-                        this.img = new Image()
-			this.img.src = imgData
-                }
-                if (opts.includes(SHAPE) && visible) {
-			this.colour = imgData
-                }
+        constructor(imgData, width, height, x, y, visible) {
+                this.img = new Image()
+		this.img.src = imgData
                 this.width = width
                 this.height = height
                 this.x = x

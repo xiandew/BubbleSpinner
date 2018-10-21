@@ -1,4 +1,4 @@
-import Ball, {BALLSIZE, COLOURS} from './ball'
+import Ball, {BALLSIZE, BALLS} from './ball'
 
 export default class Shooter extends Ball {
         constructor() {
@@ -10,7 +10,7 @@ export default class Shooter extends Ball {
 	initShooter(){
 		this.x = canvas.width / 2
 		this.y = canvas.height - BALLSIZE
-		this.colour = COLOURS[Math.floor(Math.random() * COLOURS.length)]
+		this.img.src = BALLS[Math.floor(Math.random() * BALLS.length)]
 		this.speed = 15
 		this.touched = false
 		this.shooting = false
