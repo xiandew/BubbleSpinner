@@ -16,9 +16,6 @@ export default class Ball extends Sprite {
 
 		this.layer = layer
 		this.visited = false
-
-		this.prevX = this.x
-		this.prevY = this.y
 	}
 
 	// draw a circle shape instead of image. Not display well on the phone

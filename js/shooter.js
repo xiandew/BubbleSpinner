@@ -4,8 +4,9 @@ export const LINEAR_SPEED = 15
 export default class Shooter extends Ball {
 	constructor() {
 		super(canvas.width / 2, canvas.height - BALL_SIZE, -1, true)
-		this.initEvent()
 		this.initShooter()
+		this.t = false
+		// this.initEvent()
 	}
 
 	initShooter() {
@@ -14,11 +15,24 @@ export default class Shooter extends Ball {
 		this.img.src = BALLS[Math.floor(Math.random() * BALLS.length)]
 		this.touched = false
 		this.shooting = false
+		this.t = true
+	}
+
+	init(){
+		this.x = canvas.width / 2
+		this.y = canvas.height - BALL_SIZE
+		// this.touched = false
+		this.shooting = false
+		// this.t = true
 	}
 
 	initEvent() {
 		canvas.addEventListener('touchstart', ((e) => {
 			e.preventDefault()
+			if(!this.t){
+				return
+			}
+
 			if (!this.shooting) {
 				this.touched = true
 				this.touchX = e.touches[0].clientX
@@ -29,6 +43,10 @@ export default class Shooter extends Ball {
 
 		canvas.addEventListener('touchmove', ((e) => {
 			e.preventDefault()
+			if (!this.t) {
+				return
+			}
+
 			if (!this.shooting && this.touched) {
 				this.touchX = e.touches[0].clientX
 				this.touchY = e.touches[0].clientY
@@ -38,6 +56,10 @@ export default class Shooter extends Ball {
 
 		canvas.addEventListener('touchend', ((e) => {
 			e.preventDefault()
+			if (!this.t) {
+				return
+			}
+
 			if (!this.shooting) {
 				this.touched = false
 				this.initSpeed();
