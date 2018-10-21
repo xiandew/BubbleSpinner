@@ -2,7 +2,7 @@ import Pivot from './pivot'
 import Ball, {BALL_SIZE} from './ball'
 import Shooter, {LINEAR_SPEED} from './shooter'
 
-const FRICTION = 0.0025
+const FRICTION = 0.001
 export default class Spiral {
         constructor(layers) {
 		this.rotating = false
@@ -84,7 +84,7 @@ export default class Spiral {
 		let py = k * this.pivot.x + m
 		let d = Math.abs((px - this.pivot.x) * (py - this.pivot.y)) /
 			Math.sqrt((py - this.pivot.y) ** 2 + (px - this.pivot.x) ** 2)
-		let ratio = d / (this.layers * BALL_SIZE)
+		let ratio = d / canvas.width
 		let tangentSpeed = LINEAR_SPEED * ratio
 
                 if (shooter.speedX < 0 && (k * this.pivot.x + m) > this.pivot.y ||
@@ -102,15 +102,12 @@ export default class Spiral {
                         }
                 })
 
-                let angleSpeed = tangentSpeed / nballs
-                if (Math.abs(angleSpeed) > 0.25) {
-                        if (this.friction < 0) {
-                                this.angleSpeed = 0.25
-                        } else {
-                                this.angleSpeed = -0.25
-                        }
-                } else {
-                        this.angleSpeed = angleSpeed
+                this.angleSpeed = tangentSpeed / nballs
+                if (this.angleSpeed > 0.25) {
+                        this.angleSpeed = 0.25
+		}
+		if (this.angleSpeed < -0.25) {
+                        this.angleSpeed = -0.25
                 }
 
                 shooter.initShooter()
