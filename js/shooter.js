@@ -1,5 +1,6 @@
 import Ball, {BALLSIZE, BALLS} from './ball'
 
+export const SPEED = 15
 export default class Shooter extends Ball {
         constructor() {
 		super(canvas.width / 2, canvas.height - BALLSIZE, -1, true)
@@ -11,7 +12,6 @@ export default class Shooter extends Ball {
 		this.x = canvas.width / 2
 		this.y = canvas.height - BALLSIZE
 		this.img.src = BALLS[Math.floor(Math.random() * BALLS.length)]
-		this.speed = 15
 		this.touched = false
 		this.shooting = false
 	}
@@ -106,8 +106,8 @@ export default class Shooter extends Ball {
 
 	initSpeed(){
 		let angle = Math.atan2(this.touchY - this.y, this.touchX - this.x)
-		this.speedX = this.speed * Math.cos(angle)
-		this.speedY = this.speed * Math.sin(angle)
+		this.speedX = SPEED * Math.cos(angle)
+		this.speedY = SPEED * Math.sin(angle)
 	}
 
 }

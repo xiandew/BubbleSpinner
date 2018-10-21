@@ -1,7 +1,8 @@
-import Ball, {BALLSIZE} from './ball'
 import Pivot from './pivot'
-import Shooter from './shooter'
+import Ball, {BALLSIZE} from './ball'
+import Shooter, {SPEED} from './shooter'
 
+const FRICTION = 0.01
 export default class Spiral {
         constructor(layers) {
                 this.initSpiral(layers)
@@ -71,21 +72,40 @@ export default class Spiral {
 		this.eraseFloatBalls()
 
 		this.rotating = true
-		if (this.newBall.x <= canvas.width / 2 && this.newBall.y >= canvas.height / 2
-		 || this.newBall.x >  canvas.width / 2 && this.newBall.y <  canvas.height / 2) {
-			this.speed = -15
-			this.friction = 0.01
+
+		let slope = shooter.speedY / shooter.speedX
+
+		// y = kx + m
+		let yIntercept = this.newBall.y - slope * this.newBall.x
+
+		if (shooter.speedX < 0 && (slope * canvas.width / 2 + yIntercept) > canvas.height / 2
+		 || shooter.speedX > 0 && (slope * canvas.width / 2 + yIntercept) < canvas.height / 2) {
+			this.speed = -SPEED
+			this.friction = FRICTION
 		} else {
-			this.speed = 15
-			this.friction = -0.01
+			this.speed = SPEED
+			this.friction = -FRICTION
 		}
+
 		let nballs = 0
 		this.balls.forEach(ball => {
 			if (ball.visible) {
 				nballs++
 			}
 		})
-		this.angleSpeed = this.speed / nballs
+
+		let angleSpeed = this.speed / nballs
+		if(Math.abs(this.angleSpeed) > 0.25){
+			if(this.friction < 0){
+				this.angleSpeed = 0.25
+			} else {
+				this.angleSpeed = -0.25
+			}
+		}else{
+			this.angleSpeed = angleSpeed
+		}
+
+		shooter.initShooter()
         }
 
         closestPosition(shooter) {
@@ -103,8 +123,6 @@ export default class Spiral {
                         closest.visible = true
 			closest.visited = false
 			closest.img.src = shooter.img.src
-
-                        shooter.initShooter()
                 } else {
                         //
                 }
