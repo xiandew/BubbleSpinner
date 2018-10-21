@@ -2,15 +2,15 @@ import Pivot from './pivot'
 import Ball, {BALL_SIZE} from './ball'
 import Shooter, {LINEAR_SPEED} from './shooter'
 
-const FRICTION = 0.002
+const FRICTION = 0.0025
 export default class Spiral {
         constructor(layers) {
-                this.initSpiral(layers)
 		this.rotating = false
-		this.angle = 0
+		this.layers = layers
+                this.initSpiral()
         }
 
-        initSpiral(layers) {
+        initSpiral() {
                 this.pivot = new Pivot(canvas.width / 2, canvas.height / 2)
                 let maxLayers = Math.floor(canvas.width / BALL_SIZE)
 
@@ -25,7 +25,7 @@ export default class Spiral {
                                 let x = this.pivot.x - Math.cos(angle) * this.separation * layer
                                 let y = this.pivot.y - Math.sin(angle) * this.separation * layer
                                 let visible = false
-                                if (layer <= layers) {
+                                if (layer <= this.layers) {
                                         visible = true
                                 }
                                 this.balls.push(new Ball(x, y, layer, visible))
@@ -41,10 +41,10 @@ export default class Spiral {
         }
 
         update() {
-		//this.balls.forEach(ball => ball.slideOutScreen())
-		if(this.rotating){
-			this.rotate()
-		}
+                //this.balls.forEach(ball => ball.slideOutScreen())
+                if (this.rotating) {
+                        this.rotate()
+                }
 
         }
 
@@ -62,50 +62,58 @@ export default class Spiral {
         onCollision(shooter) {
                 // adjust the shooter ball's position to align with the hexagon properly
                 // then erase balls which have the same colour and connections to it
-		this.sameBalls = []
-		
-		this.newBall = this.closestPosition(shooter)
+                this.sameBalls = []
 
-		this.findSameBalls(this.newBall)
-		this.eraseSameColours()
-		this.revertVisitied()
-		this.eraseFloatBalls()
+                this.newBall = this.closestPosition(shooter)
 
-		this.rotating = true
+                this.findSameBalls(this.newBall)
+                this.eraseSameColours()
+                this.revertVisitied()
+                this.eraseFloatBalls()
 
-		// y = kx + m
-		let k = shooter.speedY / shooter.speedX
-		let m = this.newBall.y - k * this.newBall.x
-		let centX = canvas.width / 2
-		let centY = canvas.height / 2
+                this.rotating = true
 
-		if (shooter.speedX < 0 && (k * centX + m) > centY || shooter.speedX > 0 && (k * centX + m) < centY) {
-			this.speed = -LINEAR_SPEED * Math.cos(Math.atan(k))
-			this.friction = FRICTION
-		} else {
-			this.speed = LINEAR_SPEED * Math.cos(Math.atan(k))
-			this.friction = -FRICTION
-		}
+                // y = kx + m
+                // x = (y - m) / k
+                let k = shooter.speedY / shooter.speedX
+                let m = this.newBall.y - k * this.newBall.x
 
-		let nballs = 0
-		this.balls.forEach(ball => {
-			if (ball.visible) {
-				nballs++
-			}
-		})
+                // the tangent speed is proportional to the distance between
+                // the pivot and the linear speed line
+		let px = (this.pivot.y - m) / k
+		let py = k * this.pivot.x + m
+		let d = Math.abs((px - this.pivot.x) * (py - this.pivot.y)) /
+			Math.sqrt((py - this.pivot.y) ** 2 + (px - this.pivot.x) ** 2)
+		let ratio = d / (this.layers * BALL_SIZE)
+		let tangentSpeed = LINEAR_SPEED * ratio
 
-		let angleSpeed = this.speed / nballs
-		if(Math.abs(this.angleSpeed) > 0.25){
-			if(this.friction < 0){
-				this.angleSpeed = 0.25
-			} else {
-				this.angleSpeed = -0.25
-			}
-		}else{
-			this.angleSpeed = angleSpeed
-		}
+                if (shooter.speedX < 0 && (k * this.pivot.x + m) > this.pivot.y ||
+                        shooter.speedX > 0 && (k * this.pivot.x + m) < this.pivot.y) {
+                        tangentSpeed *= (-1)
+                        this.friction = FRICTION
+                } else {
+                        this.friction = -FRICTION
+                }
 
-		shooter.initShooter()
+                let nballs = 0
+                this.balls.forEach(ball => {
+                        if (ball.visible) {
+                                nballs++
+                        }
+                })
+
+                let angleSpeed = tangentSpeed / nballs
+                if (Math.abs(angleSpeed) > 0.25) {
+                        if (this.friction < 0) {
+                                this.angleSpeed = 0.25
+                        } else {
+                                this.angleSpeed = -0.25
+                        }
+                } else {
+                        this.angleSpeed = angleSpeed
+                }
+
+                shooter.initShooter()
         }
 
         closestPosition(shooter) {
@@ -121,87 +129,87 @@ export default class Spiral {
                 })
                 if (closest) {
                         closest.visible = true
-			closest.visited = false
-			closest.img.src = shooter.img.src
+                        closest.visited = false
+                        closest.img.src = shooter.img.src
                 } else {
                         //
                 }
                 return closest
         }
-	
-	findSameBalls(target){
-		let balls = []
-		this.findAround(target).forEach(ball => {
-			if (ball.img.src === target.img.src) {
-				balls.push(ball)
-			}
-		})
-		while (balls.length != 0) {
-			let ball = balls.pop()
-			ball.visited = true
-			this.sameBalls.push(ball)
-			this.findSameBalls(ball)
-		}
-	}
+
+        findSameBalls(target) {
+                let balls = []
+                this.findAround(target).forEach(ball => {
+                        if (ball.img.src === target.img.src) {
+                                balls.push(ball)
+                        }
+                })
+                while (balls.length != 0) {
+                        let ball = balls.pop()
+                        ball.visited = true
+                        this.sameBalls.push(ball)
+                        this.findSameBalls(ball)
+                }
+        }
 
         findAround(target) {
-		// balls next to the target
+                // balls next to the target
                 let balls = []
                 this.balls.forEach(ball => {
-			let dSquare = Math.floor((ball.x - target.x) ** 2 + (ball.y - target.y) ** 2)
-			if (ball.visible && !ball.visited && ball !== target && dSquare <= this.separation ** 2) {
+                        let dSquare = Math.floor((ball.x - target.x) ** 2 + (ball.y - target.y) ** 2)
+                        if (ball.visible && !ball.visited && ball !== target && dSquare <= this.separation ** 2) {
                                 balls.push(ball)
                         }
                 })
                 return balls
         }
 
-	eraseSameColours(){
-		if (this.sameBalls.length >= 3) {
-			this.sameBalls.forEach(ball => {
-				ball.visible = false
-			})
-		}
-	}
+        eraseSameColours() {
+                if (this.sameBalls.length >= 3) {
+                        this.sameBalls.forEach(ball => {
+                                ball.visible = false
+                        })
+                }
+        }
 
-	eraseFloatBalls(){
-		// visit balls that attached to the pivot
-		this.visitAttachedBalls(this.pivot)
-		// find balls not attached to the pivot
-		this.balls.forEach(ball => {
-			if (ball.visible && !ball.visited) {
-				ball.visible = false
-			}
-		})
-		this.revertVisitied()
-	}
+        eraseFloatBalls() {
+                // visit balls that attached to the pivot
+                this.visitAttachedBalls(this.pivot)
+                // find balls not attached to the pivot
+                this.balls.forEach(ball => {
+                        if (ball.visible && !ball.visited) {
+                                ball.visible = false
+                        }
+                })
+                this.revertVisitied()
+        }
 
-	visitAttachedBalls(target) {
-		let around = []
-		around = this.findAround(target)
-		around.forEach(ball => {
-			if (ball.visible) {
-				ball.visited = true
-				this.visitAttachedBalls(ball)
-			}
-		})
-	}
-	// Ensure every visible balls are not visited
-	revertVisitied(){
-		this.balls.forEach(ball => {
-			if (ball.visible) {
-				ball.visited = false
-			}
-		})
-	}
+        visitAttachedBalls(target) {
+                let around = []
+                around = this.findAround(target)
+                around.forEach(ball => {
+                        if (ball.visible) {
+                                ball.visited = true
+                                this.visitAttachedBalls(ball)
+                        }
+                })
+        }
+        // Ensure every visible balls are not visited
+        revertVisitied() {
+                this.balls.forEach(ball => {
+                        if (ball.visible) {
+                                ball.visited = false
+                        }
+                })
+        }
 
-	rotate(){
-		// add friction
-		this.angleSpeed += this.friction
+        rotate() {
+                // add friction
+                this.angleSpeed += this.friction
 
-		if(this.angleSpeed < 0 && this.friction < 0 || this.angleSpeed > 0 && this.friction > 0){
-			this.rotating = false
-		}
-		this.balls.forEach(ball => ball.rotate(this.angleSpeed))
-	}
+                if (this.angleSpeed < 0 && this.friction < 0 || this.angleSpeed > 0 && this.friction > 0) {
+                        this.rotating = false
+                }
+                this.balls.forEach(ball => ball.rotate(this.angleSpeed))
+        }
 }
