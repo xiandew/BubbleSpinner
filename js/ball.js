@@ -3,7 +3,7 @@ import Sprite from './sprite'
 // export const COLOURS = ['#1da2da', '#014765', '#01986a', '#d392ba', '#b14701', '#ecd613']
 export const BALLS =
 	['images/b_blue.png', 'images/b_cyan.png', 'images/b_green.png',
-	 'images/b_pink.png', 'images/b_red.png', 'images/b_yellow.png']
+	'images/b_pink.png', 'images/b_red.png', 'images/b_yellow.png']
 
 // adjust the ball size according to the screen width.
 // diameterSpiral = 0.75 * screenWidth with layer = 5.5
@@ -11,17 +11,17 @@ export const BALLS =
 export const BALL_SIZE = 0.75 * canvas.width / (1 + 5.5 * 4 / Math.sqrt(3))
 
 export default class Ball extends Sprite {
-        constructor(x, y, layer, visible) {
+	constructor(x, y, layer, visible) {
 		super(BALLS[Math.floor(Math.random() * BALLS.length)], BALL_SIZE, BALL_SIZE, x, y, visible)
-		
-                this.layer = layer
+
+		this.layer = layer
 		this.visited = false
 
 		this.prevX = this.x
 		this.prevY = this.y
-        }
+	}
 
-        // draw a circle shape instead of image. Not display well on the phone
+	// draw a circle shape instead of image. Not display well on the phone
         /*render(ctx) {
                 if (!this.visible) {
                         return
@@ -40,11 +40,11 @@ export default class Ball extends Sprite {
                 ctx.closePath()
         }*/
 
-        update() {
+	update() {
 
-        }
+	}
 
-	rotate(angle){
+	rotate(angle) {
 		let toCentY = this.y - canvas.height / 2
 		let toCentX = this.x - canvas.width / 2
 
@@ -54,7 +54,7 @@ export default class Ball extends Sprite {
 	}
 
 	// TODO a slide out animation
-	slideOutScreen(){
+	slideOutScreen() {
 
 	}
 }

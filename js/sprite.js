@@ -2,7 +2,7 @@
 export default class Sprite {
         constructor(imgData, width, height, x, y, visible) {
                 this.img = new Image()
-		this.img.src = imgData
+                this.img.src = imgData
                 this.width = width
                 this.height = height
                 this.x = x
@@ -27,7 +27,7 @@ export default class Sprite {
         }
 
         isCollideWith(other) {
-		/*let otherLeft = other.x - other.width / 2
+                /*let otherLeft = other.x - other.width / 2
 		let otherRight = other.x + other.width / 2
 		let otherTop = other.y - other.height / 2
                 let otherBottom = other.y + other.height / 2
@@ -40,7 +40,7 @@ export default class Sprite {
 			otherRight > this.x - this.width / 2 &&
 			otherTop < this.y + this.height / 2 &&
 			otherBottom > this.y - this.height /2*/
-		
-		return this.visible && (other.x-this.x)**2 + (other.y - this.y)**2 <= this.width**2
+
+                return this.visible && (other.x - this.x) ** 2 + (other.y - this.y) ** 2 <= this.width ** 2
         }
 }
