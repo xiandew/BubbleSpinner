@@ -1,9 +1,9 @@
 import Sprite from './sprite'
-import {BALLSIZE} from './ball'
+import {BALL_SIZE} from './ball'
 
 export default class Pivot extends Sprite {
         constructor(x, y){
-		super('images/pivot.jpg', BALLSIZE, BALLSIZE, x, y, true)
+		super('images/pivot.jpg', BALL_SIZE, BALL_SIZE, x, y, true)
         }
 
 	/*render(ctx){

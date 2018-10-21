@@ -8,11 +8,11 @@ export const BALLS =
 // adjust the ball size according to the screen width.
 // diameterSpiral = 0.75 * screenWidth with layer = 5.5
 // where 5.5 is a magic number which I think gives the best view on the screen
-export const BALLSIZE = 0.75 * canvas.width / (1 + 5.5 * 4 / Math.sqrt(3))
+export const BALL_SIZE = 0.75 * canvas.width / (1 + 5.5 * 4 / Math.sqrt(3))
 
 export default class Ball extends Sprite {
         constructor(x, y, layer, visible) {
-		super(BALLS[Math.floor(Math.random() * BALLS.length)], BALLSIZE, BALLSIZE, x, y, visible)
+		super(BALLS[Math.floor(Math.random() * BALLS.length)], BALL_SIZE, BALL_SIZE, x, y, visible)
 		
                 this.layer = layer
 		this.visited = false

@@ -1,6 +1,6 @@
 import Pivot from './pivot'
-import Ball, {BALLSIZE} from './ball'
-import Shooter, {SPEED} from './shooter'
+import Ball, {BALL_SIZE} from './ball'
+import Shooter, {LINEAR_SPEED} from './shooter'
 
 const FRICTION = 0.01
 export default class Spiral {
@@ -12,12 +12,12 @@ export default class Spiral {
 
         initSpiral(layers) {
                 this.pivot = new Pivot(canvas.width / 2, canvas.height / 2)
-                let maxLayers = Math.floor(canvas.width / BALLSIZE)
+                let maxLayers = Math.floor(canvas.width / BALL_SIZE)
 
                 //contains both invisible and visible balls
                 this.balls = []
-                // Make sure the distance between the centers of two adjacent rows equals to BALLSIZE
-                this.separation = BALLSIZE / Math.sqrt(3) * 2
+                // Make sure the distance between the centers of two adjacent rows equals to BALL_SIZE
+                this.separation = BALL_SIZE / Math.sqrt(3) * 2
                 for (let layer = 1; layer <= maxLayers; layer++) {
                         for (let diagonal = 0; diagonal < 6; diagonal++) {
                                 // draw a ball on the diagonal of the hexagon
@@ -73,17 +73,18 @@ export default class Spiral {
 
 		this.rotating = true
 
-		let slope = shooter.speedY / shooter.speedX
-
 		// y = kx + m
-		let yIntercept = this.newBall.y - slope * this.newBall.x
+		let k = shooter.speedY / shooter.speedX
+		let m = this.newBall.y - k * this.newBall.x
+		let centX = canvas.width / 2
+		let centY = canvas.height / 2
 
-		if (shooter.speedX < 0 && (slope * canvas.width / 2 + yIntercept) > canvas.height / 2
-		 || shooter.speedX > 0 && (slope * canvas.width / 2 + yIntercept) < canvas.height / 2) {
-			this.speed = -SPEED
+		if (shooter.speedX < 0 && (k * centX + m) > centY
+		 || shooter.speedX > 0 && (k * centX + m) < centY) {
+			this.speed = -LINEAR_SPEED
 			this.friction = FRICTION
 		} else {
-			this.speed = SPEED
+			this.speed = LINEAR_SPEED
 			this.friction = -FRICTION
 		}
 
@@ -93,7 +94,6 @@ export default class Spiral {
 				nballs++
 			}
 		})
-
 		let angleSpeed = this.speed / nballs
 		if(Math.abs(this.angleSpeed) > 0.25){
 			if(this.friction < 0){
