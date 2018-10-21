@@ -2,7 +2,7 @@ import Pivot from './pivot'
 import Ball, {BALL_SIZE} from './ball'
 import Shooter, {LINEAR_SPEED} from './shooter'
 
-const FRICTION = 0.01
+const FRICTION = 0.002
 export default class Spiral {
         constructor(layers) {
                 this.initSpiral(layers)
@@ -79,12 +79,11 @@ export default class Spiral {
 		let centX = canvas.width / 2
 		let centY = canvas.height / 2
 
-		if (shooter.speedX < 0 && (k * centX + m) > centY
-		 || shooter.speedX > 0 && (k * centX + m) < centY) {
-			this.speed = -LINEAR_SPEED
+		if (shooter.speedX < 0 && (k * centX + m) > centY || shooter.speedX > 0 && (k * centX + m) < centY) {
+			this.speed = -LINEAR_SPEED * Math.cos(Math.atan(k))
 			this.friction = FRICTION
 		} else {
-			this.speed = LINEAR_SPEED
+			this.speed = LINEAR_SPEED * Math.cos(Math.atan(k))
 			this.friction = -FRICTION
 		}
 
@@ -94,6 +93,7 @@ export default class Spiral {
 				nballs++
 			}
 		})
+
 		let angleSpeed = this.speed / nballs
 		if(Math.abs(this.angleSpeed) > 0.25){
 			if(this.friction < 0){
@@ -148,8 +148,8 @@ export default class Spiral {
 		// balls next to the target
                 let balls = []
                 this.balls.forEach(ball => {
-			if (ball.visible && !ball.visited && ball !== target &&
-				Math.floor((ball.x - target.x) ** 2 + (ball.y - target.y) ** 2) <= this.separation ** 2) {
+			let dSquare = Math.floor((ball.x - target.x) ** 2 + (ball.y - target.y) ** 2)
+			if (ball.visible && !ball.visited && ball !== target && dSquare <= this.separation ** 2) {
                                 balls.push(ball)
                         }
                 })
