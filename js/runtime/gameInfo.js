@@ -8,9 +8,9 @@ export default class GameInfo{
 			endX: canvas.height / 2 + 40,
 			endY: canvas.height / 2
 		}
-		this.restart()
 	}
 	restart(){
+		this.start = true
 		this.level = 0
 		this.score = 0
 	}
