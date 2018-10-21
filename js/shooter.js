@@ -19,15 +19,17 @@ export default class Shooter extends Ball {
 	initEvent() {
 		canvas.addEventListener('touchstart', ((e) => {
 			e.preventDefault()
-			this.touched = true
-			this.touchX = e.touches[0].clientX
-			this.touchY = e.touches[0].clientY
+			if(!this.shooting){
+				this.touched = true
+				this.touchX = e.touches[0].clientX
+				this.touchY = e.touches[0].clientY
+			}
 
 		}).bind(this))
 
 		canvas.addEventListener('touchmove', ((e) => {
 			e.preventDefault()
-			if (this.touched) {
+			if (!this.shooting && this.touched) {
 				this.touchX = e.touches[0].clientX
 				this.touchY = e.touches[0].clientY
 			}
@@ -36,9 +38,11 @@ export default class Shooter extends Ball {
 
 		canvas.addEventListener('touchend', ((e) => {
 			e.preventDefault()
-			this.touched = false
-			this.initSpeed();
-			this.shooting = true
+			if(!this.shooting){
+				this.touched = false
+				this.initSpeed();
+				this.shooting = true
+			}
 		}).bind(this))
 	}
 

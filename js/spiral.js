@@ -71,7 +71,8 @@ export default class Spiral {
 		this.eraseFloatBalls()
 
 		this.rotating = true
-		if (this.newBall.x <= canvas.width / 2) {
+		if (this.newBall.x <= canvas.width / 2 && this.newBall.y >= canvas.height / 2
+		 || this.newBall.x >  canvas.width / 2 && this.newBall.y <  canvas.height / 2) {
 			this.speed = -15
 			this.friction = 0.01
 		} else {
