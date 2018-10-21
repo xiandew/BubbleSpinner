@@ -103,13 +103,13 @@ export default class Spiral {
 		})
 
 		this.angleSpeed = tangentSpeed / nballs
-		if (this.angleSpeed > 0.25) {
-			this.angleSpeed = 0.25
+		if (this.angleSpeed > 0.1) {
+			this.angleSpeed = 0.1
 		}
-		if (this.angleSpeed < -0.25) {
-			this.angleSpeed = -0.25
+		if (this.angleSpeed < -0.1) {
+			this.angleSpeed = -0.1
 		}
-
+		
 		shooter.initShooter()
 	}
 
