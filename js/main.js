@@ -23,7 +23,7 @@ export default class Main {
 		
 		this.touchStarter = this.touchStartHandler.bind(this)
 		canvas.addEventListener('touchstart', this.touchStarter)
-		
+
 		this.touchEnder = this.touchEndHandler.bind(this)
 		canvas.addEventListener('touchend', this.touchEnder)
         }
@@ -65,16 +65,17 @@ export default class Main {
 		let area = this.gameInfo.startArea
 
 		if (x >= area.startX && x <= area.endX && y >= area.startY && y <= area.endY){
-			//this.gameInfo.restart()
+			this.gameInfo.start = true
 			canvas.removeEventListener('touchstart', this.touchStarter)
 			
 		}
 	}
 
 	touchEndHandler(e){
-		this.gameInfo.start = true
-		this.t = true
-		canvas.removeEventListener('touchend', this.touchEnder)
+		if (this.gameInfo.start){
+			this.t = true
+			canvas.removeEventListener('touchend', this.touchEnder)
+		}
 	}
 
         // loop all the frames
