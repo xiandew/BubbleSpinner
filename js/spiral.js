@@ -1,16 +1,18 @@
 import Pivot from './pivot'
 import Ball, {BALL_SIZE} from './ball'
 import Shooter, {LINEAR_SPEED} from './shooter'
+import GameInfo from './runtime/gameInfo'
+
+let gameInfo = new GameInfo()
 
 const FRICTION = 0.001
 export default class Spiral {
 	constructor(layers) {
-		this.rotating = false
-		this.layers = layers
-		this.initSpiral()
+		this.initSpiral(layers)
 	}
 
-	initSpiral() {
+	initSpiral(layers) {
+		this.rotating = false
 		this.pivot = new Pivot(canvas.width / 2, canvas.height / 2)
 		let maxLayers = Math.floor(canvas.width / BALL_SIZE)
 
@@ -25,7 +27,7 @@ export default class Spiral {
 				let x = this.pivot.x - Math.cos(angle) * this.separation * layer
 				let y = this.pivot.y - Math.sin(angle) * this.separation * layer
 				let visible = false
-				if (layer <= this.layers) {
+				if (layer <= layers) {
 					visible = true
 				}
 				this.balls.push(new Ball(x, y, layer, visible))
@@ -41,7 +43,6 @@ export default class Spiral {
 	}
 
 	update() {
-		//this.balls.forEach(ball => ball.slideOutScreen())
 		if (this.rotating) {
 			this.rotate()
 		}
@@ -73,6 +74,7 @@ export default class Spiral {
 
 		this.rotating = true
 
+
 		// y = kx + m
 		// x = (y - m) / k
 		let k = shooter.speedY / shooter.speedX
@@ -102,15 +104,21 @@ export default class Spiral {
 			}
 		})
 
-		this.angleSpeed = tangentSpeed / nballs
-		if (this.angleSpeed > 0.1) {
-			this.angleSpeed = 0.1
+		if(nballs > 0){
+			this.angleSpeed = tangentSpeed / nballs
+			if (this.angleSpeed > 0.1) {
+				this.angleSpeed = 0.1
+			}
+			if (this.angleSpeed < -0.1) {
+				this.angleSpeed = -0.1
+			}
+			
+			shooter.initShooter()
+		} else {
+			
+			gameInfo.level++
+			gameInfo.levelup = true
 		}
-		if (this.angleSpeed < -0.1) {
-			this.angleSpeed = -0.1
-		}
-		
-		shooter.initShooter()
 	}
 
 	closestPosition(shooter) {
@@ -165,6 +173,7 @@ export default class Spiral {
 		if (this.sameBalls.length >= 3) {
 			this.sameBalls.forEach(ball => {
 				ball.visible = false
+				gameInfo.score += (gameInfo.level + 1)
 			})
 		}
 	}
@@ -176,6 +185,7 @@ export default class Spiral {
 		this.balls.forEach(ball => {
 			if (ball.visible && !ball.visited) {
 				ball.visible = false
+				gameInfo.score += (gameInfo.level + 1)
 			}
 		})
 		this.revertVisitied()
@@ -207,6 +217,7 @@ export default class Spiral {
 		if (this.angleSpeed < 0 && this.friction < 0 || this.angleSpeed > 0 && this.friction > 0) {
 			this.rotating = false
 		}
+		
 		this.balls.forEach(ball => ball.rotate(this.angleSpeed))
 	}
 }

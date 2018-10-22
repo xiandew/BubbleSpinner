@@ -5,39 +5,50 @@ import GameInfo from './runtime/gameInfo'
 let ctx = canvas.getContext('2d')
 ctx.imageSmoothingQuality = "high"
 
+let gameInfo = new GameInfo()
 // The entry class of the game
 export default class Main {
         constructor() {
-		this.setup()
-
-		this.bindLoop = this.loop.bind(this)
-		requestAnimationFrame(this.bindLoop)
-		this.t = false
-        }
-        setup() {
-		this.gameInfo = new GameInfo()
 		// initialise the spiral with the number of layers
-		this.spiral = new Spiral(6)
+		this.spiral = new Spiral(gameInfo.getLayers())
 		// the shoot ball controlled by the player
 		this.shooter = new Shooter()
-		
-		this.touchStarter = this.touchStartHandler.bind(this)
-		canvas.addEventListener('touchstart', this.touchStarter)
 
-		this.touchEnder = this.touchEndHandler.bind(this)
-		canvas.addEventListener('touchend', this.touchEnder)
+		this.touchstarter = this.touchstartHandler.bind(this)
+		canvas.addEventListener('touchstart', this.touchstarter)
+
+		this.touchender = this.touchendHandler.bind(this)
+		canvas.addEventListener('touchend', this.touchender)
+
+		// make sure only add event listener once in `update`
+		this.hasEventBind = true
+		
+		this.bindLoop = this.loop.bind(this)
+		requestAnimationFrame(this.bindLoop)
+        }
+
+        restart() {
+		this.spiral.initSpiral(gameInfo.getLayers())
+		this.shooter.initEvent()
+		this.hasEventBind = false
         }
         update() {
-		if(this.t){
-			this.shooter.initEvent()
-			this.shooter.t = true
-			if(this.shooter.x && this.shooter.y){
-				this.shooter.update(this.spiral)
-			} else {
-				this.shooter.init()
-			}
-		}
+
+		this.shooter.update(this.spiral)
                 this.spiral.update()
+
+		if(gameInfo.levelup){
+			this.restart()
+			gameInfo.levelup = false
+		}
+
+		if (gameInfo.over && !this.hasEventBind) {
+			this.shooter.removeEvent()
+
+			canvas.addEventListener('touchstart', this.touchstarter)
+			canvas.addEventListener('touchend', this.touchender)
+			this.hasEventBind = true
+		}
         }
 
         render() {
@@ -45,36 +56,35 @@ export default class Main {
                 ctx.fillStyle = "#ffffff"
                 ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-                if (!this.gameInfo.start) {
-			this.gameInfo.renderGameStart(ctx)
-			return
-                }
-
-		if (this.t) {
-                	this.shooter.render(ctx)
-		}
+		this.shooter.render(ctx)
                 this.spiral.render(ctx)
+
+		gameInfo.renderGameScore(ctx)
+		if (!gameInfo.start) {
+			gameInfo.renderGameStart(ctx)
+		}
+		if(gameInfo.over){
+			gameInfo.renderGameOver(ctx)
+		}
         }
 
-	touchStartHandler(e) {
+	touchstartHandler(e) {
 		e.preventDefault()
-
 		let x = e.touches[0].clientX
 		let y = e.touches[0].clientY
-
-		let area = this.gameInfo.startArea
+		let area = gameInfo.startArea
 
 		if (x >= area.startX && x <= area.endX && y >= area.startY && y <= area.endY){
-			this.gameInfo.start = true
-			canvas.removeEventListener('touchstart', this.touchStarter)
-			
+			gameInfo.reset()
+			canvas.removeEventListener('touchstart', this.touchstarter)
 		}
 	}
 
-	touchEndHandler(e){
-		if (this.gameInfo.start){
-			this.t = true
-			canvas.removeEventListener('touchend', this.touchEnder)
+	touchendHandler(e){
+		e.preventDefault()
+		if (gameInfo.start){
+			this.restart()
+			canvas.removeEventListener('touchend', this.touchender)
 		}
 	}
 

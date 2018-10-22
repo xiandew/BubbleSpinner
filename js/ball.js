@@ -1,10 +1,12 @@
 import Sprite from './sprite'
+import GameInfo from './runtime/gameInfo'
 
 // export const COLOURS = ['#1da2da', '#014765', '#01986a', '#d392ba', '#b14701', '#ecd613']
 export const BALLS =
 	['images/b_blue.png', 'images/b_cyan.png', 'images/b_green.png',
 	'images/b_pink.png', 'images/b_red.png', 'images/b_yellow.png']
 
+let gameInfo = new GameInfo()
 // adjust the ball size according to the screen width.
 // diameterSpiral = 0.75 * screenWidth with layer = 5.5
 // where 5.5 is a magic number which I think gives the best view on the screen
@@ -48,10 +50,14 @@ export default class Ball extends Sprite {
 		let radius = Math.sqrt(toCentX ** 2 + toCentY ** 2)
 		this.x = canvas.width / 2 + (Math.cos(Math.atan2(toCentY, toCentX) - angle) * radius)
 		this.y = canvas.height / 2 + (Math.sin(Math.atan2(toCentY, toCentX) - angle) * radius)
+
+		if (this.visible) {
+			if((this.x + this.width / 2) >= canvas.width || (this.x - this.width / 2) <= 0 ||
+				(this.y + this.height / 2) >= canvas.height || (this.y - this.height / 2) <= 0){
+				gameInfo.over = true
+			}
+		}
 	}
 
-	// TODO a slide out animation
-	slideOutScreen() {
-
-	}
+	// TODO an out screen animation
 }
