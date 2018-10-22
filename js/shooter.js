@@ -5,8 +5,6 @@ export default class Shooter extends Ball {
 	constructor() {
 		super(canvas.width / 2, canvas.height - BALL_SIZE, -1, true)
 		this.initShooter()
-		this.t = false
-		// this.initEvent()
 	}
 
 	initShooter() {
@@ -15,57 +13,48 @@ export default class Shooter extends Ball {
 		this.img.src = BALLS[Math.floor(Math.random() * BALLS.length)]
 		this.touched = false
 		this.shooting = false
-		this.t = true
-	}
-
-	init(){
-		this.x = canvas.width / 2
-		this.y = canvas.height - BALL_SIZE
-		// this.touched = false
-		this.shooting = false
-		// this.t = true
+		this.bounces = 0
 	}
 
 	initEvent() {
-		canvas.addEventListener('touchstart', ((e) => {
-			e.preventDefault()
-			if(!this.t){
-				return
-			}
+		this.touchstarter = this.touchstartHandler.bind(this)
+		canvas.addEventListener('touchstart', this.touchstarter)
 
-			if (!this.shooting) {
-				this.touched = true
-				this.touchX = e.touches[0].clientX
-				this.touchY = e.touches[0].clientY
-			}
+		this.touchmover = this.touchmoveHandler.bind(this)
+		canvas.addEventListener('touchmove', this.touchmover)
 
-		}).bind(this))
+		this.touchender = this.touchendHandler.bind(this)
+		canvas.addEventListener('touchend', this.touchender)
+	}
 
-		canvas.addEventListener('touchmove', ((e) => {
-			e.preventDefault()
-			if (!this.t) {
-				return
-			}
-
-			if (!this.shooting && this.touched) {
-				this.touchX = e.touches[0].clientX
-				this.touchY = e.touches[0].clientY
-			}
-
-		}).bind(this))
-
-		canvas.addEventListener('touchend', ((e) => {
-			e.preventDefault()
-			if (!this.t) {
-				return
-			}
-
-			if (!this.shooting) {
-				this.touched = false
-				this.initSpeed();
-				this.shooting = true
-			}
-		}).bind(this))
+	removeEvent(){
+		canvas.removeEventListener('touchstart', this.touchstarter)
+		canvas.removeEventListener('touchmove', this.touchmover)
+		canvas.removeEventListener('touchend', this.touchender)
+	}
+	
+	touchstartHandler(e) {
+		e.preventDefault()
+		if (!this.shooting) {
+			this.touched = true
+			this.touchX = e.touches[0].clientX
+			this.touchY = e.touches[0].clientY
+		}
+	}
+	touchmoveHandler(e) {
+		e.preventDefault()
+		if (!this.shooting && this.touched) {
+			this.touchX = e.touches[0].clientX
+			this.touchY = e.touches[0].clientY
+		}
+	}
+	touchendHandler(e) {
+		e.preventDefault()
+		if (!this.shooting) {
+			this.touched = false
+			this.initSpeed();
+			this.shooting = true
+		}
 	}
 
 	render(ctx) {
@@ -108,10 +97,12 @@ export default class Shooter extends Ball {
 		}
 
 		if ((this.x + this.width / 2) >= canvas.width || (this.x - this.width / 2) <= 0) {
-			this.speedX *= (-1);
+			this.bounces++
+			this.speedX *= (-1)
 		}
 		if ((this.y + this.height / 2) >= canvas.height || (this.y - this.height / 2) <= 0) {
-			this.speedY *= (-1);
+			this.bounces++
+			this.speedY *= (-1)
 		}
 
 		this.x += this.speedX
@@ -123,6 +114,16 @@ export default class Shooter extends Ball {
 				spiral.onCollision(this)
 				return
 			}
+		}
+
+		if(this.bounces >= 8){
+			this.speedX = 0
+			this.speedY = 5
+		}
+		if(this.y >= canvas.height - this.height / 2){
+			let colour = this.colour
+			this.initShooter()
+			this.colour = colour
 		}
 	}
 
