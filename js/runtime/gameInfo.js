@@ -18,7 +18,6 @@ export default class GameInfo{
 		ctx.beginPath()
 		ctx.fillStyle = "#ffffff"
 		ctx.fillRect(0, 0, canvas.width, canvas.height)
-		
 		this.roundRect(ctx, this.startArea.startX, this.startArea.startY, 140, 48, 24)
 
 		ctx.fillStyle = "#ffffff"
