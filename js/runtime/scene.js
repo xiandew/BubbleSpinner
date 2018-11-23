@@ -15,7 +15,7 @@ impact_black.loadFont('fonts/impact_black.json', function() {
         fontLoaded = true
 });
 
-const SCORE_H = 0.055 * canvas.width;
+const SCORE_H = 0.075 * canvas.width;
 const SCORE_X = 0.055 * canvas.width;
 const SCORE_Y = 0.165 * canvas.width;
 
