@@ -151,7 +151,7 @@ export default class Scene {
                 scoreCtx.fillText(gameInfo.score, SCORE_X, SCORE_Y);
                 scoreCtx.closePath();
 
-                ctx.drawImage(scoreCanvas, 0, 0, canvas.width, SCORE_H);
+                //ctx.drawImage(scoreCanvas, 0, 0, canvas.width, SCORE_H);
 
                 scoreCtx.restore();
         }
