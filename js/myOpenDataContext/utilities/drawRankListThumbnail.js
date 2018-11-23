@@ -9,11 +9,12 @@ let canvasHeight = shared.canvasHeight;
 
 const SCORE_SIZE = 0.15 * canvasWidth;
 const SCORE_X = 0.5 * canvasWidth;
-const SCORE_Y = 0.2 * canvasHeight;
+const SCORE_Y = 0.1 * canvasHeight;
 
 const PANEL_WIDTH = 0.85 * canvasWidth;
 const PANEL_HEIGHT = 0.2 * canvasHeight;
 const PANEL_START_Y = 0.2 * canvasHeight;
+const PANEL_START_X = (canvasWidth - PANEL_WIDTH) / 2;
 
 const RANK_ITEM_WIDTH = PANEL_WIDTH / 3;
 
@@ -82,6 +83,8 @@ function drawRankPanel() {
 		}
 		ctx.beginPath();
 
+		ctx.fillStyle = 
+
 		ctx.closePath();
         }
 }
@@ -92,11 +95,11 @@ function drawBackground() {
 	ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 	ctx.closePath();
 
-	ctx.fillStyle = "#ffffff";
-	ctx.font = "bold " + SCORE_SIZE + "px Courier";
-	ctx.textAlign = "center";
-	ctx.fillText(triple[1].KVDataList[1].value, SCORE_X, SCORE_Y);
-
+	if (shared.fontLoaded) {
+		shared.txt.fontSize = SCORE_SIZE;
+		shared.txt.textAlign = "center";
+		shared.txt.draw(ctx, triple[1].KVDataList[1].value, SCORE_X, SCORE_Y);
+	}
 
 	// ctx.fillStyle = "#3c3c3c";
 	// ctx.fillRect(TEXT_BG_START_X, TEXT_BG_START_Y, TEXT_BG_WIDTH, TEXT_BG_HEIGHT);
