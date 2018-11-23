@@ -9,8 +9,11 @@ let newImage = require('../utilities/newImage');
 
 /*----------------------------------------------------------------------------*/
 
-let impact = new BitmapFont(), fontLoaded = false;
-impact.loadFont("fonts/impact-black.json", function() { fontLoaded = true });
+let impact_black = new BitmapFont();
+let fontLoaded = false;
+impact_black.loadFont('fonts/impact_black.json', function() {
+        fontLoaded = true
+});
 
 const SCORE_H = 0.055 * canvas.width;
 const SCORE_X = 0.055 * canvas.width;
@@ -145,14 +148,13 @@ export default class Scene {
         }
 
         static renderGameScore() {
-		if(fontLoaded){
-			if(!txt){
-				txt = new BitmapText(impact);
-			}
-			txt.fontSize = SCORE_H;
-			txt.fontColor = "black";
-			txt.draw(ctx, gameInfo.score, SCORE_X, SCORE_Y);
-		}
+                if (fontLoaded) {
+                        if (!txt) {
+                                txt = new BitmapText(impact_black);
+                        }
+                        txt.fontSize = SCORE_H;
+                        txt.draw(ctx, gameInfo.score, SCORE_X, SCORE_Y);
+                }
         }
 
         static drawButton(btn) {
