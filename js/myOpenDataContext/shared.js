@@ -1,3 +1,7 @@
+import IMPACT_WHITE_JSON from './fonts/impact_white';
+import BitmapFont from "./utilities/bitmapFont";
+import BitmapText from "./utilities/bitmapText";
+
 let instance;
 
 // Used to share the common information for modules,
@@ -23,5 +27,12 @@ export default class Shared{
 		this.selfRankIndex = undefined;
 		this.selfRank = undefined;
 		this.ranks = undefined;
+		
+		this.impact_white = new BitmapFont();
+		this.fontLoaded = false;
+		this.impact_white.loadFont(IMPACT_WHITE_JSON, function () {
+			this.fontLoaded = true;
+			this.txt = new BitmapText(this.impact_white);
+		}.bind(this));
 	}
 }

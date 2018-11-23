@@ -1,6 +1,8 @@
 import GameInfo from './gameInfo';
 import Spiral from '../spiral';
 import Hole from '../hole';
+
+import IMPACT_BLACK_JSON from '../../fonts/impact_black';
 import BitmapFont from "../utilities/bitmapFont";
 import BitmapText from "../utilities/bitmapText";
 
@@ -11,8 +13,10 @@ let newImage = require('../utilities/newImage');
 
 let impact_black = new BitmapFont();
 let fontLoaded = false;
-impact_black.loadFont('fonts/impact_black.json', function() {
-        fontLoaded = true
+let txt;
+impact_black.loadFont(IMPACT_BLACK_JSON, function() {
+        fontLoaded = true;
+	txt = new BitmapText(impact_black);
 });
 
 const SCORE_H = 0.075 * canvas.width;
@@ -78,9 +82,6 @@ let spiralFullSize = false;
 
 // an accumulator for show-up animation
 let acc = 0;
-
-// for rendering score
-let txt;
 
 /*----------------------------------------------------------------------------*/
 
@@ -149,9 +150,6 @@ export default class Scene {
 
         static renderGameScore() {
                 if (fontLoaded) {
-                        if (!txt) {
-                                txt = new BitmapText(impact_black);
-                        }
                         txt.fontSize = SCORE_H;
                         txt.draw(ctx, gameInfo.score, SCORE_X, SCORE_Y);
                 }

@@ -194,9 +194,12 @@ function drawRankText(i, user, textHeight, ctx) {
         ctx.textAlign = 'left';
         ctx.fillText(user.nickname, 250, textHeight);
 
-	ctx.font = "bold " + RANK_ITEM_HEIGHT / 2 + "px Impact";
-        ctx.textAlign = 'right';
-        ctx.fillText(user.KVDataList[0].value, 580, textHeight);
+        //ctx.textAlign = 'right';
+
+	if (shared.fontLoaded) {
+		shared.txt.fontSize = RANK_ITEM_HEIGHT / 2;
+		shared.txt.draw(ctx, user.KVDataList[0].value, 580, textHeight);
+	}
 }
 
 function drawBackground() {
