@@ -10,7 +10,6 @@ export default class BitmapFont {
                 this.bitmap.onload = function() {
                         onloaded();
                 };
-                this.bitmap.src = 'fonts/' + bitmapFont.pages.page.file;
-
+		this.bitmap.src = 'js/myOpenDataContext/fonts/' + bitmapFont.pages.page.file;
         }
 }

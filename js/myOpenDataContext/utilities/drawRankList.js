@@ -172,18 +172,8 @@ function drawSelfRank() {
 function drawRankText(i, user, textHeight, ctx) {
 
         ctx.beginPath();
-        ctx.fillStyle = '#ffffff';
-        switch (i) {
-                case 0:
-                        ctx.fillStyle = '#fa7e00';
-                        break;
-                case 1:
-                        ctx.fillStyle = '#fec11e';
-                        break;
-                case 2:
-                        ctx.fillStyle = '#fbd413';
-                        break;
-        }
+	ctx.fillStyle = i == 0 ? '#fa7e00' : i == 1 ? '#fec11e' : i == 2 ? '#fbd413' : '#ffffff';
+	
         ctx.font = "italic bold " + AVATAR_SIZE / 2 + "px Arial";
         ctx.textAlign = 'center';
         ctx.fillText(i + 1, 60, textHeight);
@@ -194,9 +184,11 @@ function drawRankText(i, user, textHeight, ctx) {
         ctx.textAlign = 'left';
         ctx.fillText(user.nickname, 250, textHeight);
 
-	ctx.font = "bold " + RANK_ITEM_HEIGHT / 2 + "px Impact";
-        ctx.textAlign = 'right';
-        ctx.fillText(user.KVDataList[0].value, 580, textHeight);
+	if (shared.fontLoaded) {
+		shared.txt.fontSize = RANK_ITEM_HEIGHT / 2;
+		shared.txt.textAlign = 'right';
+		shared.txt.draw(ctx, user.KVDataList[0].value, 580, textHeight - 0.4 * RANK_ITEM_HEIGHT);
+	}
 }
 
 function drawBackground() {
