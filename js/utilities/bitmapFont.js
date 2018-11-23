@@ -8,13 +8,13 @@ export default class BitmapFont {
                         encoding: "utf-8",
                         success: res => {
                                 let bitmapFont = JSON.parse(res.data);
-				this.defaultSize = Math.abs(parseInt(bitmapFont.info.size));
+                                this.defaultSize = Math.abs(parseInt(bitmapFont.info.size));
                                 this.chars = bitmapFont.chars.char;
                                 this.bitmap = wx.createImage();
                                 this.bitmap.onload = function() {
                                         onloaded();
                                 };
-                                this.bitmap.src = "fonts/" + bitmapFont.pages.page.file;
+                                this.bitmap.src = 'fonts/' + bitmapFont.pages.page.file;
                         }
                 });
         }
