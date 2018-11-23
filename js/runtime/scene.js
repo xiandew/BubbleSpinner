@@ -1,11 +1,16 @@
 import GameInfo from './gameInfo';
 import Spiral from '../spiral';
 import Hole from '../hole';
+import BitmapFont from "../utilities/bitmapFont";
+import BitmapText from "../utilities/bitmapText";
 
 let btnArea = require('../utilities/buttonArea');
 let newImage = require('../utilities/newImage');
 
 /*----------------------------------------------------------------------------*/
+
+let impact = new BitmapFont(), fontLoaded = false;
+impact.loadFont("fonts/impact-black.json", function() { fontLoaded = true });
 
 const SCORE_H = 0.055 * canvas.width;
 const SCORE_X = 0.055 * canvas.width;
@@ -67,13 +72,12 @@ let ctx = canvas.getContext('2d');
 let gameInfo = new GameInfo();
 let animeAngle = 0;
 let spiralFullSize = false;
+
 // an accumulator for show-up animation
 let acc = 0;
 
-let scoreCanvas = wx.createCanvas();
-let scoreCtx = scoreCanvas.getContext("2d");
-scoreCanvas.width = canvas.width * gameInfo.pixelRatio;
-scoreCanvas.height = SCORE_H * gameInfo.pixelRatio;
+// for rendering score
+let txt;
 
 /*----------------------------------------------------------------------------*/
 
@@ -141,19 +145,14 @@ export default class Scene {
         }
 
         static renderGameScore() {
-                scoreCtx.clearRect(0, 0, scoreCanvas.width, scoreCanvas.height);
-
-                scoreCtx.save();
-                scoreCtx.scale(1 / gameInfo.pixelRatio, 1 / gameInfo.pixelRatio);
-                scoreCtx.beginPath();
-                scoreCtx.fillStyle = "#000000";
-                scoreCtx.font = SCORE_H + "px Courier";
-                scoreCtx.fillText(gameInfo.score, SCORE_X, SCORE_Y);
-                scoreCtx.closePath();
-
-                //ctx.drawImage(scoreCanvas, 0, 0, canvas.width, SCORE_H);
-
-                scoreCtx.restore();
+		if(fontLoaded){
+			if(!txt){
+				txt = new BitmapText(impact);
+			}
+			txt.fontSize = SCORE_H;
+			txt.fontColor = "black";
+			txt.draw(ctx, gameInfo.score, SCORE_X, SCORE_Y);
+		}
         }
 
         static drawButton(btn) {

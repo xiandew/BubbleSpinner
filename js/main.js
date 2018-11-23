@@ -26,7 +26,7 @@ export default class Main {
         }
 
         restart() {
-		this.spiral.toChange = true;
+                this.spiral.toChange = true;
                 this.hasEventBind = false;
         }
 
@@ -44,9 +44,12 @@ export default class Main {
 
                 this.spiral.update();
 
-		if (!this.spiral.toChange && gameInfo.start) {
-                        (!this.shooter.hasEventBind) ? this.shooter.addEvents():
-                                this.shooter.update(this.spiral);
+                if (!this.spiral.toChange && gameInfo.start) {
+                        if (!this.shooter.hasEventBind) {
+                                this.shooter.addEvents()
+                        } else {
+                                this.shooter.update(this.spiral)
+                        }
                 }
 
                 gameInfo.levelup ? (this.restart(), gameInfo.levelup = false) : true;
@@ -63,10 +66,12 @@ export default class Main {
                 }
 
                 if (gameInfo.start) {
-                        this.shooter.render();
+			
                         Scene.renderGameScore();
 
-			if (this.spiral.toChange) {
+			this.shooter.render();
+
+                        if (this.spiral.toChange) {
                                 Scene.changeSpiralAnime(this.spiral);
                                 return;
                         } else {
@@ -78,20 +83,20 @@ export default class Main {
                         if (!this.hasEventBind) {
                                 this.shooter.initShooter();
                                 this.shooter.removeEvents();
-				
+
                                 //gameInfo.start = false;
 
                                 //this.addEvents();
                                 this.hasEventBind = true;
 
-				gameInfo.openDataContext.postMessage({
-					cmd: "clearSharedCanvas"
-				});
+                                gameInfo.openDataContext.postMessage({
+                                        cmd: "clearSharedCanvas"
+                                });
 
-				gameInfo.openDataContext.postMessage({
-					cmd: "updateScore",
-					score: gameInfo.score
-				});
+                                gameInfo.openDataContext.postMessage({
+                                        cmd: "updateScore",
+                                        score: gameInfo.score
+                                });
                         }
 
                         Scene.renderGameOver();
