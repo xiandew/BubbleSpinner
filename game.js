@@ -1,4 +1,4 @@
-import './js/libs/weapp-adapter'
-import Main from './js/main'
+import './js/libs/weapp-adapter';
+import Main from './js/main';
 
-new Main()
+new Main();
