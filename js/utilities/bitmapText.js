@@ -6,8 +6,6 @@ export default class BitmapText {
 
         // only for drawing a single line of numbers and not support the font colour option
         draw(ctx, text, x = 0, y = 0) {
-                let startX = x;
-                let startY = y;
 
                 let fontScale = this.fontSize / this.bitmapFont.defaultSize;
                 text.toString().split("").map(n => {
