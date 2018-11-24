@@ -135,6 +135,8 @@ function drawRankPanel() {
 }
 
 function drawBackground() {
+	ctx.clearRect(0, 0, shared.canvasWidth, shared.canvasHeight);
+
         ctx.beginPath();
         var lineGradient = ctx.createLinearGradient(0, 0, canvasWidth, canvasHeight);
         lineGradient.addColorStop(0, 'rgba(117, 119, 126, 0.8)');
