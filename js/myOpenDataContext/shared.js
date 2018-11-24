@@ -18,8 +18,8 @@ export default class Shared{
 		this.ctx = sharedCanvas.getContext('2d');
 
 		// Draw on the shared canvas with respect to width of 750.
-		let scale = sharedCanvas.width / 750;
-		this.ctx.scale(scale, scale);
+		this.scale = sharedCanvas.width / 750;
+		this.ctx.scale(this.scale, this.scale);
 
 		this.canvasWidth = 750;
 		this.canvasHeight = 750 * sharedCanvas.height / sharedCanvas.width;
@@ -27,6 +27,8 @@ export default class Shared{
 		this.selfRankIndex = undefined;
 		this.selfRank = undefined;
 		this.ranks = undefined;
+
+		this.asyncAllowed = true;
 		
 		this.impact_white = new BitmapFont();
 		this.fontLoaded = false;

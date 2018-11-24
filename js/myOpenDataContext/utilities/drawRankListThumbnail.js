@@ -1,6 +1,8 @@
 import Shared from "../shared";
 let shared = new Shared();
 
+let isClicked = require("./isClicked");
+let drawRankList = require("./drawRankList");
 /*----------------------------------------------------------------------------*/
 
 let ctx = shared.ctx;
@@ -29,22 +31,23 @@ const AVATAR_START_X = (RANK_ITEM_WIDTH - AVATAR_SIZE) / 2;
 
 const MAX_RECORD_START_Y = 0.95 * canvasHeight;
 
-/*----------------------------------------------------------------------------*/
-
-// triple ranks to be drawn
-let triple = [undefined, undefined, undefined];
-
 // indices
 const WEEK_RECORD = 0;
 const CURRENT = 1;
 const MAX_RECORD = 2;
 
+/*----------------------------------------------------------------------------*/
+
+// triple ranks to be drawn
+let triple = [undefined, undefined, undefined];
+
 module.exports = function() {
+	shared.asyncAllowed = false;
 
         wx.getFriendCloudStorage({
-		keyList: ["weekRecord", "currentScore", "maxRecord"],
+                keyList: ["weekRecord", "currentScore", "maxRecord"],
                 success: res => {
-			res.data = res.data.filter(d => d.KVDataList.length == 3);
+                        res.data = res.data.filter(d => d.KVDataList.length == 3);
 
                         res.data.sort((d1, d2) => {
                                 return parseInt(d2.KVDataList[WEEK_RECORD].value) -
@@ -73,12 +76,29 @@ module.exports = function() {
                                         triple[1] = shared.ranks[shared.selfRankIndex];
                                         triple[2] = shared.ranks[shared.selfRankIndex + 1];
 
-                                        drawBackground();
-                                        drawRankPanel();
+					drawRankListThumbnail();
                                 }
                         });
                 }
         });
+
+	wx.onTouchStart(e => touchstartHandler(e));
+}
+
+function touchstartHandler(e) {
+	if (!shared.asyncAllowed && isClicked(e, "FullRankList")) {
+		shared.asyncAllowed = true;
+                drawRankList();
+        }
+	if (shared.asyncAllowed && isClicked(e, "RankListReturn")) {
+		shared.asyncAllowed = false;
+		drawRankListThumbnail();
+	}
+}
+
+function drawRankListThumbnail() {
+	drawBackground();
+	drawRankPanel();
 }
 
 function drawRankPanel() {
@@ -99,34 +119,34 @@ function drawRankPanel() {
                         continue;
                 }
 
-		let centX = PANEL_START_X + RANK_ITEM_WIDTH * (i + 0.5);
+                let centX = PANEL_START_X + RANK_ITEM_WIDTH * (i + 0.5);
 
                 ctx.fillStyle = i == 1 ? "#41bf8c" : "#888888";
-		ctx.font = "italic bold " + TEXT_SIZE + "px Arial";
-		ctx.textAlign = "center";
-		ctx.fillText(
-			shared.selfRankIndex + i,
-			centX,
-			PANEL_START_Y + PANEL_HEIGHT * 0.15
-		);
+                ctx.font = "italic bold " + TEXT_SIZE + "px Arial";
+                ctx.textAlign = "center";
+                ctx.fillText(
+                        shared.selfRankIndex + i,
+                        centX,
+                        PANEL_START_Y + PANEL_HEIGHT * 0.15
+                );
 
-		ctx.fillStyle = "#888888";
-		ctx.font = TEXT_SIZE + "px Arial";
-		ctx.textAlign = "center";
-		ctx.fillText(triple[i].nickname, centX, PANEL_START_Y + PANEL_HEIGHT * 0.7);
+                ctx.fillStyle = "#888888";
+                ctx.font = TEXT_SIZE + "px Arial";
+                ctx.textAlign = "center";
+                ctx.fillText(triple[i].nickname, centX, PANEL_START_Y + PANEL_HEIGHT * 0.7);
 
-		if (shared.fontLoaded) {
-			shared.txt.fontSize = TEXT_SIZE * 1.5;
-			shared.txt.textAlign = "center";
-			shared.txt.draw(
-				ctx,
-				triple[i].KVDataList[WEEK_RECORD].value,
-				centX,
-				PANEL_START_Y + PANEL_HEIGHT * 0.8
-			);
-		}
+                if (shared.fontLoaded) {
+                        shared.txt.fontSize = TEXT_SIZE * 1.5;
+                        shared.txt.textAlign = "center";
+                        shared.txt.draw(
+                                ctx,
+                                triple[i].KVDataList[WEEK_RECORD].value,
+                                centX,
+                                PANEL_START_Y + PANEL_HEIGHT * 0.8
+                        );
+                }
 
-		
+
                 let avatar = wx.createImage();
                 avatar.onload = function() {
                         ctx.drawImage(
@@ -142,7 +162,7 @@ function drawRankPanel() {
 }
 
 function drawBackground() {
-	ctx.clearRect(0, 0, shared.canvasWidth, shared.canvasHeight);
+        ctx.clearRect(0, 0, shared.canvasWidth, shared.canvasHeight);
 
         ctx.beginPath();
         var lineGradient = ctx.createLinearGradient(0, 0, canvasWidth, canvasHeight);

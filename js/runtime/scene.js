@@ -63,15 +63,6 @@ export const RANK_LIST_ICON = {
 RANK_LIST_ICON.w = RANK_LIST_ICON.h;
 RANK_LIST_ICON.area = btnArea(RANK_LIST_ICON, true);
 
-export const RANK_LIST_RETURN = {
-        img: newImage('images/return.png'),
-        x: 0.12 * canvas.width,
-        y: 0.92 * canvas.height,
-        h: 0.08 * canvas.width
-}
-RANK_LIST_RETURN.w = RANK_LIST_RETURN.h;
-RANK_LIST_RETURN.area = btnArea(RANK_LIST_RETURN, true);
-
 /*----------------------------------------------------------------------------*/
 
 let ctx = canvas.getContext('2d');
@@ -106,6 +97,10 @@ export default class Scene {
                 Scene.draw(HIT_PEAS);
                 Scene.drawButton(START_BTN);
                 Scene.draw(RANK_LIST_ICON);
+
+		if (gameInfo.showRank) {
+			Scene.renderRankList();
+		}
         }
 
         static changeSpiralAnime(spiral) {
@@ -140,7 +135,6 @@ export default class Scene {
 
         static renderRankList() {
                 ctx.drawImage(gameInfo.sharedCanvas, 0, 0, canvas.width, canvas.height);
-                Scene.draw(RANK_LIST_RETURN);
         }
 
         static renderGameOver() {
@@ -195,9 +189,5 @@ export default class Scene {
                 ctx.fillStyle = bgColour;
                 ctx.fill();
                 ctx.closePath();
-        }
-
-        fadeOut() {
-
         }
 }
