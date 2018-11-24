@@ -132,10 +132,10 @@ export default class Main {
 
                 if (gameInfo.over) {
                         if (isClicked(e, "FullRankList")) {
-				// gameInfo.openDataContext.postMessage({
-				// 	cmd: "showRankList"
-				// });
-			}
+                                gameInfo.openDataContext.postMessage({
+                                        cmd: "showRankList"
+                                });
+                        }
                 }
         }
 

@@ -49,22 +49,21 @@ module.exports = function() {
         }
 
         wx.getFriendCloudStorage({
-                keyList: ["maxRecord"],
+		keyList: ["weekRecord"],
                 success: res => {
+			res.data = res.data.filter(d => d.KVDataList.length > 0);
+			
                         res.data.sort((d1, d2) => {
                                 return d2.KVDataList[0].value - d1.KVDataList[0].value;
                         });
 
                         shared.ranks = res.data;
-
                         rankListCanvas.height = Math.ceil(shared.ranks.length / 6) * PANEL_HEIGHT;
-
-                        drawPage(currentPage);
 
                         wx.getUserInfo({
                                 openIdList: ['selfOpenId'],
-                                success: function(res) {
-                                        let userInfo = res.data[0];
+                                success: function(user) {
+                                        let userInfo = user.data[0];
 
                                         let nickName = userInfo.nickName;
                                         let avatarUrl = userInfo.avatarUrl;
@@ -74,8 +73,21 @@ module.exports = function() {
                                                         user.avatarUrl == avatarUrl;
                                         });
 
-                                        shared.selfRank = shared.ranks[shared.selfRankIndex];
-                                        drawSelfRank();
+					if(shared.selfRankIndex < 0){
+						shared.selfRankIndex = shared.ranks.length;
+						shared.selfRank = {
+							avatarUrl: avatarUrl,
+							nickname: nickName,
+							KVDataList: [{value: 0}]
+						}
+						shared.ranks.push(shared.selfRank);
+					} else {
+						shared.selfRank = shared.ranks[shared.selfRankIndex];
+					}
+
+					drawPage(currentPage);
+
+					drawSelfRank();
                                 }
                         })
                 }
@@ -140,6 +152,8 @@ function drawPage(pageIndex) {
 }
 
 function drawSelfRank() {
+	selfRank.clearRect(0, 0, selfRankCanvas.width, selfRankCanvas.height);
+
         drawRankText(
                 shared.selfRankIndex,
                 shared.selfRank,
@@ -193,6 +207,14 @@ function drawRankText(i, user, textHeight, ctx) {
 
 function drawBackground() {
 	ctx.clearRect(0, 0, shared.canvasWidth, shared.canvasHeight);
+
+	ctx.beginPath();
+	var lineGradient = ctx.createLinearGradient(0, 0, canvasWidth, canvasHeight);
+	lineGradient.addColorStop(0, 'rgba(117, 119, 126, 0.8)');
+	lineGradient.addColorStop(1, 'rgba(105, 106, 111, 0.8)');
+	ctx.fillStyle = lineGradient;
+	ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+	ctx.closePath();
 
         ctx.fillStyle = "#ffffff";
         ctx.font = "bold " + TITLE_SIZE + "px Arial";
