@@ -66,10 +66,10 @@ export default class Main {
                 }
 
                 if (gameInfo.start) {
-			
+
                         Scene.renderGameScore();
 
-			this.shooter.render();
+                        this.shooter.render();
 
                         if (this.spiral.toChange) {
                                 Scene.changeSpiralAnime(this.spiral);
@@ -84,9 +84,7 @@ export default class Main {
                                 this.shooter.initShooter();
                                 this.shooter.removeEvents();
 
-                                //gameInfo.start = false;
-
-                                //this.addEvents();
+                                this.addEvents();
                                 this.hasEventBind = true;
 
                                 gameInfo.openDataContext.postMessage({
@@ -110,24 +108,34 @@ export default class Main {
         touchstartHandler(e) {
                 e.preventDefault()
 
-                if (isClicked(e, "RankListReturn")) {
-                        gameInfo.showRank = false;
+                if (!gameInfo.start) {
+                        if (isClicked(e, "RankListReturn")) {
+                                gameInfo.showRank = false;
+                        }
+
+                        if (gameInfo.showRank) {
+                                return;
+                        }
+
+                        if (isClicked(e, "StartBtn")) {
+                                gameInfo.reset();
+                                canvas.removeEventListener('touchstart', this.touchstarter);
+                        }
+
+                        if (isClicked(e, "RankListIcon")) {
+                                gameInfo.showRank = true;
+                                gameInfo.openDataContext.postMessage({
+                                        cmd: "showRankList"
+                                });
+                        }
                 }
 
-                if (gameInfo.showRank) {
-                        return;
-                }
-
-                if (isClicked(e, "StartBtn")) {
-                        gameInfo.reset();
-                        canvas.removeEventListener('touchstart', this.touchstarter);
-                }
-
-                if (isClicked(e, "RankListIcon")) {
-                        gameInfo.showRank = true;
-                        gameInfo.openDataContext.postMessage({
-                                cmd: "showRankList"
-                        });
+                if (gameInfo.over) {
+                        if (isClicked(e, "fullRankList")) {
+				gameInfo.openDataContext.postMessage({
+					cmd: "showRankList"
+				});
+			}
                 }
         }
 
@@ -140,6 +148,10 @@ export default class Main {
                         this.frameID = requestAnimationFrame(this.bindLoop);
 
                         canvas.removeEventListener('touchend', this.touchender);
+                }
+
+                if (gameInfo.over) {
+                        // TODO
                 }
         }
 
