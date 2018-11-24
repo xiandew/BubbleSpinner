@@ -126,14 +126,6 @@ export default class Main {
                                 });
                         }
                 }
-
-                if (gameInfo.over) {
-                        if (isClicked(e, "FullRankList")) {
-                                gameInfo.openDataContext.postMessage({
-                                        cmd: "showRankList"
-                                });
-                        }
-                }
         }
 
         touchendHandler(e) {
@@ -145,10 +137,6 @@ export default class Main {
                         this.frameID = requestAnimationFrame(this.bindLoop);
 
                         canvas.removeEventListener('touchend', this.touchender);
-                }
-
-                if (gameInfo.over) {
-                        // TODO
                 }
         }
 
