@@ -34,16 +34,21 @@ const MAX_RECORD_START_Y = 0.95 * canvasHeight;
 // triple ranks to be drawn
 let triple = [undefined, undefined, undefined];
 
+// indices
+const WEEK_RECORD = 0;
+const CURRENT = 1;
+const MAX_RECORD = 2;
+
 module.exports = function() {
 
         wx.getFriendCloudStorage({
-		keyList: ["currentScore", "weekRecord", "maxRecord"],
+		keyList: ["weekRecord", "currentScore", "maxRecord"],
                 success: res => {
 			res.data = res.data.filter(d => d.KVDataList.length == 3);
 
                         res.data.sort((d1, d2) => {
-                                return parseInt(d2.KVDataList[1].value) -
-                                        parseInt(d1.KVDataList[1].value);
+                                return parseInt(d2.KVDataList[WEEK_RECORD].value) -
+                                        parseInt(d1.KVDataList[WEEK_RECORD].value);
                         });
 
                         shared.ranks = res.data;
@@ -115,7 +120,7 @@ function drawRankPanel() {
 			shared.txt.textAlign = "center";
 			shared.txt.draw(
 				ctx,
-				triple[i].KVDataList[1].value,
+				triple[i].KVDataList[WEEK_RECORD].value,
 				centX,
 				PANEL_START_Y + PANEL_HEIGHT * 0.8
 			);
@@ -150,7 +155,7 @@ function drawBackground() {
         if (shared.fontLoaded) {
                 shared.txt.fontSize = SCORE_SIZE;
                 shared.txt.textAlign = "center";
-                shared.txt.draw(ctx, triple[1].KVDataList[0].value, SCORE_X, SCORE_Y);
+                shared.txt.draw(ctx, triple[1].KVDataList[CURRENT].value, SCORE_X, SCORE_Y);
         }
 
         ctx.fillStyle = "#3c3c3c";
@@ -169,7 +174,7 @@ function drawBackground() {
         ctx.font = TEXT_SIZE + "px Arial";
         ctx.textAlign = "center";
         ctx.fillText(
-                "历史最高分 : " + triple[1].KVDataList[2].value,
+                "历史最高分 : " + triple[1].KVDataList[MAX_RECORD].value,
                 0.5 * canvasWidth,
                 MAX_RECORD_START_Y
         );

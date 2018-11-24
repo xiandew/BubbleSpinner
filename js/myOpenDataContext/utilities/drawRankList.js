@@ -142,6 +142,8 @@ function drawPage(pageIndex) {
 }
 
 function drawSelfRank() {
+	selfRank.clearRect(0, 0, selfRankCanvas.width, selfRankCanvas.height);
+
         drawRankText(
                 shared.selfRankIndex,
                 shared.selfRank,
