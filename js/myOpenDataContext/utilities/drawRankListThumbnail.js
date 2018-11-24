@@ -20,9 +20,12 @@ const RANK_ITEM_WIDTH = PANEL_WIDTH / 3;
 
 const TEXT_SIZE = 0.0175 * canvasHeight;
 
-const TEXT_BG_HEIGHT = TEXT_SIZE * 2;
+const TEXT_BG_HEIGHT = TEXT_SIZE * 2.5;
 const TEXT_BG_START_Y = PANEL_START_Y + PANEL_HEIGHT;
-const TEXT_START_Y = TEXT_BG_START_Y + TEXT_SIZE;
+const TEXT_START_Y = TEXT_BG_START_Y + TEXT_SIZE * 1.5;
+
+const AVATAR_SIZE = PANEL_HEIGHT * 0.33;
+const AVATAR_START_X = (RANK_ITEM_WIDTH - AVATAR_SIZE) / 2;
 
 const MAX_RECORD_START_Y = 0.95 * canvasHeight;
 
@@ -75,7 +78,7 @@ function drawRankPanel() {
         for (let i = 0; i < triple.length; i++) {
                 ctx.beginPath();
 
-                ctx.fillStyle = i == 1 ? "434343" : "#3f3f3f";
+                ctx.fillStyle = i == 1 ? "#434343" : "#3f3f3f";
                 ctx.fillRect(
                         PANEL_START_X + RANK_ITEM_WIDTH * i,
                         PANEL_START_Y,
@@ -89,42 +92,54 @@ function drawRankPanel() {
                         continue;
                 }
 
-		// drawRankText(
-		// 	shared.selfRankIndex,
-		// 	shared.selfRank,
-		// 	selfRankCanvas.height / 1.75,
-		// 	selfRank);
+		let centX = PANEL_START_X + RANK_ITEM_WIDTH * (i + 0.5);
 
-		// let avatar = wx.createImage();
-		// avatar.onload = function () {
-		// 	selfRank.drawImage(
-		// 		avatar,
-		// 		125,
-		// 		selfRankCanvas.height * 0.3125,
-		// 		AVATAR_SIZE,
-		// 		AVATAR_SIZE
-		// 	);
+                ctx.fillStyle = i == 1 ? "#41bf8c" : "#888888";
+		ctx.font = "italic bold " + TEXT_SIZE + "px Arial";
+		ctx.textAlign = "center";
+		ctx.fillText(
+			shared.selfRankIndex + i,
+			centX,
+			PANEL_START_Y + PANEL_HEIGHT * 0.15
+		);
 
-		// 	ctx.fillStyle = "#3f3f3f";
-		// 	ctx.fillRect(BG_START_X, SELF_RANK_START_Y, PANEL_WIDTH, selfRankCanvas.height);
-		// 	ctx.drawImage(
-		// 		selfRankCanvas,
-		// 		BG_START_X,
-		// 		SELF_RANK_START_Y,
-		// 		PANEL_WIDTH,
-		// 		selfRankCanvas.height
-		// 	);
-		// }
-		// avatar.src = shared.selfRank.avatarUrl;
+		ctx.fillStyle = "#888888";
+		ctx.font = TEXT_SIZE + "px Arial";
+		ctx.textAlign = "center";
+		ctx.fillText(triple[i].nickname, centX, PANEL_START_Y + PANEL_HEIGHT * 0.7);
+
+		if (shared.fontLoaded) {
+			shared.txt.fontSize = TEXT_SIZE * 1.5;
+			shared.txt.textAlign = "center";
+			shared.txt.draw(
+				ctx,
+				triple[i].KVDataList[1].value,
+				centX,
+				PANEL_START_Y + PANEL_HEIGHT * 0.8
+			);
+		}
+
+		
+                let avatar = wx.createImage();
+                avatar.onload = function() {
+                        ctx.drawImage(
+                                avatar,
+                                PANEL_START_X + AVATAR_START_X + RANK_ITEM_WIDTH * i,
+                                PANEL_START_Y + PANEL_HEIGHT * 0.225,
+                                AVATAR_SIZE,
+                                AVATAR_SIZE
+                        );
+                }
+                avatar.src = triple[i].avatarUrl;
         }
 }
 
 function drawBackground() {
         ctx.beginPath();
-	var lineGradient = ctx.createLinearGradient(0, 0, canvasWidth, canvasHeight);
-	lineGradient.addColorStop(0, 'rgba(117, 119, 126, 0.8)');
-	lineGradient.addColorStop(1, 'rgba(105, 106, 111, 0.8)');
-	ctx.fillStyle = lineGradient;
+        var lineGradient = ctx.createLinearGradient(0, 0, canvasWidth, canvasHeight);
+        lineGradient.addColorStop(0, 'rgba(117, 119, 126, 0.8)');
+        lineGradient.addColorStop(1, 'rgba(105, 106, 111, 0.8)');
+        ctx.fillStyle = lineGradient;
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
         ctx.closePath();
 
@@ -152,6 +167,6 @@ function drawBackground() {
         ctx.fillText(
                 "历史最高分 : " + triple[1].KVDataList[0].value,
                 0.5 * canvasWidth,
-		MAX_RECORD_START_Y
+                MAX_RECORD_START_Y
         );
 }

@@ -44,11 +44,15 @@ function updateScore(newScore) {
 				},
                                 fail: function() {
                                         console.log('分数上传失败');
+
+					// 绘制返回主页和重玩，重试，"分数更新失败，请检查网络连接"
                                 }
                         });
                 },
                 fail: function() {
                         console.log('分数获取失败');
+
+			// 绘制返回主页和重玩，重试，"分数上传失败，请检查网络连接"
                 }
         });
 }
