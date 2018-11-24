@@ -51,8 +51,8 @@ export const RESTART_BTN = {
         h: 0.06 * canvas.width,
         bgColour: "#ffffff"
 };
-RESTART_BTN.w = (305 / 60) * RESTART_BTN.h,
-        RESTART_BTN.area = btnArea(RESTART_BTN);
+RESTART_BTN.w = (305 / 60) * RESTART_BTN.h;
+RESTART_BTN.area = btnArea(RESTART_BTN);
 
 export const RANK_LIST_ICON = {
         img: newImage('images/rankListIcon.png'),

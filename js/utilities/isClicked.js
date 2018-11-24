@@ -5,6 +5,13 @@ import {
         RANK_LIST_RETURN
 } from '../runtime/scene';
 
+const FULL_RANK_TEXTAREA = {
+	startX: 0.642 * canvas.width,
+	startY: 0.5 * canvas.height,
+	endX: 0.925 * canvas.width,
+	endY: 0.544 * canvas.height
+};
+
 module.exports = function(e, btn) {
         let x = e.touches[0].clientX;
         let y = e.touches[0].clientY;
@@ -21,6 +28,9 @@ module.exports = function(e, btn) {
                         break;
                 case "RankListReturn":
                         area = RANK_LIST_RETURN.area;
+			break;
+		case "FullRankList":
+			area = FULL_RANK_TEXTAREA;
 			break;
         }
         return x >= area.startX && x <= area.endX && y >= area.startY && y <= area.endY;

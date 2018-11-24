@@ -192,6 +192,8 @@ function drawRankText(i, user, textHeight, ctx) {
 }
 
 function drawBackground() {
+	ctx.clearRect(0, 0, shared.canvasWidth, shared.canvasHeight);
+
         ctx.fillStyle = "#ffffff";
         ctx.font = "bold " + TITLE_SIZE + "px Arial";
         ctx.textAlign = "center";
