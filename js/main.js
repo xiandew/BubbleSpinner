@@ -99,16 +99,13 @@ export default class Main {
 
                         Scene.renderGameOver();
                 }
-
-                if (gameInfo.showRank) {
-                        Scene.renderRankList();
-                }
         }
 
         touchstartHandler(e) {
                 e.preventDefault()
 
                 if (!gameInfo.start) {
+
                         if (isClicked(e, "RankListReturn")) {
                                 gameInfo.showRank = false;
                         }

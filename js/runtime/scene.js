@@ -97,6 +97,10 @@ export default class Scene {
                 Scene.draw(HIT_PEAS);
                 Scene.drawButton(START_BTN);
                 Scene.draw(RANK_LIST_ICON);
+
+		if (gameInfo.showRank) {
+			Scene.renderRankList();
+		}
         }
 
         static changeSpiralAnime(spiral) {
@@ -185,9 +189,5 @@ export default class Scene {
                 ctx.fillStyle = bgColour;
                 ctx.fill();
                 ctx.closePath();
-        }
-
-        fadeOut() {
-
         }
 }
