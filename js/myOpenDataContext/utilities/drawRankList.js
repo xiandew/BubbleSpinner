@@ -58,10 +58,7 @@ module.exports = function() {
                         });
 
                         shared.ranks = res.data;
-
                         rankListCanvas.height = Math.ceil(shared.ranks.length / 6) * PANEL_HEIGHT;
-
-                        drawPage(currentPage);
 
                         wx.getUserInfo({
                                 openIdList: ['selfOpenId'],
@@ -76,8 +73,21 @@ module.exports = function() {
                                                         user.avatarUrl == avatarUrl;
                                         });
 
-                                        shared.selfRank = shared.ranks[shared.selfRankIndex];
-                                        drawSelfRank();
+					if(shared.selfRankIndex < 0){
+						shared.selfRankIndex = shared.ranks.length;
+						shared.selfRank = {
+							avatarUrl: avatarUrl,
+							nickname: nickName,
+							KVDataList: [{value: 0}]
+						}
+						shared.ranks.push(shared.selfRank);
+					} else {
+						shared.selfRank = shared.ranks[shared.selfRankIndex];
+					}
+
+					drawPage(currentPage);
+
+					drawSelfRank();
                                 }
                         })
                 }
