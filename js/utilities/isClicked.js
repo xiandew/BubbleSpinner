@@ -1,9 +1,15 @@
 import {
         START_BTN,
         RESTART_BTN,
-        RANK_LIST_ICON,
-        RANK_LIST_RETURN
+        RANK_LIST_ICON
 } from '../runtime/scene';
+
+const RANK_LIST_RETURN = {
+	startX: 0.08 * canvas.width,
+	startY: 0.9 * canvas.height,
+	endX: 0.16 * canvas.width,
+	endY: 0.98 * canvas.height
+}
 
 const FULL_RANK_TEXTAREA = {
 	startX: 0.642 * canvas.width,
@@ -27,7 +33,7 @@ module.exports = function(e, btn) {
                         area = RANK_LIST_ICON.area;
                         break;
                 case "RankListReturn":
-                        area = RANK_LIST_RETURN.area;
+                        area = RANK_LIST_RETURN;
 			break;
 		case "FullRankList":
 			area = FULL_RANK_TEXTAREA;

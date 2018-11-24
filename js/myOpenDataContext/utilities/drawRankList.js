@@ -25,6 +25,11 @@ const AVATAR_START_Y = 0.2 * RANK_ITEM_HEIGHT;
 
 const SELF_RANK_START_Y = 0.725 * canvasHeight;
 
+const RETURN_START_X = 0.08 * canvasWidth;
+const RETURN_START_Y = 0.9 * canvasHeight;
+const RETURN_HEIGHT = 0.08 * canvasWidth;
+const RETURN_WIDTH = RETURN_HEIGHT;
+
 /*----------------------------------------------------------------------------*/
 
 let rankListCanvas = wx.createCanvas();
@@ -43,7 +48,7 @@ let currentPage = 0;
 module.exports = function() {
         drawBackground();
 
-        if (shared.ranks) {
+        if (shared.ranks && shared.selfRank) {
                 drawPage(currentPage);
                 drawSelfRank();
         }
@@ -242,6 +247,19 @@ function drawBackground() {
         ctx.font = TITLE_SIZE / 1.5 + "px Arial";
         ctx.textAlign = "center";
         ctx.fillText("加载中", canvasWidth / 2, SELF_RANK_START_Y + selfRankCanvas.height / 1.75);
+
+	// return button
+	let return_btn = wx.createImage();
+	return_btn.onload = function() {
+		ctx.drawImage(
+			return_btn,
+			RETURN_START_X,
+			RETURN_START_Y,
+			RETURN_WIDTH,
+			RETURN_HEIGHT
+		);
+	}
+	return_btn.src = 'images/return.png';
 }
 
 let startY, endY;
