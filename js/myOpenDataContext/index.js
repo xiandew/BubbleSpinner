@@ -4,8 +4,6 @@ let shared = new Shared();
 let drawRankList = require('./utilities/drawRankList');
 let drawRankListThumbnail = require('./utilities/drawRankListThumbnail');
 
-updateScore(0);
-
 wx.onMessage(data => {
         if (data.cmd == "showRankList") {
                 drawRankList();

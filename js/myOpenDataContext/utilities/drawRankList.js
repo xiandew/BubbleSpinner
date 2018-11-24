@@ -65,8 +65,8 @@ module.exports = function() {
 
                         wx.getUserInfo({
                                 openIdList: ['selfOpenId'],
-                                success: function(res) {
-                                        let userInfo = res.data[0];
+                                success: function(user) {
+                                        let userInfo = user.data[0];
 
                                         let nickName = userInfo.nickName;
                                         let avatarUrl = userInfo.avatarUrl;
