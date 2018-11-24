@@ -1,5 +1,8 @@
 import Sprite from './sprite'
-import GameInfo, { BALLS, BALL_SIZE } from './runtime/gameInfo'
+import GameInfo, {
+        BALLS,
+        BALL_SIZE
+} from './runtime/gameInfo'
 
 let ctx = canvas.getContext('2d')
 let gameInfo = new GameInfo()
@@ -11,7 +14,7 @@ export default class Ball extends Sprite {
                 }
                 super(ballSrc, BALL_SIZE, BALL_SIZE, hole.x, hole.y, true)
 
-                this.layer   = hole.layer
+                this.layer = hole.layer
                 this.visited = false
         }
 
@@ -23,25 +26,25 @@ export default class Ball extends Sprite {
                 this.x = canvas.width / 2 + (Math.cos(Math.atan2(toCentY, toCentX) - angle) * radius)
                 this.y = canvas.height / 2 + (Math.sin(Math.atan2(toCentY, toCentX) - angle) * radius)
 
-		if (((this.x + this.width / 2) >= canvas.width ||
-			(this.x - this.width / 2) <= 0 ||
-			(this.y + this.height / 2) >= canvas.height ||
-			(this.y - this.height / 2) <= 0)) {
-			gameInfo.over = true
-		}
+                if (((this.x + this.width / 2) >= canvas.width ||
+                                (this.x - this.width / 2) <= 0 ||
+                                (this.y + this.height / 2) >= canvas.height ||
+                                (this.y - this.height / 2) <= 0)) {
+                        gameInfo.over = true;
+                }
         }
 
-	render() {
-		super.render()
-		// TODO an out screen animation
-
-		
-	}
+        render() {
+                super.render()
+                // TODO an out screen animation
 
 
+        }
 
 
-	// draw a circle shape instead of image. Not display well on the phone
+
+
+        // draw a circle shape instead of image. Not display well on the phone
         // render(ctx) {
         //         if (!this.visible) {
         //                 return

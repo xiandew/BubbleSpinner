@@ -38,7 +38,7 @@ export default class Main {
         }
 
         update() {
-                if (gameInfo.over) {
+		if (gameInfo.over) {
                         return;
                 }
 
@@ -84,9 +84,6 @@ export default class Main {
                                 this.shooter.initShooter();
                                 this.shooter.removeEvents();
 
-                                this.addEvents();
-                                this.hasEventBind = true;
-
                                 gameInfo.openDataContext.postMessage({
                                         cmd: "clearSharedCanvas"
                                 });
@@ -95,6 +92,9 @@ export default class Main {
                                         cmd: "updateScore",
                                         score: gameInfo.score
                                 });
+
+				this.addEvents();
+				this.hasEventBind = true;
                         }
 
                         Scene.renderGameOver();
@@ -126,15 +126,25 @@ export default class Main {
                                 });
                         }
                 }
+		if (gameInfo.over) {
+			if (isClicked(e, "RestartButton")) {
+				gameInfo.reset();
+				
+				// cannot change the status of the spiral later in touchendHandler
+				// since the non-stopping loop will execute update first instead of
+				// touchendHandler.
+				this.spiral.toChange = true;
+
+				canvas.removeEventListener('touchstart', this.touchstarter);
+			}
+		}
         }
 
         touchendHandler(e) {
                 e.preventDefault();
                 if (!gameInfo.over) {
-                        this.restart();
 
-                        this.frameID ? cancelAnimationFrame(this.frameID) : true;
-                        this.frameID = requestAnimationFrame(this.bindLoop);
+			this.hasEventBind = false;
 
                         canvas.removeEventListener('touchend', this.touchender);
                 }

@@ -54,7 +54,7 @@ module.exports = function() {
         }
 
         wx.getFriendCloudStorage({
-                keyList: ["weekRecord"],
+                keyList: ["wkRecord"],
                 success: res => {
                         res.data = res.data.filter(d => d.KVDataList.length > 0);
 

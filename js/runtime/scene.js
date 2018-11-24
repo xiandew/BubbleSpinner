@@ -44,16 +44,6 @@ export const START_BTN = {
 START_BTN.w = (305 / 60) * START_BTN.h;
 START_BTN.area = btnArea(START_BTN);
 
-export const RESTART_BTN = {
-        img: newImage('images/restartGame.png'),
-        x: 0.5 * canvas.width,
-        y: 0.8 * canvas.height,
-        h: 0.06 * canvas.width,
-        bgColour: "#ffffff"
-};
-RESTART_BTN.w = (305 / 60) * RESTART_BTN.h;
-RESTART_BTN.area = btnArea(RESTART_BTN);
-
 export const RANK_LIST_ICON = {
         img: newImage('images/rankListIcon.png'),
         x: 0.5 * canvas.width,
@@ -139,7 +129,6 @@ export default class Scene {
 
         static renderGameOver() {
                 ctx.drawImage(gameInfo.sharedCanvas, 0, 0, canvas.width, canvas.height);
-                //this.addEvents();
         }
 
         static renderGameScore() {
