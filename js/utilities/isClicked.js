@@ -1,6 +1,5 @@
 import {
         START_BTN,
-        RESTART_BTN,
         RANK_LIST_ICON
 } from '../runtime/scene';
 
@@ -11,12 +10,12 @@ const RANK_LIST_RETURN = {
 	endY: 0.98 * canvas.height
 }
 
-const FULL_RANK_TEXTAREA = {
-	startX: 0.642 * canvas.width,
-	startY: 0.5 * canvas.height,
-	endX: 0.925 * canvas.width,
-	endY: 0.544 * canvas.height
-};
+const RESTART_BTN_AREA = {
+	startX: 0.2679 * canvas.width,
+	endX: 0.7321 * canvas.width,
+	startY: 0.725 * canvas.height - 0.07 * canvas.width,
+	endY: 0.725 * canvas.height + 0.07 * canvas.width
+}
 
 module.exports = function(e, btn) {
         let x = e.touches[0].clientX;
@@ -35,9 +34,8 @@ module.exports = function(e, btn) {
                 case "RankListReturn":
                         area = RANK_LIST_RETURN;
 			break;
-		case "FullRankList":
-			area = FULL_RANK_TEXTAREA;
-			break;
+		case "RestartButton":
+			area = RESTART_BTN_AREA;
         }
         return x >= area.startX && x <= area.endX && y >= area.startY && y <= area.endY;
 }

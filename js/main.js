@@ -126,6 +126,12 @@ export default class Main {
                                 });
                         }
                 }
+		if (gameInfo.over) {
+			if (isClicked(e, "RestartButton")) {
+				gameInfo.reset();
+				canvas.removeEventListener('touchstart', this.touchstarter);
+			}
+		}
         }
 
         touchendHandler(e) {

@@ -11,6 +11,8 @@ const FRICTION = -0.001;
 const PIVOT_X = canvas.width / 2;
 const PIVOT_Y = canvas.height / 2;
 
+/*----------------------------------------------------------------------------*/
+
 // Contains logic for performing actions on the spiral.
 export default class Spiral {
         constructor() {
@@ -19,7 +21,7 @@ export default class Spiral {
         }
 
         initSpiral() {
-		this.toChange = true;
+                this.toChange = true;
                 let maxLayers = Math.floor(canvas.width / BALL_SIZE);
                 this.pivot = new Pivot(new Hole(PIVOT_X, PIVOT_Y));
 
@@ -59,13 +61,15 @@ export default class Spiral {
                                 gameInfo.holes.splice(gameInfo.holes.indexOf(hole), 1, new Ball(hole));
                         }
                         if (hole.layer > layers && !(hole instanceof Hole)) {
-                                gameInfo.holes.splice(gameInfo.holes.indexOf(hole), 1, new Hole(hole.x, hole.y, hole.layer));
+                                gameInfo.holes.splice(
+                                        gameInfo.holes.indexOf(hole), 1,
+                                        new Hole(hole.x, hole.y, hole.layer));
                         }
                 });
         }
 
         update() {
-		if (!this.toChange && this.rotating) {
+                if (!this.toChange && this.rotating) {
                         this.rotate();
                 }
         }

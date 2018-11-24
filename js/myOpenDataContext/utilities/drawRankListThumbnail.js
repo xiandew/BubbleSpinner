@@ -2,7 +2,9 @@ import Shared from "../shared";
 let shared = new Shared();
 
 let isClicked = require("./isClicked");
+let drawButton = require("./drawButton");
 let drawRankList = require("./drawRankList");
+
 /*----------------------------------------------------------------------------*/
 
 let ctx = shared.ctx;
@@ -28,6 +30,23 @@ const TEXT_START_Y = TEXT_BG_START_Y + TEXT_SIZE * 1.5;
 
 const AVATAR_SIZE = PANEL_HEIGHT * 0.33;
 const AVATAR_START_X = (RANK_ITEM_WIDTH - AVATAR_SIZE) / 2;
+
+const RESTART_BTN = {
+	imgSrc: 'images/restartGame.png',
+	x: 0.5 * canvasWidth,
+	y: 0.725 * canvasHeight,
+	h: 0.05 * canvasWidth,
+	w: 0.2542 * canvasWidth,
+	bgColour: "#ffffff",
+	area: {
+		startX: 0.2679 * canvasWidth,
+		endX: 0.7321 * canvasWidth,
+		startY: 0.725 * canvasHeight - 0.07 * canvasWidth,
+		endY: 0.725 * canvasHeight + 0.07 * canvasWidth,
+		w: 0.4642 * canvasWidth,
+		h: 0.14 * canvasWidth
+	}
+};
 
 const MAX_RECORD_START_Y = 0.95 * canvasHeight;
 
@@ -99,6 +118,7 @@ function touchstartHandler(e) {
 function drawRankListThumbnail() {
 	drawBackground();
 	drawRankPanel();
+	drawButton(RESTART_BTN);	
 }
 
 function drawRankPanel() {
@@ -199,3 +219,4 @@ function drawBackground() {
                 MAX_RECORD_START_Y
         );
 }
+
