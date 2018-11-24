@@ -156,7 +156,9 @@ export default class Spiral {
 
                 if (this.sameBalls.length >= 3) {
                         this.sameBalls.forEach(ball => {
-                                gameInfo.holes.splice(gameInfo.holes.indexOf(ball), 1, new Hole(ball.x, ball.y, ball.layer));
+                                gameInfo.holes.splice(
+					gameInfo.holes.indexOf(ball), 1,
+					new Hole(ball.x, ball.y, ball.layer));
                                 gameInfo.score += (gameInfo.level + 1);
                         });
                 }

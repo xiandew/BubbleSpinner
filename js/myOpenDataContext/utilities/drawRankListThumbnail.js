@@ -32,20 +32,20 @@ const AVATAR_SIZE = PANEL_HEIGHT * 0.33;
 const AVATAR_START_X = (RANK_ITEM_WIDTH - AVATAR_SIZE) / 2;
 
 const RESTART_BTN = {
-	imgSrc: 'images/restartGame.png',
-	x: 0.5 * canvasWidth,
-	y: 0.725 * canvasHeight,
-	h: 0.05 * canvasWidth,
-	w: 0.2542 * canvasWidth,
-	bgColour: "#ffffff",
-	area: {
-		startX: 0.2679 * canvasWidth,
-		endX: 0.7321 * canvasWidth,
-		startY: 0.725 * canvasHeight - 0.07 * canvasWidth,
-		endY: 0.725 * canvasHeight + 0.07 * canvasWidth,
-		w: 0.4642 * canvasWidth,
-		h: 0.14 * canvasWidth
-	}
+        imgSrc: 'images/restartGame.png',
+        x: 0.5 * canvasWidth,
+        y: 0.725 * canvasHeight,
+        h: 0.05 * canvasWidth,
+        w: 0.2542 * canvasWidth,
+        bgColour: "#ffffff",
+        area: {
+                startX: 0.2679 * canvasWidth,
+                endX: 0.7321 * canvasWidth,
+                startY: 0.725 * canvasHeight - 0.07 * canvasWidth,
+                endY: 0.725 * canvasHeight + 0.07 * canvasWidth,
+                w: 0.4642 * canvasWidth,
+                h: 0.14 * canvasWidth
+        }
 };
 
 const MAX_RECORD_START_Y = 0.95 * canvasHeight;
@@ -60,68 +60,82 @@ const MAX_RECORD = 2;
 // triple ranks to be drawn
 let triple = [undefined, undefined, undefined];
 
-module.exports = function() {
-	shared.asyncAllowed = false;
+module.exports = {
+        draw: function() {
+                shared.asyncAllowed = false;
 
-        wx.getFriendCloudStorage({
-                keyList: ["weekRecord", "currentScore", "maxRecord"],
-                success: res => {
-                        res.data = res.data.filter(d => d.KVDataList.length == 3);
+                wx.getFriendCloudStorage({
+                        keyList: ["weekRecord", "currentScore", "maxRecord"],
+                        success: res => {
+                                res.data = res.data.filter(d => d.KVDataList.length == 3);
 
-                        res.data.sort((d1, d2) => {
-                                return parseInt(d2.KVDataList[WEEK_RECORD].value) -
-                                        parseInt(d1.KVDataList[WEEK_RECORD].value);
-                        });
+                                res.data.sort((d1, d2) => {
+                                        return parseInt(d2.KVDataList[WEEK_RECORD].value) -
+                                                parseInt(d1.KVDataList[WEEK_RECORD].value);
+                                });
 
-                        shared.ranks = res.data;
+                                shared.ranks = res.data;
 
-                        // find the triples
-                        wx.getUserInfo({
-                                openIdList: ['selfOpenId'],
-                                success: function(res) {
-                                        let userInfo = res.data[0];
+                                // find the triples
+                                wx.getUserInfo({
+                                        openIdList: ['selfOpenId'],
+                                        success: function(res) {
+                                                let userInfo = res.data[0];
 
-                                        let nickName = userInfo.nickName;
-                                        let avatarUrl = userInfo.avatarUrl;
+                                                let nickName = userInfo.nickName;
+                                                let avatarUrl = userInfo.avatarUrl;
 
-                                        shared.selfRankIndex = shared.ranks.findIndex(user => {
-                                                return user.nickname == nickName &&
-                                                        user.avatarUrl == avatarUrl;
-                                        });
+                                                shared.selfRankIndex = shared.ranks.findIndex(user => {
+                                                        return user.nickname == nickName &&
+                                                                user.avatarUrl == avatarUrl;
+                                                });
 
-                                        shared.selfRank = shared.ranks[shared.selfRankIndex];
+                                                shared.selfRank = shared.ranks[shared.selfRankIndex];
 
-                                        triple[0] = shared.ranks[shared.selfRankIndex - 1];
-                                        triple[1] = shared.ranks[shared.selfRankIndex];
-                                        triple[2] = shared.ranks[shared.selfRankIndex + 1];
+                                                triple[0] = shared.ranks[shared.selfRankIndex - 1];
+                                                triple[1] = shared.ranks[shared.selfRankIndex];
+                                                triple[2] = shared.ranks[shared.selfRankIndex + 1];
 
-					drawRankListThumbnail();
-                                }
-                        });
-                }
-        });
+                                                drawRankPanel();
+                                        }
+                                });
+                        }
+                });
 
-	wx.onTouchStart(e => touchstartHandler(e));
+                wx.onTouchStart(e => touchstartHandler(e));
+        },
+
+        drawBackground: function() {
+                drawBackground();
+                drawButton(RESTART_BTN);
+        }
+
 }
 
 function touchstartHandler(e) {
-	if (!shared.asyncAllowed && isClicked(e, "FullRankList")) {
-		shared.asyncAllowed = true;
+        if (!shared.asyncAllowed && isClicked(e, "FullRankList")) {
+                shared.asyncAllowed = true;
                 drawRankList();
         }
-	if (shared.asyncAllowed && isClicked(e, "RankListReturn")) {
-		shared.asyncAllowed = false;
-		drawRankListThumbnail();
-	}
+        if (shared.asyncAllowed && isClicked(e, "RankListReturn")) {
+                shared.asyncAllowed = false;
+                drawRankListThumbnail();
+        }
 }
 
 function drawRankListThumbnail() {
-	drawBackground();
-	drawRankPanel();
-	drawButton(RESTART_BTN);	
+        drawBackground();
+        drawButton(RESTART_BTN);
+        drawRankPanel();
 }
 
 function drawRankPanel() {
+        if (shared.fontLoaded) {
+                shared.txt.fontSize = SCORE_SIZE;
+                shared.txt.textAlign = "center";
+                shared.txt.draw(ctx, triple[1].KVDataList[CURRENT].value, SCORE_X, SCORE_Y);
+        }
+
         for (let i = 0; i < triple.length; i++) {
                 ctx.beginPath();
 
@@ -179,6 +193,15 @@ function drawRankPanel() {
                 }
                 avatar.src = triple[i].avatarUrl;
         }
+
+        ctx.fillStyle = "#ffffff";
+        ctx.font = TEXT_SIZE + "px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText(
+                "历史最高分 : " + triple[1].KVDataList[MAX_RECORD].value,
+                0.5 * canvasWidth,
+                MAX_RECORD_START_Y
+        );
 }
 
 function drawBackground() {
@@ -192,11 +215,13 @@ function drawBackground() {
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
         ctx.closePath();
 
-        if (shared.fontLoaded) {
-                shared.txt.fontSize = SCORE_SIZE;
-                shared.txt.textAlign = "center";
-                shared.txt.draw(ctx, triple[1].KVDataList[CURRENT].value, SCORE_X, SCORE_Y);
-        }
+        ctx.fillStyle = "#3f3f3f";
+        ctx.fillRect(PANEL_START_X, PANEL_START_Y, PANEL_WIDTH, PANEL_HEIGHT);
+
+        ctx.fillStyle = "#888888";
+        ctx.font = TEXT_SIZE + "px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText("加载中", 0.5 * canvasWidth, PANEL_START_Y + 0.6 * PANEL_HEIGHT);
 
         ctx.fillStyle = "#3c3c3c";
         ctx.fillRect(PANEL_START_X, TEXT_BG_START_Y, PANEL_WIDTH, TEXT_BG_HEIGHT);
@@ -210,13 +235,4 @@ function drawBackground() {
         ctx.font = TEXT_SIZE + "px Arial";
         ctx.textAlign = "right";
         ctx.fillText("查看全部排行 ►", canvasWidth - PANEL_START_X - TEXT_SIZE, TEXT_START_Y);
-
-        ctx.font = TEXT_SIZE + "px Arial";
-        ctx.textAlign = "center";
-        ctx.fillText(
-                "历史最高分 : " + triple[1].KVDataList[MAX_RECORD].value,
-                0.5 * canvasWidth,
-                MAX_RECORD_START_Y
-        );
 }
-

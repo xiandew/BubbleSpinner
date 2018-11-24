@@ -2,7 +2,7 @@ import Shared from "./shared";
 let shared = new Shared();
 
 let drawRankList = require('./utilities/drawRankList');
-let drawRankListThumbnail = require('./utilities/drawRankListThumbnail');
+let rankListThumbnail = require('./utilities/drawRankListThumbnail');
 
 wx.onMessage(data => {
         if (data.cmd == "showRankList") {
@@ -10,6 +10,7 @@ wx.onMessage(data => {
         }
 
         if (data.cmd == "updateScore") {
+		rankListThumbnail.drawBackground();
                 updateScore(data.score);
         }
 
@@ -50,19 +51,15 @@ function updateScore(newScore) {
                         wx.setUserCloudStorage({
                                 KVDataList: updates,
                                 success: function() {
-                                        drawRankListThumbnail();
+                                        rankListThumbnail.draw();
                                 },
                                 fail: function() {
                                         console.log('分数上传失败');
-
-                                        // 绘制返回主页和重玩，重试，"分数更新失败，请检查网络连接"
                                 }
                         });
                 },
                 fail: function() {
                         console.log('分数获取失败');
-
-                        // 绘制返回主页和重玩，重试，"分数上传失败，请检查网络连接"
                 }
         });
 }
