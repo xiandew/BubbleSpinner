@@ -22,11 +22,11 @@ wx.onMessage(data => {
 function updateScore(newScore) {
         wx.getUserCloudStorage({
 		
-                keyList: ["weekRecord", "maxRecord"],
+                keyList: ["wkRecord", "maxRecord"],
                 success: data => {
 
                         let maybeWeekRecord = data.KVDataList[data.KVDataList.findIndex(kv => {
-                                return kv.key == "weekRecord";
+                                return kv.key == "wkRecord";
                         })];
                         let weekRecord = maybeWeekRecord ? parseInt(maybeWeekRecord.value) : undefined;
 
@@ -40,7 +40,7 @@ function updateScore(newScore) {
                                         value: newScore.toString()
                                 }]
                                 .concat((!weekRecord || weekRecord < newScore ? [{
-                                        key: "weekRecord",
+                                        key: "wkRecord",
                                         value: newScore.toString()
                                 }] : []))
                                 .concat((!maxRecord || maxRecord < weekRecord ? [{

@@ -65,7 +65,7 @@ module.exports = {
                 shared.asyncAllowed = false;
 
                 wx.getFriendCloudStorage({
-                        keyList: ["weekRecord", "currentScore", "maxRecord"],
+                        keyList: ["wkRecord", "currentScore", "maxRecord"],
                         success: res => {
                                 res.data = res.data.filter(d => d.KVDataList.length == 3);
 
