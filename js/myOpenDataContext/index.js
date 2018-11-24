@@ -20,9 +20,9 @@ wx.onMessage(data => {
 
 function updateScore(newScore) {
         wx.getUserCloudStorage({
+		
                 keyList: ["weekRecord", "maxRecord"],
                 success: data => {
-                        console.log(data);
 
                         let maybeWeekRecord = data.KVDataList[data.KVDataList.findIndex(kv => {
                                 return kv.key == "weekRecord";
