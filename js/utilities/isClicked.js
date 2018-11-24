@@ -5,12 +5,12 @@ import {
         RANK_LIST_RETURN
 } from '../runtime/scene';
 
-const FULL_RANK_TEXTAREA = {
-	startX:,
-	startY:,
-	endX:,
-	endY:
-}
+// const FULL_RANK_TEXTAREA = {
+// 	startX:,
+// 	startY:,
+// 	endX:,
+// 	endY:
+// };
 
 module.exports = function(e, btn) {
         let x = e.touches[0].clientX;

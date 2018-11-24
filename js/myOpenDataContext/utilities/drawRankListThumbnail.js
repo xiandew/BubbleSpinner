@@ -37,11 +37,11 @@ let triple = [undefined, undefined, undefined];
 module.exports = function() {
 
         wx.getFriendCloudStorage({
-                keyList: ["maxRecord", "currentScore"],
+		keyList: ["currentScore", "weekRecord", "maxRecord"],
                 success: res => {
                         res.data.sort((d1, d2) => {
-                                return parseInt(d2.KVDataList[0].value) -
-                                        parseInt(d1.KVDataList[0].value);
+                                return parseInt(d2.KVDataList[1].value) -
+                                        parseInt(d1.KVDataList[1].value);
                         });
 
                         shared.ranks = res.data;
@@ -146,7 +146,7 @@ function drawBackground() {
         if (shared.fontLoaded) {
                 shared.txt.fontSize = SCORE_SIZE;
                 shared.txt.textAlign = "center";
-                shared.txt.draw(ctx, triple[1].KVDataList[1].value, SCORE_X, SCORE_Y);
+                shared.txt.draw(ctx, triple[1].KVDataList[0].value, SCORE_X, SCORE_Y);
         }
 
         ctx.fillStyle = "#3c3c3c";
@@ -165,7 +165,7 @@ function drawBackground() {
         ctx.font = TEXT_SIZE + "px Arial";
         ctx.textAlign = "center";
         ctx.fillText(
-                "历史最高分 : " + triple[1].KVDataList[0].value,
+                "历史最高分 : " + triple[1].KVDataList[2].value,
                 0.5 * canvasWidth,
                 MAX_RECORD_START_Y
         );
