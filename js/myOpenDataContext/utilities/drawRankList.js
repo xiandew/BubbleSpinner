@@ -49,8 +49,10 @@ module.exports = function() {
         }
 
         wx.getFriendCloudStorage({
-                keyList: ["maxRecord"],
+		keyList: ["weekRecord"],
                 success: res => {
+			res.data = res.data.filter(d => d.KVDataList.length > 0);
+			
                         res.data.sort((d1, d2) => {
                                 return d2.KVDataList[0].value - d1.KVDataList[0].value;
                         });
@@ -193,6 +195,14 @@ function drawRankText(i, user, textHeight, ctx) {
 
 function drawBackground() {
 	ctx.clearRect(0, 0, shared.canvasWidth, shared.canvasHeight);
+
+	ctx.beginPath();
+	var lineGradient = ctx.createLinearGradient(0, 0, canvasWidth, canvasHeight);
+	lineGradient.addColorStop(0, 'rgba(117, 119, 126, 0.8)');
+	lineGradient.addColorStop(1, 'rgba(105, 106, 111, 0.8)');
+	ctx.fillStyle = lineGradient;
+	ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+	ctx.closePath();
 
         ctx.fillStyle = "#ffffff";
         ctx.font = "bold " + TITLE_SIZE + "px Arial";

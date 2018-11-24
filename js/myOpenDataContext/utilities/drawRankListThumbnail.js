@@ -39,6 +39,8 @@ module.exports = function() {
         wx.getFriendCloudStorage({
 		keyList: ["currentScore", "weekRecord", "maxRecord"],
                 success: res => {
+			res.data = res.data.filter(d => d.KVDataList.length == 3);
+
                         res.data.sort((d1, d2) => {
                                 return parseInt(d2.KVDataList[1].value) -
                                         parseInt(d1.KVDataList[1].value);
