@@ -31,17 +31,18 @@ const AVATAR_START_X = (RANK_ITEM_WIDTH - AVATAR_SIZE) / 2;
 
 const MAX_RECORD_START_Y = 0.95 * canvasHeight;
 
-/*----------------------------------------------------------------------------*/
-
-// triple ranks to be drawn
-let triple = [undefined, undefined, undefined];
-
 // indices
 const WEEK_RECORD = 0;
 const CURRENT = 1;
 const MAX_RECORD = 2;
 
+/*----------------------------------------------------------------------------*/
+
+// triple ranks to be drawn
+let triple = [undefined, undefined, undefined];
+
 module.exports = function() {
+	shared.asyncAllowed = false;
 
         wx.getFriendCloudStorage({
                 keyList: ["weekRecord", "currentScore", "maxRecord"],
@@ -75,30 +76,29 @@ module.exports = function() {
                                         triple[1] = shared.ranks[shared.selfRankIndex];
                                         triple[2] = shared.ranks[shared.selfRankIndex + 1];
 
-                                        drawBackground();
-                                        drawRankPanel();
+					drawRankListThumbnail();
                                 }
                         });
                 }
         });
 
-        wx.onTouchStart(e => showFullRank(e));
+	wx.onTouchStart(e => touchstartHandler(e));
 }
 
-function showFullRank(e) {
-        if (isClicked(e, "FullRankList")) {
-                wx.offTouchStart(showFullRank);
-                wx.onTouchStart(e => returnRankThumb(e));
+function touchstartHandler(e) {
+	if (!shared.asyncAllowed && isClicked(e, "FullRankList")) {
+		shared.asyncAllowed = true;
                 drawRankList();
         }
+	if (shared.asyncAllowed && isClicked(e, "RankListReturn")) {
+		shared.asyncAllowed = false;
+		drawRankListThumbnail();
+	}
 }
 
-function returnRankThumb(e) {
-        if (isClicked(e, "RankListReturn")) {
-                wx.offTouchStart(returnRankThumb);
-		drawBackground();
-		drawRankPanel();
-        }
+function drawRankListThumbnail() {
+	drawBackground();
+	drawRankPanel();
 }
 
 function drawRankPanel() {

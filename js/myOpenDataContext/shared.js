@@ -27,6 +27,8 @@ export default class Shared{
 		this.selfRankIndex = undefined;
 		this.selfRank = undefined;
 		this.ranks = undefined;
+
+		this.asyncAllowed = true;
 		
 		this.impact_white = new BitmapFont();
 		this.fontLoaded = false;

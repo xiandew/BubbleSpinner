@@ -54,10 +54,10 @@ module.exports = function() {
         }
 
         wx.getFriendCloudStorage({
-		keyList: ["weekRecord"],
+                keyList: ["weekRecord"],
                 success: res => {
-			res.data = res.data.filter(d => d.KVDataList.length > 0);
-			
+                        res.data = res.data.filter(d => d.KVDataList.length > 0);
+
                         res.data.sort((d1, d2) => {
                                 return d2.KVDataList[0].value - d1.KVDataList[0].value;
                         });
@@ -78,21 +78,24 @@ module.exports = function() {
                                                         user.avatarUrl == avatarUrl;
                                         });
 
-					if(shared.selfRankIndex < 0){
-						shared.selfRankIndex = shared.ranks.length;
-						shared.selfRank = {
-							avatarUrl: avatarUrl,
-							nickname: nickName,
-							KVDataList: [{value: 0}]
-						}
-						shared.ranks.push(shared.selfRank);
-					} else {
-						shared.selfRank = shared.ranks[shared.selfRankIndex];
-					}
+                                        if (shared.selfRankIndex < 0) {
+                                                shared.selfRankIndex = shared.ranks.length;
+                                                shared.selfRank = {
+                                                        avatarUrl: avatarUrl,
+                                                        nickname: nickName,
+                                                        KVDataList: [{
+                                                                value: 0
+                                                        }]
+                                                }
+                                                shared.ranks.push(shared.selfRank);
+                                        } else {
+                                                shared.selfRank = shared.ranks[shared.selfRankIndex];
+                                        }
 
-					drawPage(currentPage);
-
-					drawSelfRank();
+					if (shared.asyncAllowed) {
+                                                drawPage(currentPage);
+                                                drawSelfRank();
+                                        }
                                 }
                         })
                 }
@@ -157,7 +160,7 @@ function drawPage(pageIndex) {
 }
 
 function drawSelfRank() {
-	selfRank.clearRect(0, 0, selfRankCanvas.width, selfRankCanvas.height);
+        selfRank.clearRect(0, 0, selfRankCanvas.width, selfRankCanvas.height);
 
         drawRankText(
                 shared.selfRankIndex,
@@ -183,7 +186,7 @@ function drawSelfRank() {
                         SELF_RANK_START_Y,
                         PANEL_WIDTH,
                         selfRankCanvas.height
-		);
+                );
         }
         avatar.src = shared.selfRank.avatarUrl;
 }
@@ -191,8 +194,8 @@ function drawSelfRank() {
 function drawRankText(i, user, textHeight, ctx) {
 
         ctx.beginPath();
-	ctx.fillStyle = i == 0 ? '#fa7e00' : i == 1 ? '#fec11e' : i == 2 ? '#fbd413' : '#ffffff';
-	
+        ctx.fillStyle = i == 0 ? '#fa7e00' : i == 1 ? '#fec11e' : i == 2 ? '#fbd413' : '#ffffff';
+
         ctx.font = "italic bold " + AVATAR_SIZE / 2 + "px Arial";
         ctx.textAlign = 'center';
         ctx.fillText(i + 1, 60, textHeight);
@@ -203,23 +206,23 @@ function drawRankText(i, user, textHeight, ctx) {
         ctx.textAlign = 'left';
         ctx.fillText(user.nickname, 250, textHeight);
 
-	if (shared.fontLoaded) {
-		shared.txt.fontSize = RANK_ITEM_HEIGHT / 2;
-		shared.txt.textAlign = 'right';
-		shared.txt.draw(ctx, user.KVDataList[0].value, 580, textHeight - 0.4 * RANK_ITEM_HEIGHT);
-	}
+        if (shared.fontLoaded) {
+                shared.txt.fontSize = RANK_ITEM_HEIGHT / 2;
+                shared.txt.textAlign = 'right';
+                shared.txt.draw(ctx, user.KVDataList[0].value, 580, textHeight - 0.4 * RANK_ITEM_HEIGHT);
+        }
 }
 
 function drawBackground() {
-	ctx.clearRect(0, 0, shared.canvasWidth, shared.canvasHeight);
+        ctx.clearRect(0, 0, shared.canvasWidth, shared.canvasHeight);
 
-	ctx.beginPath();
-	var lineGradient = ctx.createLinearGradient(0, 0, canvasWidth, canvasHeight);
-	lineGradient.addColorStop(0, 'rgba(117, 119, 126, 0.8)');
-	lineGradient.addColorStop(1, 'rgba(105, 106, 111, 0.8)');
-	ctx.fillStyle = lineGradient;
-	ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-	ctx.closePath();
+        ctx.beginPath();
+        var lineGradient = ctx.createLinearGradient(0, 0, canvasWidth, canvasHeight);
+        lineGradient.addColorStop(0, 'rgba(117, 119, 126, 0.8)');
+        lineGradient.addColorStop(1, 'rgba(105, 106, 111, 0.8)');
+        ctx.fillStyle = lineGradient;
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+        ctx.closePath();
 
         ctx.fillStyle = "#ffffff";
         ctx.font = "bold " + TITLE_SIZE + "px Arial";
@@ -248,18 +251,18 @@ function drawBackground() {
         ctx.textAlign = "center";
         ctx.fillText("加载中", canvasWidth / 2, SELF_RANK_START_Y + selfRankCanvas.height / 1.75);
 
-	// return button
-	let return_btn = wx.createImage();
-	return_btn.onload = function() {
-		ctx.drawImage(
-			return_btn,
-			RETURN_START_X,
-			RETURN_START_Y,
-			RETURN_WIDTH,
-			RETURN_HEIGHT
-		);
-	}
-	return_btn.src = 'images/return.png';
+        // return button
+        let return_btn = wx.createImage();
+        return_btn.onload = function() {
+                ctx.drawImage(
+                        return_btn,
+                        RETURN_START_X,
+                        RETURN_START_Y,
+                        RETURN_WIDTH,
+                        RETURN_HEIGHT
+                );
+        }
+        return_btn.src = 'images/return.png';
 }
 
 let startY, endY;
