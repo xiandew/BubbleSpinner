@@ -43,7 +43,7 @@ function updateScore(newScore) {
                                         key: "wkRecord",
                                         value: newScore.toString()
                                 }] : []))
-                                .concat((!maxRecord || maxRecord < weekRecord ? [{
+				.concat((!maxRecord || maxRecord < newScore ? [{
                                         key: "maxRecord",
                                         value: newScore.toString()
                                 }] : []));
