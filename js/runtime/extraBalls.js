@@ -28,11 +28,12 @@ export default class ExtraBalls {
                 ];
 
                 this.balls = [];
+                let ballSrc = shuffle(BALLS);
 
-                this.ballsCoord.forEach(coord => {
+                this.ballsCoord.forEach((coord, i) => {
                         let ball = new Ball();
                         [ball.x, ball.y] = coord;
-                        ball.img.src = randomBall();
+                        ball.img.src = ballSrc[i];
                         this.balls.push(ball);
                 });
         }
@@ -60,15 +61,15 @@ export default class ExtraBalls {
                         ball.y += ball.speedY;
 
                         if (isCollideSpiral(ball)) {
-				spiral.onCollision(ball);
-				this.balls.splice(this.balls.indexOf(ball), 1);
+                                spiral.onCollision(ball);
+                                this.balls.splice(this.balls.indexOf(ball), 1);
                                 return;
                         }
                 });
 
-		if (this.balls.length == 0) {
-			gameInfo.renewLives();
-		}
+                if (this.balls.length == 0) {
+                        gameInfo.renewLives();
+                }
         }
 
         render() {
@@ -80,4 +81,12 @@ export default class ExtraBalls {
                         ball.render();
                 });
         }
+}
+
+function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+                let j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
 }

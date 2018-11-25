@@ -18,8 +18,8 @@ export default class Main {
         constructor() {
                 this.spiral = new Spiral();
                 this.shooter = new Shooter();
-		this.lives = new Lives();
-		this.extra = new ExtraBalls();
+                this.lives = new Lives();
+                this.extra = new ExtraBalls();
 
                 // make sure only add event listener once in 'update'
                 this.hasEventBind = true;
@@ -44,12 +44,12 @@ export default class Main {
         }
 
         update() {
-		if (gameInfo.over) {
+                if (gameInfo.over) {
                         return;
                 }
 
                 this.spiral.update();
-		this.extra.update(this.spiral);
+                this.extra.update(this.spiral);
 
                 if (!this.spiral.toChange && gameInfo.start) {
                         if (!this.shooter.hasEventBind) {
@@ -77,8 +77,8 @@ export default class Main {
                         Scene.renderGameScore();
 
                         this.shooter.render();
-			this.lives.render();
-			this.extra.render();
+                        this.lives.render();
+                        this.extra.render();
 
                         if (this.spiral.toChange) {
                                 Scene.changeSpiralAnime(this.spiral);
@@ -102,8 +102,8 @@ export default class Main {
                                         score: gameInfo.score
                                 });
 
-				this.addEvents();
-				this.hasEventBind = true;
+                                this.addEvents();
+                                this.hasEventBind = true;
                         }
 
                         Scene.renderGameOver();
@@ -135,25 +135,25 @@ export default class Main {
                                 });
                         }
                 }
-		if (gameInfo.over) {
-			if (isClicked(e, "RestartButton")) {
-				gameInfo.reset();
-				
-				// cannot change the status of the spiral later in touchendHandler
-				// since the non-stopping loop will execute update first instead of
-				// touchendHandler.
-				this.spiral.toChange = true;
+                if (gameInfo.over) {
+                        if (isClicked(e, "RestartButton")) {
+                                gameInfo.reset();
 
-				canvas.removeEventListener('touchstart', this.touchstarter);
-			}
-		}
+                                // cannot change the status of the spiral later in touchendHandler
+                                // since the non-stopping loop will execute update first instead of
+                                // touchendHandler.
+                                this.spiral.toChange = true;
+
+                                canvas.removeEventListener('touchstart', this.touchstarter);
+                        }
+                }
         }
 
         touchendHandler(e) {
                 e.preventDefault();
                 if (!gameInfo.over) {
 
-			this.hasEventBind = false;
+                        this.hasEventBind = false;
 
                         canvas.removeEventListener('touchend', this.touchender);
                 }

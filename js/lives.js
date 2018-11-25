@@ -1,4 +1,6 @@
-import GameInfo, { BALL_SIZE } from "./runtime/gameInfo";
+import GameInfo, {
+        BALL_SIZE
+} from "./runtime/gameInfo";
 let gameInfo = new GameInfo();
 let newImage = require("./utilities/newImage");
 let ctx = canvas.getContext('2d');
@@ -15,9 +17,9 @@ export default class Lives {
 
         }
         render() {
-		if (!gameInfo.lives) {
-			return;
-		}
+                if (!gameInfo.lives) {
+                        return;
+                }
 
                 for (let i = 0; i < gameInfo.lives - 1; i++) {
                         ctx.drawImage(
@@ -29,46 +31,46 @@ export default class Lives {
                         );
                 }
 
-		if (!gameInfo.loseLive) {
-			ctx.drawImage(
-				LIVES_IMG,
-				BALL_SIZE + BALL_SIZE * 1.05 * (gameInfo.lives - 1),
-				BALL_SIZE,
-				BALL_SIZE,
-				BALL_SIZE
-			);
-		} else {
-			this.fadeOut();
-		}
+                if (!gameInfo.loseLive) {
+                        ctx.drawImage(
+                                LIVES_IMG,
+                                BALL_SIZE + BALL_SIZE * 1.05 * (gameInfo.lives - 1),
+                                BALL_SIZE,
+                                BALL_SIZE,
+                                BALL_SIZE
+                        );
+                } else {
+                        this.fadeOut();
+                }
         }
-	fadeIn() {
-		// TODO
-	}
-	fadeOut() {
+        fadeIn() {
+                // TODO
+        }
+        fadeOut() {
 
-		if(acc > Math.PI / 2){
-			acc = Math.PI / 2;
-			gameInfo.lives--;
-			gameInfo.loseLive = false;
-		}
+                if (acc > Math.PI / 2) {
+                        acc = Math.PI / 2;
+                        gameInfo.lives--;
+                        gameInfo.loseLive = false;
+                }
 
-		delta = BALL_SIZE + Math.sin(acc) * 5;
+                delta = BALL_SIZE + Math.sin(acc) * 5;
 
-		ctx.save();
-		ctx.globalAlpha = 1 - Math.sin(acc);
-		ctx.drawImage(
-			LIVES_IMG,
-			BALL_SIZE * 1.05 * gameInfo.lives - 0.5 * (delta - BALL_SIZE),
-			BALL_SIZE - 0.5 * (delta - BALL_SIZE),
-			delta,
-			delta
-		);
-		ctx.restore();
+                ctx.save();
+                ctx.globalAlpha = 1 - Math.sin(acc);
+                ctx.drawImage(
+                        LIVES_IMG,
+                        BALL_SIZE * 1.05 * gameInfo.lives - 0.5 * (delta - BALL_SIZE),
+                        BALL_SIZE - 0.5 * (delta - BALL_SIZE),
+                        delta,
+                        delta
+                );
+                ctx.restore();
 
-		if (gameInfo.loseLive) {
-			acc += 0.1;
-		} else {
-			acc = 0;
-		}
-	}
+                if (gameInfo.loseLive) {
+                        acc += 0.1;
+                } else {
+                        acc = 0;
+                }
+        }
 }

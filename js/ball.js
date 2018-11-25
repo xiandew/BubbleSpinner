@@ -11,7 +11,7 @@ let gameInfo = new GameInfo();
 export default class Ball extends Sprite {
         constructor(hole = {}, ballSrc = false) {
                 if (!ballSrc) {
-			ballSrc = randomBall();
+                        ballSrc = randomBall();
                 }
                 super(ballSrc, BALL_SIZE, BALL_SIZE, hole.x, hole.y, true);
 

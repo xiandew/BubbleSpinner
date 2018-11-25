@@ -20,37 +20,37 @@ export default class GameInfo {
                 }
                 instance = this;
 
-		this.openDataContext = wx.getOpenDataContext();
-		this.sharedCanvas = this.openDataContext.canvas;
+                this.openDataContext = wx.getOpenDataContext();
+                this.sharedCanvas = this.openDataContext.canvas;
 
-		// resize the sharedCanvas for better display of text.
-		this.pixelRatio = wx.getSystemInfoSync().pixelRatio;
-		this.sharedCanvas.width = canvas.width * this.pixelRatio;
-		this.sharedCanvas.height = canvas.height * this.pixelRatio;
-		
+                // resize the sharedCanvas for better display of text.
+                this.pixelRatio = wx.getSystemInfoSync().pixelRatio;
+                this.sharedCanvas.width = canvas.width * this.pixelRatio;
+                this.sharedCanvas.height = canvas.height * this.pixelRatio;
+
                 this.holes = [];
-		this.start = false;
+                this.start = false;
                 this.level = 0;
                 this.score = 0;
-		this.lives = MAX_NUM_LIVES;
+                this.lives = MAX_NUM_LIVES;
         }
-	
+
         reset() {
-		this.start = true;
+                this.start = true;
                 this.over = false;
                 this.levelup = false;
                 this.level = 0;
                 this.score = 0;
 
-		this.renewLives();
+                this.renewLives();
         }
 
         getLayers() {
                 return this.level < LAYERS.length ? LAYERS[this.level] : LAYERS[LAYERS.length - 1];
         }
 
-	renewLives() {
-		this.lives = MAX_NUM_LIVES;
-		this.loseLive = false;
-	}
+        renewLives() {
+                this.lives = MAX_NUM_LIVES;
+                this.loseLive = false;
+        }
 }

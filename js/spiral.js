@@ -1,8 +1,12 @@
-import GameInfo, { BALL_SIZE } from './runtime/gameInfo';
+import GameInfo, {
+        BALL_SIZE
+} from './runtime/gameInfo';
 import Pivot from './pivot';
 import Hole from './hole';
 import Ball from './ball';
-import Shooter, { LINEAR_SPEED } from './shooter';
+import Shooter, {
+        LINEAR_SPEED
+} from './shooter';
 
 let gameInfo = new GameInfo();
 let ctx = canvas.getContext('2d');
@@ -93,10 +97,10 @@ export default class Spiral {
                 // then remove balls which have the same colour and connections to it
                 this.fillClosestHole(shooter);
 
-		if (shooter instanceof Shooter) {
-			this.removeSameBalls();
-			this.romoveFloatBalls();
-		}
+                if (shooter instanceof Shooter) {
+                        this.removeSameBalls();
+                        this.romoveFloatBalls();
+                }
 
                 this.rotating = true;
 
@@ -133,9 +137,9 @@ export default class Spiral {
                         gameInfo.levelup = true;
                 }
 
-		if (shooter instanceof Shooter) {
-                	shooter.initShooter();
-		}
+                if (shooter instanceof Shooter) {
+                        shooter.initShooter();
+                }
         }
 
         fillClosestHole(shooter) {
@@ -160,13 +164,13 @@ export default class Spiral {
                 if (this.sameBalls.length >= 3) {
                         this.sameBalls.forEach(ball => {
                                 gameInfo.holes.splice(
-					gameInfo.holes.indexOf(ball), 1,
-					new Hole(ball.x, ball.y, ball.layer));
+                                        gameInfo.holes.indexOf(ball), 1,
+                                        new Hole(ball.x, ball.y, ball.layer));
                                 gameInfo.score += (gameInfo.level + 1);
                         });
                 } else {
-			gameInfo.loseLive = true;
-		}
+                        gameInfo.loseLive = true;
+                }
         }
 
         findSameBalls(target) {
