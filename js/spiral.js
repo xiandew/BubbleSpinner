@@ -56,14 +56,12 @@ export default class Spiral {
 
                 let layers = gameInfo.getLayers();
 
-                gameInfo.holes.forEach(hole => {
+                gameInfo.holes.forEach((hole, i) => {
                         if (hole.layer <= layers && hole instanceof Hole) {
-                                gameInfo.holes.splice(gameInfo.holes.indexOf(hole), 1, new Ball(hole));
+                                gameInfo.holes.splice(i, 1, new Ball(hole));
                         }
                         if (hole.layer > layers && !(hole instanceof Hole)) {
-                                gameInfo.holes.splice(
-                                        gameInfo.holes.indexOf(hole), 1,
-                                        new Hole(hole.x, hole.y, hole.layer));
+                                gameInfo.holes.splice(i, 1, new Hole(hole.x, hole.y, hole.layer));
                         }
                 });
         }
@@ -161,7 +159,9 @@ export default class Spiral {
 					new Hole(ball.x, ball.y, ball.layer));
                                 gameInfo.score += (gameInfo.level + 1);
                         });
-                }
+                } else {
+			gameInfo.loseLive = true;
+		}
         }
 
         findSameBalls(target) {

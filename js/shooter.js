@@ -145,14 +145,10 @@ export default class Shooter extends Sprite {
         }
 
         update(spiral) {
-                if (!this.shown) {
+		if ((!this.shown) || (!this.shooting)) {
                         return;
                 }
-
-                let bounced = false;
-                if (!this.shooting) {
-                        return;
-                }
+		let bounced = false;
 
                 if (this.speedX > 0 && (this.x + this.width / 2) >= canvas.width ||
                         this.speedX < 0 && (this.x - this.width / 2) <= 0) {
