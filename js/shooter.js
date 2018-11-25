@@ -1,16 +1,33 @@
-import GameInfo, { BALLS, BALL_SIZE } from './runtime/gameInfo';
+import GameInfo, {
+        BALLS,
+        BALL_SIZE
+} from './runtime/gameInfo';
 import Hole from './hole';
-import Ball from './ball';
+import Sprite from './sprite';
 
+let newImage = require("./utilities/newImage");
 let gameInfo = new GameInfo();
 let ctx = canvas.getContext('2d');
 
-const BOTTOM_BOUND = canvas.height - 1.5 * BALL_SIZE;
+const NEXT_SHOOTER_SIZE = 0.5 * BALL_SIZE;
+const NEXT_SHOOTER_X = 0.5 * canvas.width - 0.5 * NEXT_SHOOTER_SIZE;
 const NEXT_SHOOTER_Y = canvas.height - BALL_SIZE;
-const MAX_NUM_LIVES = 5;
+const BOTTOM_BOUND = canvas.height - 1.5 * BALL_SIZE;
 
 export const LINEAR_SPEED = 15;
-export default class Shooter extends Ball {
+
+/*----------------------------------------------------------------------------*/
+
+// for drawing the arrow
+let headAngle;
+let headLength;
+
+let nextShooterImg;
+let nextShooterSize;
+
+let delta;
+
+export default class Shooter extends Sprite {
         constructor() {
                 super();
                 this.initShooter();
@@ -18,17 +35,21 @@ export default class Shooter extends Ball {
 
         initShooter() {
                 this.shown = false;
-
-                this.x = canvas.width / 2;
-                this.y = canvas.height + BALL_SIZE;
-
-                this.img.src = this.nextShooterSrc ? this.nextShooterSrc : this.randomBall();
-                this.nextShooterSrc = this.randomBall();
-
                 this.touched = false;
                 this.shooting = false;
                 this.dropping = false;
                 this.bounces = 0;
+
+                // for animation
+                this.acc = 0;
+
+		this.width = this.height = NEXT_SHOOTER_SIZE;
+
+                this.x = canvas.width / 2;
+		this.y = NEXT_SHOOTER_Y;
+
+                this.img.src = this.nextShooterSrc ? this.nextShooterSrc : this.randomBall();
+                this.nextShooterSrc = this.randomBall();
         }
 
         randomBall() {
@@ -83,34 +104,62 @@ export default class Shooter extends Ball {
         }
 
         showup() {
-                this.y -= 1.5;
-                if (this.y < BOTTOM_BOUND) {
-                        this.y = BOTTOM_BOUND;
+                if (this.acc >= Math.PI / 2) {
+                        this.acc = Math.PI / 2;
                         this.shown = true;
                 }
+
+		delta = Math.sin(this.acc) * BALL_SIZE * 0.5;
+		this.y = NEXT_SHOOTER_Y - delta;
+		this.width = this.height = NEXT_SHOOTER_SIZE + delta;
+
+		nextShooterImg = newImage(this.nextShooterSrc);
+		nextShooterSize = NEXT_SHOOTER_SIZE * Math.sin(this.acc);
+                ctx.drawImage(
+                        nextShooterImg,
+			0.5 * canvas.width - 0.5 * nextShooterSize,
+                        canvas.height - Math.sin(this.acc) * BALL_SIZE,
+			nextShooterSize,
+			nextShooterSize
+                );
+
                 this.display();
+
+		this.acc += 0.05;
         }
 
         display() {
+
+                if (this.shown) {
+                        ctx.drawImage(
+                                nextShooterImg,
+                                NEXT_SHOOTER_X,
+                                NEXT_SHOOTER_Y,
+                                NEXT_SHOOTER_SIZE,
+                                NEXT_SHOOTER_SIZE);
+
+                        this.touched ? this.renderArrow() : true;
+                }
+
                 super.render();
-                this.touched ? this.renderArrow() : true;
         }
 
         update(spiral) {
-                if (!this.shooting) {
+		if ((!this.shown) || (!this.shooting)) {
                         return;
                 }
+		let bounced = false;
 
                 if (this.speedX > 0 && (this.x + this.width / 2) >= canvas.width ||
                         this.speedX < 0 && (this.x - this.width / 2) <= 0) {
 
-                        this.bounces++;
+                        !bounced ? (this.bounces++, bounced = true) : true;
                         this.speedX *= (-1);
                 }
                 if (this.speedY > 0 && this.y >= BOTTOM_BOUND ||
                         this.speedY < 0 && (this.y - this.height / 2) <= 0) {
 
-                        this.bounces++;
+                        !bounced ? (this.bounces++, bounced = true) : true;
                         this.speedY *= (-1);
 
                         this.dropping ? this.speedY *= 0.7 : true;
@@ -159,24 +208,25 @@ export default class Shooter extends Ball {
         }
 
         renderArrow() {
+                headLength = 10;
+                headAngle = Math.atan2(this.touchY - this.y, this.touchX - this.x);
+
                 ctx.beginPath();
                 ctx.strokeStyle = 'green';
 
                 // from start point
                 ctx.moveTo(this.x, this.y);
+
                 // to touch point 
                 ctx.lineTo(this.touchX, this.touchY);
 
-                let headLenth = 10;
-                let headAngle = Math.atan2(this.touchY - this.y, this.touchX - this.x);
-
                 // form a little triangle for the arrow head
                 // from touch point to right side of the head
-                ctx.lineTo(this.touchX - headLenth * Math.cos(headAngle - Math.PI / 6),
-                        this.touchY - headLenth * Math.sin(headAngle - Math.PI / 6));
+                ctx.lineTo(this.touchX - headLength * Math.cos(headAngle - Math.PI / 6),
+                        this.touchY - headLength * Math.sin(headAngle - Math.PI / 6));
                 // to bottom side of the head
-                ctx.lineTo(this.touchX - headLenth * Math.cos(headAngle + Math.PI / 6),
-                        this.touchY - headLenth * Math.sin(headAngle + Math.PI / 6));
+                ctx.lineTo(this.touchX - headLength * Math.cos(headAngle + Math.PI / 6),
+                        this.touchY - headLength * Math.sin(headAngle + Math.PI / 6));
                 // back to the touch point
                 ctx.lineTo(this.touchX, this.touchY);
 

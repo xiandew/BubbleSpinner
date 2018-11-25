@@ -1,5 +1,6 @@
 import Spiral from './spiral';
 import Shooter from './shooter';
+import Lives from "./lives";
 import GameInfo from './runtime/gameInfo';
 import Scene from './runtime/scene';
 
@@ -9,11 +10,14 @@ let gameInfo = new GameInfo();
 let ctx = canvas.getContext('2d');
 ctx.imageSmoothingQuality = "high";
 
+/*----------------------------------------------------------------------------*/
+
 // The entry class of the game
 export default class Main {
         constructor() {
                 this.spiral = new Spiral();
                 this.shooter = new Shooter();
+		this.lives = new Lives();
 
                 // make sure only add event listener once in 'update'
                 this.hasEventBind = true;
@@ -70,6 +74,7 @@ export default class Main {
                         Scene.renderGameScore();
 
                         this.shooter.render();
+			this.lives.render();
 
                         if (this.spiral.toChange) {
                                 Scene.changeSpiralAnime(this.spiral);
