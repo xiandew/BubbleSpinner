@@ -9,9 +9,10 @@ let newImage = require("./utilities/newImage");
 let gameInfo = new GameInfo();
 let ctx = canvas.getContext('2d');
 
-const BOTTOM_BOUND = canvas.height - 1.5 * BALL_SIZE;
+const NEXT_SHOOTER_SIZE = 0.5 * BALL_SIZE;
+const NEXT_SHOOTER_X = 0.5 * canvas.width - 0.5 * NEXT_SHOOTER_SIZE;
 const NEXT_SHOOTER_Y = canvas.height - BALL_SIZE;
-const MAX_NUM_LIVES = 5;
+const BOTTOM_BOUND = canvas.height - 1.5 * BALL_SIZE;
 
 export const LINEAR_SPEED = 15;
 
@@ -22,6 +23,9 @@ let headAngle;
 let headLength;
 
 let nextShooterImg;
+let nextShooterSize;
+
+let delta;
 
 export default class Shooter extends Sprite {
         constructor() {
@@ -31,21 +35,21 @@ export default class Shooter extends Sprite {
 
         initShooter() {
                 this.shown = false;
-		this.touched = false;
-		this.shooting = false;
-		this.dropping = false;
-		this.bounces = 0;
+                this.touched = false;
+                this.shooting = false;
+                this.dropping = false;
+                this.bounces = 0;
 
-		// for animation
-		this.acc = 0;
+                // for animation
+                this.acc = 0;
 
-		this.width = this.height = 0;
+		this.width = this.height = NEXT_SHOOTER_SIZE;
 
                 this.x = canvas.width / 2;
-                this.y = canvas.height;
+		this.y = NEXT_SHOOTER_Y;
 
-		this.img.src = this.nextShooterSrc ? this.nextShooterSrc : this.randomBall();
-		this.nextShooterSrc = this.randomBall();
+                this.img.src = this.nextShooterSrc ? this.nextShooterSrc : this.randomBall();
+                this.nextShooterSrc = this.randomBall();
         }
 
         randomBall() {
@@ -100,33 +104,44 @@ export default class Shooter extends Sprite {
         }
 
         showup() {
-		this.acc += 0.05;
+                if (this.acc >= Math.PI / 2) {
+                        this.acc = Math.PI / 2;
+                        this.shown = true;
+                }
 
-		if (this.acc >= Math.PI / 2) {
-			this.acc = Math.PI / 2;
-			this.shown = true;
-		}
+		delta = Math.sin(this.acc) * BALL_SIZE * 0.5;
+		this.y = NEXT_SHOOTER_Y - delta;
+		this.width = this.height = NEXT_SHOOTER_SIZE + delta;
 
-		this.y = canvas.height - Math.sin(this.acc) * BALL_SIZE * 1.5;
-		this.width = this.height = Math.sin(this.acc) * BALL_SIZE;
-		
+		nextShooterImg = newImage(this.nextShooterSrc);
+		nextShooterSize = NEXT_SHOOTER_SIZE * Math.sin(this.acc);
+                ctx.drawImage(
+                        nextShooterImg,
+			0.5 * canvas.width - 0.5 * nextShooterSize,
+                        canvas.height - Math.sin(this.acc) * BALL_SIZE,
+			nextShooterSize,
+			nextShooterSize
+                );
+
                 this.display();
+
+		this.acc += 0.05;
         }
 
         display() {
-                super.render();
 
                 if (this.shown) {
-			nextShooterImg = newImage(this.nextShooterSrc);
-			ctx.drawImage(
-				nextShooterImg,
-				0.5 * canvas.width - 0.25 * BALL_SIZE,
-				canvas.height - 0.5 * BALL_SIZE,
-				0.5 * BALL_SIZE,
-				0.5 * BALL_SIZE);
-				
+                        ctx.drawImage(
+                                nextShooterImg,
+                                NEXT_SHOOTER_X,
+                                NEXT_SHOOTER_Y,
+                                NEXT_SHOOTER_SIZE,
+                                NEXT_SHOOTER_SIZE);
+
                         this.touched ? this.renderArrow() : true;
                 }
+
+                super.render();
         }
 
         update(spiral) {

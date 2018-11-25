@@ -1,6 +1,7 @@
 let instance;
 let ctx = canvas.getContext('2d');
 
+const MAX_NUM_LIVES = 5;
 const LAYERS = [2, 3, 4, 5, 6];
 
 export const BALLS = [
@@ -31,6 +32,7 @@ export default class GameInfo {
 		this.start = false;
                 this.level = 0;
                 this.score = 0;
+		this.lives = MAX_NUM_LIVES;
         }
 	
         reset() {
@@ -39,6 +41,9 @@ export default class GameInfo {
                 this.levelup = false;
                 this.level = 0;
                 this.score = 0;
+
+		this.lives = MAX_NUM_LIVES;
+		this.loseLive = false;
         }
 
         getLayers() {
