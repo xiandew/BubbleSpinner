@@ -1,30 +1,31 @@
-import Sprite from './sprite'
+import Sprite from './sprite';
 import GameInfo, {
         BALLS,
         BALL_SIZE
-} from './runtime/gameInfo'
+} from './runtime/gameInfo';
 
-let ctx = canvas.getContext('2d')
-let gameInfo = new GameInfo()
+let randomBall = require("./utilities/randomBall");
+let ctx = canvas.getContext('2d');
+let gameInfo = new GameInfo();
 
 export default class Ball extends Sprite {
         constructor(hole = {}, ballSrc = false) {
                 if (!ballSrc) {
-                        ballSrc = BALLS[Math.floor(Math.random() * BALLS.length)]
+			ballSrc = randomBall();
                 }
-                super(ballSrc, BALL_SIZE, BALL_SIZE, hole.x, hole.y, true)
+                super(ballSrc, BALL_SIZE, BALL_SIZE, hole.x, hole.y, true);
 
-                this.layer = hole.layer
-                this.visited = false
+                this.layer = hole.layer;
+                this.visited = false;
         }
 
         rotate(angle) {
-                let toCentY = this.y - canvas.height / 2
-                let toCentX = this.x - canvas.width / 2
+                let toCentY = this.y - canvas.height / 2;
+                let toCentX = this.x - canvas.width / 2;
 
-                let radius = Math.sqrt(toCentX ** 2 + toCentY ** 2)
-                this.x = canvas.width / 2 + (Math.cos(Math.atan2(toCentY, toCentX) - angle) * radius)
-                this.y = canvas.height / 2 + (Math.sin(Math.atan2(toCentY, toCentX) - angle) * radius)
+                let radius = Math.sqrt(toCentX ** 2 + toCentY ** 2);
+                this.x = canvas.width / 2 + (Math.cos(Math.atan2(toCentY, toCentX) - angle) * radius);
+                this.y = canvas.height / 2 + (Math.sin(Math.atan2(toCentY, toCentX) - angle) * radius);
 
                 if (((this.x + this.width / 2) >= canvas.width ||
                                 (this.x - this.width / 2) <= 0 ||
@@ -35,7 +36,7 @@ export default class Ball extends Sprite {
         }
 
         render() {
-                super.render()
+                super.render();
                 // TODO an out screen animation
 
 

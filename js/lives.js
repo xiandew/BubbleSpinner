@@ -41,6 +41,9 @@ export default class Lives {
 			this.fadeOut();
 		}
         }
+	fadeIn() {
+		// TODO
+	}
 	fadeOut() {
 
 		if(acc > Math.PI / 2){

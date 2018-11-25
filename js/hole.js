@@ -1,4 +1,4 @@
-export default class Hole{
+export default class Hole {
 	constructor(x, y, layer){
 		this.x = x;
 		this.y = y;

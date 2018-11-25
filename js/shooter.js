@@ -5,6 +5,7 @@ import GameInfo, {
 import Hole from './hole';
 import Sprite from './sprite';
 
+let isCollideSpiral = require("./utilities/isCollideSpiral");
 let newImage = require("./utilities/newImage");
 let gameInfo = new GameInfo();
 let ctx = canvas.getContext('2d');
@@ -173,14 +174,11 @@ export default class Shooter extends Sprite {
 
                 this.y >= BOTTOM_BOUND ? this.y = BOTTOM_BOUND : true;
 
-                for (let i = 0; i < gameInfo.holes.length; i++) {
-                        let hole = gameInfo.holes[i];
-                        if (!(hole instanceof Hole) && hole.isCollideWith(this)) {
-                                this.shooting = false;
-                                spiral.onCollision(this);
-                                return;
-                        }
-                }
+                if(isCollideSpiral(this)) {
+			this.shooting = false;
+			spiral.onCollision(this);
+			return;
+		}
 
                 if (this.bounces >= 8 && !this.dropping) {
                         // reset the speed for dropping effect
