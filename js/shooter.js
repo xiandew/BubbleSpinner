@@ -1,4 +1,7 @@
-import GameInfo, { BALLS, BALL_SIZE } from './runtime/gameInfo';
+import GameInfo, {
+        BALLS,
+        BALL_SIZE
+} from './runtime/gameInfo';
 import Hole from './hole';
 import Ball from './ball';
 
@@ -97,6 +100,7 @@ export default class Shooter extends Ball {
         }
 
         update(spiral) {
+                let bounced = false;
                 if (!this.shooting) {
                         return;
                 }
@@ -104,13 +108,13 @@ export default class Shooter extends Ball {
                 if (this.speedX > 0 && (this.x + this.width / 2) >= canvas.width ||
                         this.speedX < 0 && (this.x - this.width / 2) <= 0) {
 
-                        this.bounces++;
+                        !bounced ? (this.bounces++, bounced = true) : true;
                         this.speedX *= (-1);
                 }
                 if (this.speedY > 0 && this.y >= BOTTOM_BOUND ||
                         this.speedY < 0 && (this.y - this.height / 2) <= 0) {
 
-                        this.bounces++;
+                        !bounced ? (this.bounces++, bounced = true) : true;
                         this.speedY *= (-1);
 
                         this.dropping ? this.speedY *= 0.7 : true;
