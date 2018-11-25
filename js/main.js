@@ -1,6 +1,7 @@
 import Spiral from './spiral';
 import Shooter from './shooter';
 import Lives from "./lives";
+import ExtraBalls from "./runtime/extraBalls";
 import GameInfo from './runtime/gameInfo';
 import Scene from './runtime/scene';
 
@@ -18,6 +19,7 @@ export default class Main {
                 this.spiral = new Spiral();
                 this.shooter = new Shooter();
 		this.lives = new Lives();
+		this.extra = new ExtraBalls();
 
                 // make sure only add event listener once in 'update'
                 this.hasEventBind = true;
@@ -47,6 +49,7 @@ export default class Main {
                 }
 
                 this.spiral.update();
+		this.extra.update(this.spiral);
 
                 if (!this.spiral.toChange && gameInfo.start) {
                         if (!this.shooter.hasEventBind) {
@@ -75,6 +78,7 @@ export default class Main {
 
                         this.shooter.render();
 			this.lives.render();
+			this.extra.render();
 
                         if (this.spiral.toChange) {
                                 Scene.changeSpiralAnime(this.spiral);

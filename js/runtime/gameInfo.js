@@ -42,11 +42,15 @@ export default class GameInfo {
                 this.level = 0;
                 this.score = 0;
 
-		this.lives = MAX_NUM_LIVES;
-		this.loseLive = false;
+		this.renewLives();
         }
 
         getLayers() {
                 return this.level < LAYERS.length ? LAYERS[this.level] : LAYERS[LAYERS.length - 1];
         }
+
+	renewLives() {
+		this.lives = MAX_NUM_LIVES;
+		this.loseLive = false;
+	}
 }
