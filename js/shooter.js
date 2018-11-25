@@ -3,8 +3,9 @@ import GameInfo, {
         BALL_SIZE
 } from './runtime/gameInfo';
 import Hole from './hole';
-import Ball from './ball';
+import Sprite from './sprite';
 
+let newImage = require("./utilities/newImage");
 let gameInfo = new GameInfo();
 let ctx = canvas.getContext('2d');
 
@@ -14,11 +15,15 @@ const MAX_NUM_LIVES = 5;
 
 export const LINEAR_SPEED = 15;
 
+/*----------------------------------------------------------------------------*/
 
+// for drawing the arrow
 let headAngle;
 let headLength;
 
-export default class Shooter extends Ball {
+let nextShooterImg;
+
+export default class Shooter extends Sprite {
         constructor() {
                 super();
                 this.initShooter();
@@ -26,17 +31,21 @@ export default class Shooter extends Ball {
 
         initShooter() {
                 this.shown = false;
+		this.touched = false;
+		this.shooting = false;
+		this.dropping = false;
+		this.bounces = 0;
+
+		// for animation
+		this.acc = 0;
+
+		this.width = this.height = 0;
 
                 this.x = canvas.width / 2;
-                this.y = canvas.height + BALL_SIZE;
+                this.y = canvas.height;
 
-                this.img.src = this.nextShooterSrc ? this.nextShooterSrc : this.randomBall();
-                this.nextShooterSrc = this.randomBall();
-
-                this.touched = false;
-                this.shooting = false;
-                this.dropping = false;
-                this.bounces = 0;
+		this.img.src = this.nextShooterSrc ? this.nextShooterSrc : this.randomBall();
+		this.nextShooterSrc = this.randomBall();
         }
 
         randomBall() {
@@ -91,11 +100,16 @@ export default class Shooter extends Ball {
         }
 
         showup() {
-                this.y -= 1.5;
-                if (this.y < BOTTOM_BOUND) {
-                        this.y = BOTTOM_BOUND;
-                        this.shown = true;
-                }
+		this.acc += 0.05;
+
+		if (this.acc >= Math.PI / 2) {
+			this.acc = Math.PI / 2;
+			this.shown = true;
+		}
+
+		this.y = canvas.height - Math.sin(this.acc) * BALL_SIZE * 1.5;
+		this.width = this.height = Math.sin(this.acc) * BALL_SIZE;
+		
                 this.display();
         }
 
@@ -103,6 +117,14 @@ export default class Shooter extends Ball {
                 super.render();
 
                 if (this.shown) {
+			nextShooterImg = newImage(this.nextShooterSrc);
+			ctx.drawImage(
+				nextShooterImg,
+				0.5 * canvas.width - 0.25 * BALL_SIZE,
+				canvas.height - 0.5 * BALL_SIZE,
+				0.5 * BALL_SIZE,
+				0.5 * BALL_SIZE);
+				
                         this.touched ? this.renderArrow() : true;
                 }
         }

@@ -8,8 +8,8 @@ let gameInfo = new GameInfo();
 let ctx = canvas.getContext('2d');
 
 const FRICTION = -0.001;
-const PIVOT_X = canvas.width / 2;
-const PIVOT_Y = canvas.height / 2;
+const PIVOT_X = 0.5 * canvas.width;
+const PIVOT_Y = 0.5 * canvas.height;
 
 /*----------------------------------------------------------------------------*/
 

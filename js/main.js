@@ -9,6 +9,8 @@ let gameInfo = new GameInfo();
 let ctx = canvas.getContext('2d');
 ctx.imageSmoothingQuality = "high";
 
+/*----------------------------------------------------------------------------*/
+
 // The entry class of the game
 export default class Main {
         constructor() {
