@@ -13,8 +13,8 @@ const RANK_LIST_RETURN = {
 const RESTART_BTN_AREA = {
 	startX: 0.2679 * canvas.width,
 	endX: 0.7321 * canvas.width,
-	startY: 0.725 * canvas.height - 0.07 * canvas.width,
-	endY: 0.725 * canvas.height + 0.07 * canvas.width
+	startY: 0.75 * canvas.height - 0.07 * canvas.width,
+	endY: 0.75 * canvas.height + 0.07 * canvas.width
 }
 
 module.exports = function(e, btn) {

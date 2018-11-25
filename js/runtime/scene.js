@@ -16,7 +16,7 @@ let fontLoaded = false;
 let txt;
 impact_black.loadFont(IMPACT_BLACK_JSON, function() {
         fontLoaded = true;
-	txt = new BitmapText(impact_black);
+        txt = new BitmapText(impact_black);
 });
 
 const SCORE_H = 0.075 * canvas.width;
@@ -88,9 +88,9 @@ export default class Scene {
                 Scene.drawButton(START_BTN);
                 Scene.draw(RANK_LIST_ICON);
 
-		if (gameInfo.showRank) {
-			Scene.renderRankList();
-		}
+                if (gameInfo.showRank) {
+                        Scene.renderRankList();
+                }
         }
 
         static changeSpiralAnime(spiral) {

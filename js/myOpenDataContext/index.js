@@ -10,7 +10,7 @@ wx.onMessage(data => {
         }
 
         if (data.cmd == "updateScore") {
-		rankListThumbnail.drawBackground();
+                rankListThumbnail.drawBackground();
                 updateScore(data.score);
         }
 
@@ -21,7 +21,7 @@ wx.onMessage(data => {
 
 function updateScore(newScore) {
         wx.getUserCloudStorage({
-		
+
                 keyList: ["wkRecord", "maxRecord"],
                 success: data => {
 
@@ -43,7 +43,7 @@ function updateScore(newScore) {
                                         key: "wkRecord",
                                         value: newScore.toString()
                                 }] : []))
-                                .concat((!maxRecord || maxRecord < weekRecord ? [{
+				.concat((!maxRecord || maxRecord < newScore ? [{
                                         key: "maxRecord",
                                         value: newScore.toString()
                                 }] : []));

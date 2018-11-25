@@ -5,6 +5,7 @@ import GameInfo, {
 import Hole from './hole';
 import Sprite from './sprite';
 
+let isCollideSpiral = require("./utilities/isCollideSpiral");
 let newImage = require("./utilities/newImage");
 let gameInfo = new GameInfo();
 let ctx = canvas.getContext('2d');
@@ -43,10 +44,10 @@ export default class Shooter extends Sprite {
                 // for animation
                 this.acc = 0;
 
-		this.width = this.height = NEXT_SHOOTER_SIZE;
+                this.width = this.height = NEXT_SHOOTER_SIZE;
 
                 this.x = canvas.width / 2;
-		this.y = NEXT_SHOOTER_Y;
+                this.y = NEXT_SHOOTER_Y;
 
                 this.img.src = this.nextShooterSrc ? this.nextShooterSrc : this.randomBall();
                 this.nextShooterSrc = this.randomBall();
@@ -109,23 +110,23 @@ export default class Shooter extends Sprite {
                         this.shown = true;
                 }
 
-		delta = Math.sin(this.acc) * BALL_SIZE * 0.5;
-		this.y = NEXT_SHOOTER_Y - delta;
-		this.width = this.height = NEXT_SHOOTER_SIZE + delta;
+                delta = Math.sin(this.acc) * BALL_SIZE * 0.5;
+                this.y = NEXT_SHOOTER_Y - delta;
+                this.width = this.height = NEXT_SHOOTER_SIZE + delta;
 
-		nextShooterImg = newImage(this.nextShooterSrc);
-		nextShooterSize = NEXT_SHOOTER_SIZE * Math.sin(this.acc);
+                nextShooterImg = newImage(this.nextShooterSrc);
+                nextShooterSize = NEXT_SHOOTER_SIZE * Math.sin(this.acc);
                 ctx.drawImage(
                         nextShooterImg,
-			0.5 * canvas.width - 0.5 * nextShooterSize,
+                        0.5 * canvas.width - 0.5 * nextShooterSize,
                         canvas.height - Math.sin(this.acc) * BALL_SIZE,
-			nextShooterSize,
-			nextShooterSize
+                        nextShooterSize,
+                        nextShooterSize
                 );
 
                 this.display();
 
-		this.acc += 0.05;
+                this.acc += 0.05;
         }
 
         display() {
@@ -145,10 +146,10 @@ export default class Shooter extends Sprite {
         }
 
         update(spiral) {
-		if ((!this.shown) || (!this.shooting)) {
+                if ((!this.shown) || (!this.shooting)) {
                         return;
                 }
-		let bounced = false;
+                let bounced = false;
 
                 if (this.speedX > 0 && (this.x + this.width / 2) >= canvas.width ||
                         this.speedX < 0 && (this.x - this.width / 2) <= 0) {
@@ -173,13 +174,10 @@ export default class Shooter extends Sprite {
 
                 this.y >= BOTTOM_BOUND ? this.y = BOTTOM_BOUND : true;
 
-                for (let i = 0; i < gameInfo.holes.length; i++) {
-                        let hole = gameInfo.holes[i];
-                        if (!(hole instanceof Hole) && hole.isCollideWith(this)) {
-                                this.shooting = false;
-                                spiral.onCollision(this);
-                                return;
-                        }
+                if (isCollideSpiral(this)) {
+                        this.shooting = false;
+                        spiral.onCollision(this);
+                        return;
                 }
 
                 if (this.bounces >= 8 && !this.dropping) {
