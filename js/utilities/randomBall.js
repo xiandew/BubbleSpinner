@@ -5,26 +5,30 @@ import Pivot from "../pivot";
 let gameInfo = new GameInfo();
 
 module.exports = function() {
-	let ballDict = {};
-	BALLS.forEach(ballSrc => {
-		ballDict[ballSrc] = 0;
-	});
 
-	gameInfo.holes.forEach(ball => {
-		if (ball instanceof Ball && !(ball instanceof Pivot)) {
-			let ballSrc = ball.img.src;
-			ballDict[ballSrc.substring(ballSrc.lastIndexOf("images/"))]++;
-		}
-	});
-
-	let ballArr = [];
-	for(let key in ballDict){
-		ballArr.push({ballSrc: key, count: ballDict[key]});
-	}
-	ballArr.sort((b1, b2) => {
-		return b1.count - b2.count;
-	})
-	ballArr = ballArr.filter(ball => ball.count == ballArr[0].count);
+	return BALLS[Math.floor(Math.random() * BALLS.length)];
 	
-	return ballArr[Math.floor(Math.random() * ballArr.length)].ballSrc;
+	// let ballDict = {};
+	// BALLS.forEach(ballSrc => {
+	// 	ballDict[ballSrc] = 0;
+	// });
+
+	// gameInfo.holes.forEach(ball => {
+	// 	if (ball instanceof Ball && !(ball instanceof Pivot)) {
+	// 		let ballSrc = ball.img.src;
+	// 		ballDict[ballSrc.substring(ballSrc.lastIndexOf("images/"))]++;
+	// 	}
+	// });
+
+	// let ballArr = [];
+	// for(let key in ballDict){
+	// 	ballArr.push({ballSrc: key, count: ballDict[key]});
+	// }
+	// ballArr.sort((b1, b2) => {
+	// 	return b1.count - b2.count;
+	// })
+	// ballArr = ballArr.filter(ball => ball.count == ballArr[0].count);
+	
+	// return ballArr[Math.floor(Math.random() * ballArr.length)].ballSrc;
+
 };
