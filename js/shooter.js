@@ -7,6 +7,7 @@ import Sprite from './sprite';
 
 let isCollideSpiral = require("./utilities/isCollideSpiral");
 let newImage = require("./utilities/newImage");
+let randomBall = require("./utilities/randomBall");
 let gameInfo = new GameInfo();
 let ctx = canvas.getContext('2d');
 
@@ -49,12 +50,8 @@ export default class Shooter extends Sprite {
                 this.x = canvas.width / 2;
                 this.y = NEXT_SHOOTER_Y;
 
-                this.img.src = this.nextShooterSrc ? this.nextShooterSrc : this.randomBall();
-                this.nextShooterSrc = this.randomBall();
-        }
-
-        randomBall() {
-                return BALLS[Math.floor(Math.random() * BALLS.length)];
+                this.img.src = this.nextShooterSrc ? this.nextShooterSrc : randomBall();
+                this.nextShooterSrc = randomBall();
         }
 
         addEvents() {

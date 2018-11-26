@@ -17,23 +17,34 @@ export default class ExtraBalls {
                 this.balls = [];
         }
         generate() {
+                let num = 2 + Math.round(Math.random() * 6)
+                let coords = [];
+                for (let i = 0, angle, x, y; i < num; i++) {
+                        angle = Math.random() * Math.PI * 2;
+                        x = Math.cos(angle) * canvas.height;
+                        y = Math.sin(angle) * canvas.height;
 
-                this.ballsCoord = [
-                        [-BALL_SIZE, Math.random() * canvas.height * 0.5],
-                        [-BALL_SIZE, Math.random() * canvas.height * 0.5 + canvas.height * 0.5],
-                        [canvas.width + BALL_SIZE, Math.random() * canvas.height * 0.5],
-                        [canvas.width + BALL_SIZE, Math.random() * canvas.height * 0.5 + canvas.height * 0.5],
-                        [Math.random() * canvas.width, -BALL_SIZE],
-                        [Math.random() * canvas.width, canvas.height + BALL_SIZE]
-                ];
+                        if (x < -BALL_SIZE) {
+                                x = -BALL_SIZE;
+                        } else if (x > canvas.width + BALL_SIZE) {
+                                x = canvas.width + BALL_SIZE;
+                        }
+
+			if (y < -BALL_SIZE) {
+				y = -BALL_SIZE;
+			} else if (y > canvas.height + BALL_SIZE) {
+				y = canvas.height + BALL_SIZE;
+			}
+
+                        coords.push([x, y]);
+                }
 
                 this.balls = [];
-                let ballSrc = shuffle(BALLS);
 
-                this.ballsCoord.forEach((coord, i) => {
+                coords.forEach((coord, i) => {
                         let ball = new Ball();
                         [ball.x, ball.y] = coord;
-                        ball.img.src = ballSrc[i];
+                        ball.img.src = randomBall();
                         this.balls.push(ball);
                 });
         }
@@ -83,10 +94,3 @@ export default class ExtraBalls {
         }
 }
 
-function shuffle(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-                let j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-        }
-        return array;
-}

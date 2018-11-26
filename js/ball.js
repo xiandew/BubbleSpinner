@@ -39,13 +39,12 @@ export default class Ball extends Sprite {
                 super.render();
                 // TODO an out screen animation
 
-
         }
 
 
 
 
-        //draw a circle shape instead of image. Not display well on the phone
+        // draw a circle shape instead of image. Not display well on the phone
         // render(ctx) {
         //         if (!this.visible) {
         //                 return

@@ -1,7 +1,7 @@
 let instance;
 let ctx = canvas.getContext('2d');
 
-const MAX_NUM_LIVES = 5;
+const MAX_NUM_LIVES = 6;
 const LAYERS = [2, 3, 4, 5, 6];
 
 export const BALLS = [
@@ -50,7 +50,7 @@ export default class GameInfo {
         }
 
         renewLives() {
-                this.lives = MAX_NUM_LIVES;
+                this.lives = 2 + Math.round(Math.random() * MAX_NUM_LIVES);
                 this.loseLive = false;
         }
 }
