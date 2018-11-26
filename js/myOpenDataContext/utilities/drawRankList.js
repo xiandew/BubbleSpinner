@@ -20,8 +20,9 @@ const BG_START_X = 0.075 * canvasWidth;
 const BG_START_Y = PANEL_START_Y - TITLE_SIZE;
 
 const RANK_ITEM_HEIGHT = PANEL_HEIGHT / 6;
-const AVATAR_SIZE = 0.6 * RANK_ITEM_HEIGHT;
-const AVATAR_START_Y = 0.2 * RANK_ITEM_HEIGHT;
+const AVATAR_SIZE = 0.5 * RANK_ITEM_HEIGHT;
+const AVATAR_START_X = 105;
+const AVATAR_START_Y = 0.25 * RANK_ITEM_HEIGHT;
 
 const SELF_RANK_START_Y = 0.725 * canvasHeight;
 
@@ -135,7 +136,7 @@ function drawPage(pageIndex) {
                 avatar.onload = function() {
                         rankList.drawImage(
                                 avatar,
-                                125,
+                                AVATAR_START_X,
                                 RANK_ITEM_HEIGHT * i + AVATAR_START_Y,
                                 AVATAR_SIZE,
                                 AVATAR_SIZE
@@ -172,8 +173,8 @@ function drawSelfRank() {
         avatar.onload = function() {
                 selfRank.drawImage(
                         avatar,
-                        125,
-                        selfRankCanvas.height * 0.3125,
+			AVATAR_START_X,
+                        selfRankCanvas.height * 0.35,
                         AVATAR_SIZE,
                         AVATAR_SIZE
                 );
@@ -198,18 +199,18 @@ function drawRankText(i, user, textHeight, ctx) {
 
         ctx.font = "italic bold " + AVATAR_SIZE / 2 + "px Arial";
         ctx.textAlign = 'center';
-        ctx.fillText(i + 1, 60, textHeight);
+        ctx.fillText(i + 1, 50, textHeight);
         ctx.closePath();
 
         ctx.fillStyle = '#ffffff';
         ctx.font = AVATAR_SIZE / 2 + "px Arial";
         ctx.textAlign = 'left';
-        ctx.fillText(user.nickname, 250, textHeight);
+        ctx.fillText(user.nickname, 190, textHeight);
 
         if (shared.fontLoaded) {
-                shared.txt.fontSize = RANK_ITEM_HEIGHT / 2;
+                shared.txt.fontSize = RANK_ITEM_HEIGHT / 2.4;
                 shared.txt.textAlign = 'right';
-                shared.txt.draw(ctx, user.KVDataList[0].value, 580, textHeight - 0.4 * RANK_ITEM_HEIGHT);
+                shared.txt.draw(ctx, user.KVDataList[0].value, 580, textHeight - 0.35 * RANK_ITEM_HEIGHT);
         }
 }
 
