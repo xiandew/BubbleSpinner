@@ -204,9 +204,9 @@ export default class Spiral {
                 this.visitAttachedBalls(this.pivot);
 
                 // find balls not attached to the pivot
-                gameInfo.holes.forEach(ball => {
+                gameInfo.holes.forEach((ball, i) => {
                         if (ball instanceof Ball && ball != this.pivot && !ball.visited) {
-                                gameInfo.holes.splice(gameInfo.holes.indexOf(ball), 1, new Hole(ball.x, ball.y, ball.layer));
+                                gameInfo.holes.splice(i, 1, new Hole(ball.x, ball.y, ball.layer));
                                 gameInfo.score += (gameInfo.level + 1);
                         }
                 });
