@@ -175,7 +175,7 @@ export default class Spiral {
 
         findSameBalls(target) {
                 this.findAround(target).forEach(ball => {
-                        if (ball.img.src === target.img.src) {
+                        if (ball.img.src == target.img.src && !this.sameBalls.includes(ball)) {
                                 ball.visited = true;
                                 this.sameBalls.push(ball);
                                 this.findSameBalls(ball);
