@@ -20,6 +20,10 @@ export default class Ball extends Sprite {
         }
 
         rotate(angle) {
+                if (this.dropping) {
+                        return;
+                }
+
                 let toCentY = this.y - canvas.height / 2;
                 let toCentX = this.x - canvas.width / 2;
 
@@ -36,13 +40,17 @@ export default class Ball extends Sprite {
         }
 
         render() {
-                super.render();
-                // TODO an out screen animation
+                if (this.dropping) {
+                        this.y += 5;
+                }
 
+                super.render();
         }
 
 
-
+	dropOut() {
+		
+	}
 
         // draw a circle shape instead of image. Not display well on the phone
         // render(ctx) {

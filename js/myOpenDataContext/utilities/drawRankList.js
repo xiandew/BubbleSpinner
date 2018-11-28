@@ -208,9 +208,9 @@ function drawRankText(i, user, textHeight, ctx) {
         ctx.fillText(user.nickname, 190, textHeight);
 
         if (shared.fontLoaded) {
-                shared.txt.fontSize = RANK_ITEM_HEIGHT / 2.4;
+                shared.txt.fontSize = RANK_ITEM_HEIGHT / 3;
                 shared.txt.textAlign = 'right';
-                shared.txt.draw(ctx, user.KVDataList[0].value, 580, textHeight - 0.35 * RANK_ITEM_HEIGHT);
+                shared.txt.draw(ctx, user.KVDataList[0].value, 580, textHeight - 0.3 * RANK_ITEM_HEIGHT);
         }
 }
 

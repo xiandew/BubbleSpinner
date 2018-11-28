@@ -11,24 +11,24 @@ let ctx = shared.ctx;
 let canvasWidth = shared.canvasWidth;
 let canvasHeight = shared.canvasHeight;
 
-const SCORE_SIZE = 0.17 * canvasWidth;
+const SCORE_SIZE = 0.15 * canvasWidth;
 const SCORE_X = 0.5 * canvasWidth;
 const SCORE_Y = 0.1 * canvasHeight;
 
 const PANEL_WIDTH = 0.85 * canvasWidth;
-const PANEL_HEIGHT = 0.25 * canvasHeight;
+const PANEL_HEIGHT = 0.225 * canvasHeight;
 const PANEL_START_Y = 0.3 * canvasHeight;
 const PANEL_START_X = (canvasWidth - PANEL_WIDTH) / 2;
 
 const RANK_ITEM_WIDTH = PANEL_WIDTH / 3;
 
-const TEXT_SIZE = 0.0178 * canvasHeight;
+const TEXT_SIZE = 0.0175 * canvasHeight;
 
 const TEXT_BG_HEIGHT = TEXT_SIZE * 2.5;
 const TEXT_BG_START_Y = PANEL_START_Y + PANEL_HEIGHT;
 const TEXT_START_Y = TEXT_BG_START_Y + TEXT_SIZE * 1.65;
 
-const AVATAR_SIZE = PANEL_HEIGHT * 0.28;
+const AVATAR_SIZE = PANEL_HEIGHT * 0.25;
 const AVATAR_START_X = (RANK_ITEM_WIDTH - AVATAR_SIZE) / 2;
 
 const RESTART_BTN = {
@@ -165,18 +165,18 @@ function drawRankPanel() {
                 );
 
                 ctx.fillStyle = "#888888";
-                ctx.font = TEXT_SIZE * 1.2 + "px Arial";
+                ctx.font = TEXT_SIZE + "px Arial";
                 ctx.textAlign = "center";
-                ctx.fillText(triple[i].nickname, centX, PANEL_START_Y + PANEL_HEIGHT * 0.72);
+                ctx.fillText(triple[i].nickname, centX, PANEL_START_Y + PANEL_HEIGHT * 0.675);
 
                 if (shared.fontLoaded) {
-                        shared.txt.fontSize = TEXT_SIZE * 1.75;
+                        shared.txt.fontSize = TEXT_SIZE * 1.5;
                         shared.txt.textAlign = "center";
                         shared.txt.draw(
                                 ctx,
                                 triple[i].KVDataList[WEEK_RECORD].value,
                                 centX,
-                                PANEL_START_Y + PANEL_HEIGHT * 0.8
+                                PANEL_START_Y + PANEL_HEIGHT * 0.775
                         );
                 }
 
