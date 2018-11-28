@@ -14,9 +14,9 @@ const RANK_LIST_RETURN = {
 
 const FULL_RANK_TEXTAREA = {
         startX: 0.642 * canvasWidth,
-        startY: 0.55 * canvasHeight,
+        startY: 0.525 * canvasHeight,
         endX: 0.925 * canvasWidth,
-        endY: 0.5945 * canvasHeight
+        endY: 0.56875 * canvasHeight
 };
 
 module.exports = function(e, btn) {
