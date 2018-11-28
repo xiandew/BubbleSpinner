@@ -163,9 +163,10 @@ export default class Spiral {
 
                 if (this.sameBalls.length >= 3) {
                         this.sameBalls.forEach(ball => {
-                                gameInfo.holes.splice(
-                                        gameInfo.holes.indexOf(ball), 1,
-                                        new Hole(ball.x, ball.y, ball.layer));
+                                ball.dropping = true;
+
+
+                                gameInfo.holes.push(new Hole(ball.x, ball.y, ball.layer));
                                 gameInfo.score += (gameInfo.level + 1);
                         });
                 } else {
@@ -177,6 +178,7 @@ export default class Spiral {
                 this.findAround(target).forEach(ball => {
                         if (ball.img.src == target.img.src && !this.sameBalls.includes(ball)) {
                                 ball.visited = true;
+				
                                 this.sameBalls.push(ball);
                                 this.findSameBalls(ball);
                         }
@@ -206,7 +208,10 @@ export default class Spiral {
                 // find balls not attached to the pivot
                 gameInfo.holes.forEach((ball, i) => {
                         if (ball instanceof Ball && ball != this.pivot && !ball.visited) {
-                                gameInfo.holes.splice(i, 1, new Hole(ball.x, ball.y, ball.layer));
+                                ball.dropping = true;
+
+
+                                gameInfo.holes.push(new Hole(ball.x, ball.y, ball.layer));
                                 gameInfo.score += (gameInfo.level + 1);
                         }
                 });
