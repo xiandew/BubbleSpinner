@@ -172,7 +172,6 @@ export default class Spiral {
                         this.sameBalls.forEach(ball => {
                                 ball.initDropping(this.target);
 
-
                                 gameInfo.holes.push(new Hole(ball.x, ball.y, ball.layer));
                                 gameInfo.score += (gameInfo.level + 1);
                         });
@@ -214,7 +213,8 @@ export default class Spiral {
 
                 // find balls not attached to the pivot
                 gameInfo.holes.forEach(ball => {
-                        if ((ball instanceof Ball) && ball != this.pivot && !ball.visited) {
+                        if (ball instanceof Ball && ball != this.pivot &&
+                                !ball.visited && typeof(ball.dropping) == "undefined") {
                                 ball.initDropping(this.target);
 
                                 gameInfo.holes.push(new Hole(ball.x, ball.y, ball.layer));
@@ -227,8 +227,10 @@ export default class Spiral {
 
         visitAttachedBalls(target) {
                 this.findAround(target).forEach(ball => {
-                        ball.visited = true;
-                        this.visitAttachedBalls(ball);
+                        if (typeof(ball.dropping) == "undefined") {
+                                ball.visited = true;
+                                this.visitAttachedBalls(ball);
+                        }
                 });
         }
 
