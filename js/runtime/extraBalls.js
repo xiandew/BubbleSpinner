@@ -30,11 +30,11 @@ export default class ExtraBalls {
                                 x = canvas.width + BALL_SIZE;
                         }
 
-			if (y < -BALL_SIZE) {
-				y = -BALL_SIZE;
-			} else if (y > canvas.height + BALL_SIZE) {
-				y = canvas.height + BALL_SIZE;
-			}
+                        if (y < -BALL_SIZE) {
+                                y = -BALL_SIZE;
+                        } else if (y > canvas.height + BALL_SIZE) {
+                                y = canvas.height + BALL_SIZE;
+                        }
 
                         coords.push([x, y]);
                 }
@@ -58,10 +58,12 @@ export default class ExtraBalls {
                         this.generate();
                 }
 
-                this.balls.forEach(ball => {
+                for (let i = this.balls.length - 1, ball, angle; i >= 0; i--) {
+                        ball = this.balls[i];
+
                         if (typeof(ball.speedX) == "undefined" ||
                                 typeof(ball.speedY) == "undefined") {
-                                let angle = Math.atan2(
+                                angle = Math.atan2(
                                         gameInfo.holes[0].y - ball.y,
                                         gameInfo.holes[0].x - ball.x
                                 );
@@ -73,10 +75,10 @@ export default class ExtraBalls {
 
                         if (isCollideSpiral(ball)) {
                                 spiral.onCollision(ball);
-                                this.balls.splice(this.balls.indexOf(ball), 1);
-                                return;
+                                this.balls.splice(i, 1);
                         }
-                });
+
+                }
 
                 if (this.balls.length == 0) {
                         gameInfo.renewLives();
@@ -93,4 +95,3 @@ export default class ExtraBalls {
                 });
         }
 }
-
