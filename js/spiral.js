@@ -131,7 +131,7 @@ export default class Spiral {
 
                 if (nballs > 0) {
                         this.angleSpeed = tangentSpeed / nballs;
-                        this.angleSpeed = this.angleSpeed > 0.1 ? 0.1 : this.angleSpeed < -0.1 ? -0.1 : this.angleSpeed;
+                        Math.abs(this.angleSpeed) > 0.1 ? (this.angleSpeed = this.angleSpeed > 0 ? 0.1 : -0.1) : true;
                 } else {
                         gameInfo.level++;
                         gameInfo.levelup = true;
@@ -139,6 +139,13 @@ export default class Spiral {
 
                 if (shooter instanceof Shooter) {
                         shooter.initShooter();
+
+			for (let i = gameInfo.holes.length - 1, ball; i >= 0; i--) {
+				ball = gameInfo.holes[i];
+				if (ball instanceof Ball && ball.dropping === false) {
+					gameInfo.holes.splice(i, 1);
+				}
+			}
                 }
         }
 
@@ -163,7 +170,7 @@ export default class Spiral {
 
                 if (this.sameBalls.length >= 3) {
                         this.sameBalls.forEach(ball => {
-                                ball.dropping = true;
+                                ball.initDropping(this.target);
 
 
                                 gameInfo.holes.push(new Hole(ball.x, ball.y, ball.layer));
@@ -178,7 +185,7 @@ export default class Spiral {
                 this.findAround(target).forEach(ball => {
                         if (ball.img.src == target.img.src && !this.sameBalls.includes(ball)) {
                                 ball.visited = true;
-				
+
                                 this.sameBalls.push(ball);
                                 this.findSameBalls(ball);
                         }
@@ -208,7 +215,7 @@ export default class Spiral {
                 // find balls not attached to the pivot
                 gameInfo.holes.forEach((ball, i) => {
                         if (ball instanceof Ball && ball != this.pivot && !ball.visited) {
-                                ball.dropping = true;
+				ball.initDropping(this.target);
 
 
                                 gameInfo.holes.push(new Hole(ball.x, ball.y, ball.layer));

@@ -20,7 +20,7 @@ export default class Ball extends Sprite {
         }
 
         rotate(angle) {
-                if (this.dropping) {
+                if (typeof(this.dropping) != "undefined") {
                         return;
                 }
 
@@ -41,16 +41,30 @@ export default class Ball extends Sprite {
 
         render() {
                 if (this.dropping) {
-                        this.y += 5;
+
+                        this.speedX *= 0.998;
+                        this.speedY += 0.98;
+
+                        this.y += this.speedY;
+                        this.x += this.speedX;
+
+                        if (this.y > canvas.height + BALL_SIZE) {
+                                this.dropping = false;
+                        }
                 }
 
                 super.render();
         }
 
 
-	dropOut() {
-		
-	}
+        initDropping(shooter) {
+                this.dropping = true;
+
+                let angle = Math.atan2(this.y - shooter.y, this.x - shooter.x);
+
+                this.speedX = 5 * Math.cos(angle);
+                this.speedY = 5 * Math.sin(angle);
+        }
 
         // draw a circle shape instead of image. Not display well on the phone
         // render(ctx) {
