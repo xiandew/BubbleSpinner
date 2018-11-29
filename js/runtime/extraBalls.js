@@ -58,12 +58,12 @@ export default class ExtraBalls {
                         this.generate();
                 }
 
-                for (let i = this.balls.length - 1, ball; i >= 0; i--) {
+                for (let i = this.balls.length - 1, ball, angle; i >= 0; i--) {
                         ball = this.balls[i];
 
                         if (typeof(ball.speedX) == "undefined" ||
                                 typeof(ball.speedY) == "undefined") {
-                                let angle = Math.atan2(
+                                angle = Math.atan2(
                                         gameInfo.holes[0].y - ball.y,
                                         gameInfo.holes[0].x - ball.x
                                 );
@@ -76,7 +76,6 @@ export default class ExtraBalls {
                         if (isCollideSpiral(ball)) {
                                 spiral.onCollision(ball);
                                 this.balls.splice(i, 1);
-                                return;
                         }
 
                 }
