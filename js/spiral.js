@@ -140,12 +140,12 @@ export default class Spiral {
                 if (shooter instanceof Shooter) {
                         shooter.initShooter();
 
-			for (let i = gameInfo.holes.length - 1, ball; i >= 0; i--) {
-				ball = gameInfo.holes[i];
-				if (ball instanceof Ball && ball.dropping === false) {
-					gameInfo.holes.splice(i, 1);
-				}
-			}
+                        for (let i = gameInfo.holes.length - 1, ball; i >= 0; i--) {
+                                ball = gameInfo.holes[i];
+                                if (ball instanceof Ball && ball.dropping === false) {
+                                        gameInfo.holes.splice(i, 1);
+                                }
+                        }
                 }
         }
 
@@ -213,10 +213,9 @@ export default class Spiral {
                 this.visitAttachedBalls(this.pivot);
 
                 // find balls not attached to the pivot
-                gameInfo.holes.forEach((ball, i) => {
-                        if (ball instanceof Ball && ball != this.pivot && !ball.visited) {
-				ball.initDropping(this.target);
-
+                gameInfo.holes.forEach(ball => {
+                        if ((ball instanceof Ball) && ball != this.pivot && !ball.visited) {
+                                ball.initDropping(this.target);
 
                                 gameInfo.holes.push(new Hole(ball.x, ball.y, ball.layer));
                                 gameInfo.score += (gameInfo.level + 1);
