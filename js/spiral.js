@@ -173,7 +173,6 @@ export default class Spiral {
                                 ball.initDropping(this.target);
 
                                 gameInfo.holes.push(new Hole(ball.x, ball.y, ball.layer));
-                                gameInfo.score += (gameInfo.level + 1);
                         });
                 } else {
                         gameInfo.loseLive = true;
@@ -218,7 +217,6 @@ export default class Spiral {
                                 ball.initDropping(this.target);
 
                                 gameInfo.holes.push(new Hole(ball.x, ball.y, ball.layer));
-                                gameInfo.score += (gameInfo.level + 1);
                         }
                 });
 
