@@ -64,6 +64,8 @@ export default class Ball extends Sprite {
 
                 this.speedX = 5 * Math.cos(angle);
                 this.speedY = 5 * Math.sin(angle);
+
+                gameInfo.score += (gameInfo.level + 1);
         }
 
         // draw a circle shape instead of image. Not display well on the phone
