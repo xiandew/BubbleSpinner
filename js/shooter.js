@@ -177,7 +177,7 @@ export default class Shooter extends Sprite {
                         return;
                 }
 
-                if (this.bounces >= 8 && !this.dropping) {
+                if (this.bounces >= 8 && !this.dropping && this.speedY < 0) {
                         // reset the speed for dropping effect
                         this.speedX = 2.5 * (this.speedX > 0 ? 1 : -1);
                         this.dropping = true;
