@@ -80,8 +80,8 @@ export default class Spiral {
                 if (countOnScreenBalls() == 0) {
                         this.toChange = true;
 
-                        gameInfo.level++;
                         gameInfo.levelup = true;
+                        gameInfo.level++;
                 }
 
                 if (this.rotating) {
@@ -106,7 +106,10 @@ export default class Spiral {
 
                         this.rotating = false;
                 }
-                gameInfo.holes.forEach(hole => hole.rotate(this.angleSpeed));
+
+                gameInfo.holes.forEach(hole => {
+                        hole.rotate(this.angleSpeed);
+                });
         }
 
         onCollision(shooter) {
@@ -151,8 +154,10 @@ export default class Spiral {
                         }
                 });
 
+                this.angleSpeed = tangentSpeed;
                 if (nballs > 0) {
-                        this.angleSpeed = tangentSpeed / nballs;
+                        this.angleSpeed /= nballs;
+
                         if (Math.abs(this.angleSpeed) > 0.1) {
                                 this.angleSpeed = this.angleSpeed > 0 ? 0.1 : -0.1;
                         }
@@ -180,6 +185,7 @@ export default class Spiral {
 
         findSameBalls(target) {
                 findAround(target).forEach(ball => {
+
                         if (ball.img.src == target.img.src && !this.sameBalls.includes(ball)) {
                                 ball.visited = true;
 
@@ -227,6 +233,7 @@ export default class Spiral {
 function findAround(target) {
         // balls next to the target
         let around = [];
+
         gameInfo.holes.forEach(hole => {
                 if (!(hole instanceof Hole)) {
                         let dSquare = Math.floor((hole.x - target.x) ** 2 + (hole.y - target.y) ** 2);
@@ -235,6 +242,7 @@ function findAround(target) {
                         }
                 }
         });
+
         return around;
 }
 
@@ -250,7 +258,9 @@ function visitAttachedBalls(target) {
 // Ensure every visible balls are not visited
 function revertVisited() {
         gameInfo.holes.forEach(ball => {
-                ball instanceof Ball ? ball.visited = false : true;
+                if (ball instanceof Ball) {
+                        ball.visited = false;
+                }
         });
 }
 
