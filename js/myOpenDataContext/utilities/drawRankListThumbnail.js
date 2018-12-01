@@ -28,7 +28,7 @@ const TEXT_BG_HEIGHT = TEXT_SIZE * 2.5;
 const TEXT_BG_START_Y = PANEL_START_Y + PANEL_HEIGHT;
 const TEXT_START_Y = TEXT_BG_START_Y + TEXT_SIZE * 1.65;
 
-const AVATAR_SIZE = PANEL_HEIGHT * 0.25;
+const AVATAR_SIZE = PANEL_HEIGHT * 0.225;
 const AVATAR_START_X = (RANK_ITEM_WIDTH - AVATAR_SIZE) / 2;
 
 const RESTART_BTN = {
@@ -167,7 +167,7 @@ function drawRankPanel() {
                 ctx.fillStyle = "#888888";
                 ctx.font = TEXT_SIZE + "px Arial";
                 ctx.textAlign = "center";
-                ctx.fillText(triple[i].nickname, centX, PANEL_START_Y + PANEL_HEIGHT * 0.675);
+                ctx.fillText(triple[i].nickname, centX, PANEL_START_Y + PANEL_HEIGHT * 0.65);
 
                 if (shared.fontLoaded) {
                         shared.txt.fontSize = TEXT_SIZE * 1.5;

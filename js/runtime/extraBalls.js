@@ -1,5 +1,4 @@
 import GameInfo, {
-        BALLS,
         BALL_SIZE
 } from "./gameInfo";
 import Ball from "../ball";
@@ -17,7 +16,7 @@ export default class ExtraBalls {
                 this.balls = [];
         }
         generate() {
-                let num = 2 + Math.round(Math.random() * 6)
+                let num = 2 + Math.round(Math.random() * 6);
                 let coords = [];
                 for (let i = 0, angle, x, y; i < num; i++) {
                         angle = Math.random() * Math.PI * 2;
@@ -77,7 +76,6 @@ export default class ExtraBalls {
                                 spiral.onCollision(ball);
                                 this.balls.splice(i, 1);
                         }
-
                 }
 
                 if (this.balls.length == 0) {

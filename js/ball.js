@@ -1,6 +1,5 @@
 import Sprite from './sprite';
 import GameInfo, {
-        BALLS,
         BALL_SIZE
 } from './runtime/gameInfo';
 

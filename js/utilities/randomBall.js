@@ -5,8 +5,9 @@ import Pivot from "../pivot";
 let gameInfo = new GameInfo();
 
 module.exports = function() {
+	let balls = gameInfo.getBalls();
 
-	return BALLS[Math.floor(Math.random() * BALLS.length)];
+	return balls[Math.floor(Math.random() * balls.length)];
 	
 	// let ballDict = {};
 	// BALLS.forEach(ballSrc => {
