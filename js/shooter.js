@@ -1,5 +1,4 @@
 import GameInfo, {
-        BALLS,
         BALL_SIZE
 } from './runtime/gameInfo';
 import Hole from './hole';

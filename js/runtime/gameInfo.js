@@ -28,6 +28,8 @@ export default class GameInfo {
                 this.sharedCanvas.width = canvas.width * this.pixelRatio;
                 this.sharedCanvas.height = canvas.height * this.pixelRatio;
 
+                this.balls = shuffle(BALLS);
+
                 this.holes = [];
                 this.start = false;
                 this.level = 0;
@@ -49,8 +51,20 @@ export default class GameInfo {
                 return this.level < LAYERS.length ? LAYERS[this.level] : LAYERS[LAYERS.length - 1];
         }
 
+        getBalls() {
+                return this.balls.slice(0, this.getLayers() + 1);
+        }
+
         renewLives() {
                 this.lives = 2 + Math.round(Math.random() * MAX_NUM_LIVES);
                 this.loseLive = false;
         }
+}
+
+function shuffle(a) {
+        for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
 }
