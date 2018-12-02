@@ -62,7 +62,7 @@ export default class Spiral {
                 let layers = gameInfo.getLayers();
 
                 gameInfo.holes.forEach((hole, i) => {
-                        if (hole.layer <= layers && hole instanceof Hole) {
+                        if (hole.layer <= layers) {
                                 gameInfo.holes.splice(i, 1, new Ball(hole));
                         }
                         if (hole.layer > layers && !(hole instanceof Hole)) {

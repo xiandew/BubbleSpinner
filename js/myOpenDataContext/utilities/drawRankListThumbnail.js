@@ -167,7 +167,12 @@ function drawRankPanel() {
                 ctx.fillStyle = "#888888";
                 ctx.font = TEXT_SIZE + "px Arial";
                 ctx.textAlign = "center";
-                ctx.fillText(triple[i].nickname, centX, PANEL_START_Y + PANEL_HEIGHT * 0.65);
+                ctx.fillText(
+                        triple[i].nickname,
+                        centX,
+                        PANEL_START_Y + PANEL_HEIGHT * 0.65,
+                        RANK_ITEM_WIDTH
+                );
 
                 if (shared.fontLoaded) {
                         shared.txt.fontSize = TEXT_SIZE * 1.5;
