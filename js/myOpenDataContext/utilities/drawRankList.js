@@ -205,7 +205,7 @@ function drawRankText(i, user, textHeight, ctx) {
         ctx.fillStyle = '#ffffff';
         ctx.font = AVATAR_SIZE / 2 + "px Arial";
         ctx.textAlign = 'left';
-        ctx.fillText(user.nickname, 190, textHeight);
+        ctx.fillText(user.nickname, 190, textHeight, 250);
 
         if (shared.fontLoaded) {
                 shared.txt.fontSize = RANK_ITEM_HEIGHT / 3;
