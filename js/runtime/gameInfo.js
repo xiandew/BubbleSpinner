@@ -70,3 +70,12 @@ function shuffle(a) {
         }
         return a;
 }
+
+export const SHARE_IMG = [
+	'images/share/b_blue.png',
+	'images/share/b_cyan.png',
+	'images/share/b_green.png',
+	'images/share/b_pink.png',
+	'images/share/b_red.png',
+	'images/share/b_yellow.png'
+];

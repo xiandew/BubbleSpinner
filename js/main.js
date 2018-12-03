@@ -2,7 +2,9 @@ import Spiral from './spiral';
 import Shooter from './shooter';
 import Lives from "./lives";
 import ExtraBalls from "./runtime/extraBalls";
-import GameInfo from './runtime/gameInfo';
+import GameInfo, {
+	SHARE_IMG
+} from './runtime/gameInfo';
 import Scene from './runtime/scene';
 
 let isClicked = require('./utilities/isClicked');
@@ -167,3 +169,13 @@ export default class Main {
                 this.frameID = requestAnimationFrame(this.bindLoop);
         }
 }
+
+wx.showShareMenu({
+	withShareTicket: true,
+});
+wx.onShareAppMessage(function () {
+	return {
+		title: 'Shoot it!!',
+		imageUrl: SHARE_IMG[Math.floor(Math.random() * SHARE_IMG.length)]
+	}
+});
