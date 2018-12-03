@@ -1,6 +1,8 @@
 import Shared from "../shared";
 let shared = new Shared();
 
+let drawText = require("./drawText");
+
 /*----------------------------------------------------------------------------*/
 
 let ctx = shared.ctx;
@@ -93,7 +95,7 @@ module.exports = function() {
                                                 shared.selfRank = shared.ranks[shared.selfRankIndex];
                                         }
 
-					if (shared.asyncAllowed) {
+                                        if (shared.asyncAllowed) {
                                                 drawPage(currentPage);
                                                 drawSelfRank();
                                         }
@@ -133,7 +135,12 @@ function drawPage(pageIndex) {
                 );
 
                 let avatar = wx.createImage();
+                avatar.pageIndex = pageIndex;
                 avatar.onload = function() {
+                        if (avatar.pageIndex != pageIndex) {
+                                return;
+                        }
+
                         rankList.drawImage(
                                 avatar,
                                 AVATAR_START_X,
@@ -173,7 +180,7 @@ function drawSelfRank() {
         avatar.onload = function() {
                 selfRank.drawImage(
                         avatar,
-			AVATAR_START_X,
+                        AVATAR_START_X,
                         selfRankCanvas.height * 0.35,
                         AVATAR_SIZE,
                         AVATAR_SIZE
@@ -197,15 +204,22 @@ function drawRankText(i, user, textHeight, ctx) {
         ctx.beginPath();
         ctx.fillStyle = i == 0 ? '#fa7e00' : i == 1 ? '#fec11e' : i == 2 ? '#fbd413' : '#ffffff';
 
-        ctx.font = "italic bold " + AVATAR_SIZE / 2 + "px Arial";
+        ctx.font = `italic bold ${AVATAR_SIZE / 2}px Arial`;
         ctx.textAlign = 'center';
         ctx.fillText(i + 1, 50, textHeight);
         ctx.closePath();
 
         ctx.fillStyle = '#ffffff';
-        ctx.font = AVATAR_SIZE / 2 + "px Arial";
         ctx.textAlign = 'left';
-        ctx.fillText(user.nickname, 190, textHeight, 250);
+
+        drawText(
+                ctx,
+                AVATAR_SIZE / 2,
+                user.nickname,
+                190,
+                textHeight,
+                250
+        );
 
         if (shared.fontLoaded) {
                 shared.txt.fontSize = RANK_ITEM_HEIGHT / 3;
@@ -226,7 +240,7 @@ function drawBackground() {
         ctx.closePath();
 
         ctx.fillStyle = "#ffffff";
-        ctx.font = "bold " + TITLE_SIZE + "px Arial";
+        ctx.font = `bold ${TITLE_SIZE}px Arial`;
         ctx.textAlign = "center";
         ctx.fillText('好友排行榜', TITLE_X, TITLE_Y);
 
@@ -234,12 +248,12 @@ function drawBackground() {
         ctx.fillRect(BG_START_X, BG_START_Y, PANEL_WIDTH, BG_HEIGHT);
 
         ctx.fillStyle = "#9b9b9b";
-        ctx.font = TITLE_SIZE / 1.8 + "px Arial";
+        ctx.font = `${TITLE_SIZE / 1.8}px Arial`;
         ctx.textAlign = "left";
         ctx.fillText("每周一凌晨刷新", BG_START_X + 50, BG_START_Y + 35);
 
         ctx.fillStyle = "#9b9b9b";
-        ctx.font = TITLE_SIZE / 1.5 + "px Arial";
+        ctx.font = `${TITLE_SIZE / 1.5}px Arial`;
         ctx.textAlign = "center";
         ctx.fillText("加载中", canvasWidth / 2, PANEL_START_Y + PANEL_HEIGHT / 2);
 
@@ -248,7 +262,7 @@ function drawBackground() {
         ctx.fillRect(BG_START_X, SELF_RANK_START_Y, PANEL_WIDTH, selfRankCanvas.height);
 
         ctx.fillStyle = "#9b9b9b";
-        ctx.font = TITLE_SIZE / 1.5 + "px Arial";
+        ctx.font = `${TITLE_SIZE / 1.5}px Arial`;
         ctx.textAlign = "center";
         ctx.fillText("加载中", canvasWidth / 2, SELF_RANK_START_Y + selfRankCanvas.height / 1.75);
 

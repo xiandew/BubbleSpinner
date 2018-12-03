@@ -30,11 +30,11 @@ export default class Shared {
 
                 this.asyncAllowed = true;
 
-                this.impact_white = new BitmapFont();
-                this.fontLoaded = false;
-                this.impact_white.loadFont(IMPACT_WHITE_JSON, function() {
+		this.fontLoaded = false;
+                let impact_white = new BitmapFont();
+                impact_white.loadFont(IMPACT_WHITE_JSON, function() {
                         this.fontLoaded = true;
-                        this.txt = new BitmapText(this.impact_white);
+                        this.txt = new BitmapText(impact_white);
                 }.bind(this));
         }
 }
