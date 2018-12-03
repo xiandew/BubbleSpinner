@@ -2,7 +2,9 @@ import Spiral from './spiral';
 import Shooter from './shooter';
 import Lives from "./lives";
 import ExtraBalls from "./runtime/extraBalls";
-import GameInfo from './runtime/gameInfo';
+import GameInfo, {
+	SHARE_IMG
+} from './runtime/gameInfo';
 import Scene from './runtime/scene';
 
 let isClicked = require('./utilities/isClicked');
@@ -119,6 +121,13 @@ export default class Main {
                                 gameInfo.showRank = false;
                         }
 
+			//////////////////////////////////////////////////////////////////////////////////////////
+			// if (isClicked(e, "GroupRankList")) {
+			// 	wx.shareAppMessage({
+			// 		title: '转发标题'
+			// 	});
+			// }
+
                         if (gameInfo.showRank) {
                                 return;
                         }
@@ -152,7 +161,6 @@ export default class Main {
         touchendHandler(e) {
                 e.preventDefault();
                 if (!gameInfo.over) {
-
                         this.hasEventBind = false;
 
                         canvas.removeEventListener('touchend', this.touchender);
@@ -167,3 +175,13 @@ export default class Main {
                 this.frameID = requestAnimationFrame(this.bindLoop);
         }
 }
+
+wx.showShareMenu({
+	withShareTicket: true,
+});
+wx.onShareAppMessage(function () {
+	return {
+		title: 'Shoot it!!',
+		imageUrl: SHARE_IMG[Math.floor(Math.random() * SHARE_IMG.length)]
+	}
+});

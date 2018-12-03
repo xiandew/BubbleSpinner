@@ -1,6 +1,11 @@
 import Shared from "../shared";
 let shared = new Shared();
 
+let drawButton = require("./drawButton");
+let drawText = require("./drawText");
+let valueOf = require("./valueOf");
+let getCurrentWeek = require("./getCurrentWeek");
+
 /*----------------------------------------------------------------------------*/
 
 let ctx = shared.ctx;
@@ -31,6 +36,23 @@ const RETURN_START_Y = 0.9 * canvasHeight;
 const RETURN_HEIGHT = 0.08 * canvasWidth;
 const RETURN_WIDTH = RETURN_HEIGHT;
 
+const GROUP_RANK_BTN = {
+	imgSrc: 'images/groupRank.png',
+	x: 0.68 * canvasWidth,
+	y: 0.92 * canvasHeight,
+	h: 0.05 * canvasWidth,
+	bgColour: "#888888",
+	area: {
+		startX: 0.45 * canvasWidth,
+		endX: 0.91 * canvasWidth,
+		startY: 0.92 * canvasHeight - 0.07 * canvasWidth,
+		endY: 0.92 * canvasHeight + 0.07 * canvasWidth,
+		w: 0.46 * canvasWidth,
+		h: 0.14 * canvasWidth
+	}
+};
+GROUP_RANK_BTN.w = GROUP_RANK_BTN.h * 5;
+
 /*----------------------------------------------------------------------------*/
 
 let rankListCanvas = wx.createCanvas();
@@ -55,16 +77,18 @@ module.exports = function() {
         }
 
         wx.getFriendCloudStorage({
-                keyList: ["wkRecord"],
+                keyList: ["week", "wkRecord"],
                 success: res => {
-                        res.data = res.data.filter(d => d.KVDataList.length > 0);
+                        res.data = res.data.filter(d => {
+                                return valueOf("week", d.KVDataList) == getCurrentWeek();
+                        });
 
                         res.data.sort((d1, d2) => {
-                                return d2.KVDataList[0].value - d1.KVDataList[0].value;
+                                return valueOf("wkRecord", d2.KVDataList) -
+                                        valueOf("wkRecord", d1.KVDataList);
                         });
 
                         shared.ranks = res.data;
-                        rankListCanvas.height = Math.ceil(shared.ranks.length / 6) * PANEL_HEIGHT;
 
                         wx.getUserInfo({
                                 openIdList: ['selfOpenId'],
@@ -85,6 +109,7 @@ module.exports = function() {
                                                         avatarUrl: avatarUrl,
                                                         nickname: nickName,
                                                         KVDataList: [{
+                                                                key: "wkRecord",
                                                                 value: 0
                                                         }]
                                                 }
@@ -93,7 +118,8 @@ module.exports = function() {
                                                 shared.selfRank = shared.ranks[shared.selfRankIndex];
                                         }
 
-					if (shared.asyncAllowed) {
+                                        rankListCanvas.height = Math.ceil(shared.ranks.length / 6) * PANEL_HEIGHT;
+                                        if (shared.asyncAllowed) {
                                                 drawPage(currentPage);
                                                 drawSelfRank();
                                         }
@@ -133,7 +159,12 @@ function drawPage(pageIndex) {
                 );
 
                 let avatar = wx.createImage();
+                avatar.pageIndex = pageIndex;
                 avatar.onload = function() {
+                        if (avatar.pageIndex != pageIndex) {
+                                return;
+                        }
+
                         rankList.drawImage(
                                 avatar,
                                 AVATAR_START_X,
@@ -173,7 +204,7 @@ function drawSelfRank() {
         avatar.onload = function() {
                 selfRank.drawImage(
                         avatar,
-			AVATAR_START_X,
+                        AVATAR_START_X,
                         selfRankCanvas.height * 0.35,
                         AVATAR_SIZE,
                         AVATAR_SIZE
@@ -197,20 +228,32 @@ function drawRankText(i, user, textHeight, ctx) {
         ctx.beginPath();
         ctx.fillStyle = i == 0 ? '#fa7e00' : i == 1 ? '#fec11e' : i == 2 ? '#fbd413' : '#ffffff';
 
-        ctx.font = "italic bold " + AVATAR_SIZE / 2 + "px Arial";
+        ctx.font = `italic bold ${AVATAR_SIZE / 2}px Arial`;
         ctx.textAlign = 'center';
         ctx.fillText(i + 1, 50, textHeight);
         ctx.closePath();
 
         ctx.fillStyle = '#ffffff';
-        ctx.font = AVATAR_SIZE / 2 + "px Arial";
         ctx.textAlign = 'left';
-        ctx.fillText(user.nickname, 190, textHeight, 250);
+
+        drawText(
+                ctx,
+                AVATAR_SIZE / 2,
+                user.nickname,
+                190,
+                textHeight,
+                250
+        );
 
         if (shared.fontLoaded) {
                 shared.txt.fontSize = RANK_ITEM_HEIGHT / 3;
                 shared.txt.textAlign = 'right';
-                shared.txt.draw(ctx, user.KVDataList[0].value, 580, textHeight - 0.3 * RANK_ITEM_HEIGHT);
+                shared.txt.draw(
+                        ctx,
+                        valueOf("wkRecord", user.KVDataList),
+                        580,
+                        textHeight - 0.3 * RANK_ITEM_HEIGHT
+                );
         }
 }
 
@@ -226,7 +269,7 @@ function drawBackground() {
         ctx.closePath();
 
         ctx.fillStyle = "#ffffff";
-        ctx.font = "bold " + TITLE_SIZE + "px Arial";
+        ctx.font = `bold ${TITLE_SIZE}px Arial`;
         ctx.textAlign = "center";
         ctx.fillText('好友排行榜', TITLE_X, TITLE_Y);
 
@@ -234,12 +277,12 @@ function drawBackground() {
         ctx.fillRect(BG_START_X, BG_START_Y, PANEL_WIDTH, BG_HEIGHT);
 
         ctx.fillStyle = "#9b9b9b";
-        ctx.font = TITLE_SIZE / 1.8 + "px Arial";
+        ctx.font = `${TITLE_SIZE / 1.8}px Arial`;
         ctx.textAlign = "left";
         ctx.fillText("每周一凌晨刷新", BG_START_X + 50, BG_START_Y + 35);
 
         ctx.fillStyle = "#9b9b9b";
-        ctx.font = TITLE_SIZE / 1.5 + "px Arial";
+        ctx.font = `${TITLE_SIZE / 1.5}px Arial`;
         ctx.textAlign = "center";
         ctx.fillText("加载中", canvasWidth / 2, PANEL_START_Y + PANEL_HEIGHT / 2);
 
@@ -248,7 +291,7 @@ function drawBackground() {
         ctx.fillRect(BG_START_X, SELF_RANK_START_Y, PANEL_WIDTH, selfRankCanvas.height);
 
         ctx.fillStyle = "#9b9b9b";
-        ctx.font = TITLE_SIZE / 1.5 + "px Arial";
+        ctx.font = `${TITLE_SIZE / 1.5}px Arial`;
         ctx.textAlign = "center";
         ctx.fillText("加载中", canvasWidth / 2, SELF_RANK_START_Y + selfRankCanvas.height / 1.75);
 
@@ -264,6 +307,8 @@ function drawBackground() {
                 );
         }
         return_btn.src = 'images/return.png';
+
+	drawButton(GROUP_RANK_BTN);
 }
 
 let startY, endY;

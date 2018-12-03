@@ -3,7 +3,6 @@ let ctx = canvas.getContext('2d');
 
 const MAX_NUM_LIVES = 6;
 const LAYERS = [2, 3, 4, 5, 6];
-
 export const BALLS = [
         'images/b_blue.png',
         'images/b_cyan.png',
@@ -13,6 +12,9 @@ export const BALLS = [
         'images/b_yellow.png'
 ];
 export const BALL_SIZE = 0.055 * canvas.width;
+export const SHOOTER_SPEED = 15;
+
+
 export default class GameInfo {
         constructor() {
                 if (instance) {
@@ -68,3 +70,12 @@ function shuffle(a) {
         }
         return a;
 }
+
+export const SHARE_IMG = [
+	'images/share/b_blue.png',
+	'images/share/b_cyan.png',
+	'images/share/b_green.png',
+	'images/share/b_pink.png',
+	'images/share/b_red.png',
+	'images/share/b_yellow.png'
+];

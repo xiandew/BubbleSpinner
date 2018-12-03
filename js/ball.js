@@ -1,16 +1,18 @@
-import Sprite from './sprite';
 import GameInfo, {
-        BALL_SIZE
+        BALL_SIZE,
+        SHOOTER_SPEED
 } from './runtime/gameInfo';
+import Sprite from './sprite';
 
-let randomBall = require("./utilities/randomBall");
-let ctx = canvas.getContext('2d');
 let gameInfo = new GameInfo();
+let ctx = canvas.getContext('2d');
+
+let optimalBall = require("./utilities/optimalBall");
 
 export default class Ball extends Sprite {
         constructor(hole = {}, ballSrc = false) {
                 if (!ballSrc) {
-                        ballSrc = randomBall();
+                        ballSrc = optimalBall();
                 }
                 super(ballSrc, BALL_SIZE, BALL_SIZE, hole.x, hole.y, true);
 
@@ -60,10 +62,17 @@ export default class Ball extends Sprite {
         initDropping(shooter) {
                 this.dropping = true;
 
-                let angle = Math.atan2(this.y - shooter.y, this.x - shooter.x);
+                // angle between the horizontal and velocity
+                let va = Math.atan2(shooter.speedY, shooter.speedX);
+                // angle between the horizontal and the joint line from the ball to shooter
+                let ha = Math.atan2(this.y - shooter.y, this.x - shooter.x);
+                // difference between two angles
+                let da = va - ha;
 
-                this.speedX = 5 * Math.cos(angle);
-                this.speedY = 5 * Math.sin(angle);
+                let theSpeed = SHOOTER_SPEED * Math.cos(da) / 2;
+
+                this.speedX = theSpeed * Math.cos(ha);
+                this.speedY = theSpeed * Math.sin(ha);
         }
 
         // draw a circle shape instead of image. Not display well on the phone

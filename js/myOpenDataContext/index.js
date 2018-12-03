@@ -3,6 +3,8 @@ let shared = new Shared();
 
 let drawRankList = require('./utilities/drawRankList');
 let rankListThumbnail = require('./utilities/drawRankListThumbnail');
+let valueOf = require("./utilities/valueOf");
+let getCurrentWeek = require("./utilities/getCurrentWeek");
 
 wx.onMessage(data => {
         if (data.cmd == "showRankList") {
@@ -22,28 +24,28 @@ wx.onMessage(data => {
 function updateScore(newScore) {
         wx.getUserCloudStorage({
 
-                keyList: ["wkRecord", "maxRecord"],
+                keyList: ["week", "wkRecord", "maxRecord"],
                 success: data => {
 
-                        let maybeWeekRecord = data.KVDataList[data.KVDataList.findIndex(kv => {
-                                return kv.key == "wkRecord";
-                        })];
-                        let weekRecord = maybeWeekRecord ? parseInt(maybeWeekRecord.value) : undefined;
+                        let week = valueOf("week", data.KVDataList);
+                        let weekRecord = valueOf("wkRecord", data.KVDataList);
+                        let maxRecord = valueOf("maxRecord", data.KVDataList);
 
-                        let maybeMaxRecord = data.KVDataList[data.KVDataList.findIndex(kv => {
-                                return kv.key == "maxRecord";
-                        })];
-                        let maxRecord = maybeMaxRecord ? parseInt(maybeMaxRecord.value) : undefined;
+                        let currentWeek = getCurrentWeek();
 
                         let updates = [{
                                         key: "currentScore",
                                         value: newScore.toString()
                                 }]
-                                .concat((!weekRecord || weekRecord < newScore ? [{
+                                .concat((week != currentWeek ? [{
+                                        key: "week",
+                                        value: currentWeek.toString()
+                                }] : []))
+                                .concat((week != currentWeek || weekRecord < newScore ? [{
                                         key: "wkRecord",
                                         value: newScore.toString()
                                 }] : []))
-				.concat((!maxRecord || maxRecord < newScore ? [{
+                                .concat((maxRecord < newScore ? [{
                                         key: "maxRecord",
                                         value: newScore.toString()
                                 }] : []));

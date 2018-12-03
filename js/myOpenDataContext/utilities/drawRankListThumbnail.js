@@ -1,6 +1,9 @@
 import Shared from "../shared";
 let shared = new Shared();
 
+let drawText = require("./drawText");
+let valueOf = require("./valueOf");
+let getCurrentWeek = require("./getCurrentWeek");
 let isClicked = require("./isClicked");
 let drawButton = require("./drawButton");
 let drawRankList = require("./drawRankList");
@@ -50,11 +53,6 @@ const RESTART_BTN = {
 
 const MAX_RECORD_START_Y = 0.95 * canvasHeight;
 
-// indices
-const WEEK_RECORD = 0;
-const CURRENT = 1;
-const MAX_RECORD = 2;
-
 /*----------------------------------------------------------------------------*/
 
 // triple ranks to be drawn
@@ -65,13 +63,15 @@ module.exports = {
                 shared.asyncAllowed = false;
 
                 wx.getFriendCloudStorage({
-                        keyList: ["wkRecord", "currentScore", "maxRecord"],
+                        keyList: ["week", "wkRecord", "currentScore", "maxRecord"],
                         success: res => {
-                                res.data = res.data.filter(d => d.KVDataList.length == 3);
+                                res.data = res.data.filter(d => {
+                                        return valueOf("week", d.KVDataList) == getCurrentWeek();
+                                });
 
                                 res.data.sort((d1, d2) => {
-                                        return parseInt(d2.KVDataList[WEEK_RECORD].value) -
-                                                parseInt(d1.KVDataList[WEEK_RECORD].value);
+                                        return parseInt(valueOf("wkRecord", d2.KVDataList)) -
+                                                parseInt(valueOf("wkRecord", d1.KVDataList));
                                 });
 
                                 shared.ranks = res.data;
@@ -133,7 +133,7 @@ function drawRankPanel() {
         if (shared.fontLoaded) {
                 shared.txt.fontSize = SCORE_SIZE;
                 shared.txt.textAlign = "center";
-                shared.txt.draw(ctx, triple[1].KVDataList[CURRENT].value, SCORE_X, SCORE_Y);
+                shared.txt.draw(ctx, valueOf("currentScore", triple[1].KVDataList), SCORE_X, SCORE_Y);
         }
 
         for (let i = 0; i < triple.length; i++) {
@@ -156,7 +156,7 @@ function drawRankPanel() {
                 let centX = PANEL_START_X + RANK_ITEM_WIDTH * (i + 0.5);
 
                 ctx.fillStyle = i == 1 ? "#41bf8c" : "#888888";
-                ctx.font = "italic bold " + TEXT_SIZE * 1.2 + "px Arial";
+                ctx.font = `italic bold ${TEXT_SIZE * 1.2}px Arial`;
                 ctx.textAlign = "center";
                 ctx.fillText(
                         shared.selfRankIndex + i,
@@ -165,9 +165,10 @@ function drawRankPanel() {
                 );
 
                 ctx.fillStyle = "#888888";
-                ctx.font = TEXT_SIZE + "px Arial";
                 ctx.textAlign = "center";
-                ctx.fillText(
+                drawText(
+                        ctx,
+                        TEXT_SIZE,
                         triple[i].nickname,
                         centX,
                         PANEL_START_Y + PANEL_HEIGHT * 0.65,
@@ -179,7 +180,7 @@ function drawRankPanel() {
                         shared.txt.textAlign = "center";
                         shared.txt.draw(
                                 ctx,
-                                triple[i].KVDataList[WEEK_RECORD].value,
+                                valueOf("wkRecord", triple[i].KVDataList),
                                 centX,
                                 PANEL_START_Y + PANEL_HEIGHT * 0.775
                         );
@@ -200,10 +201,10 @@ function drawRankPanel() {
         }
 
         ctx.fillStyle = "#ffffff";
-        ctx.font = TEXT_SIZE + "px Arial";
+        ctx.font = `${TEXT_SIZE}px Arial`;
         ctx.textAlign = "center";
         ctx.fillText(
-                "历史最高分 : " + triple[1].KVDataList[MAX_RECORD].value,
+                `历史最高分 : ${valueOf("maxRecord", triple[1].KVDataList)}`,
                 0.5 * canvasWidth,
                 MAX_RECORD_START_Y
         );
@@ -224,7 +225,7 @@ function drawBackground() {
         ctx.fillRect(PANEL_START_X, PANEL_START_Y, PANEL_WIDTH, PANEL_HEIGHT);
 
         ctx.fillStyle = "#888888";
-        ctx.font = TEXT_SIZE + "px Arial";
+        ctx.font = `${TEXT_SIZE}px Arial`;
         ctx.textAlign = "center";
         ctx.fillText("加载中", 0.5 * canvasWidth, PANEL_START_Y + 0.6 * PANEL_HEIGHT);
 
@@ -232,12 +233,12 @@ function drawBackground() {
         ctx.fillRect(PANEL_START_X, TEXT_BG_START_Y, PANEL_WIDTH, TEXT_BG_HEIGHT);
 
         ctx.fillStyle = "#9b9b9b";
-        ctx.font = TEXT_SIZE + "px Arial";
+        ctx.font = `${TEXT_SIZE}px Arial`;
         ctx.textAlign = "left";
         ctx.fillText("排行榜 · 每周一凌晨刷新", PANEL_START_X + TEXT_SIZE, TEXT_START_Y);
 
         ctx.fillStyle = "#ffffff";
-        ctx.font = TEXT_SIZE + "px Arial";
+        ctx.font = `${TEXT_SIZE}px Arial`;
         ctx.textAlign = "right";
         ctx.fillText("查看全部排行 ►", canvasWidth - PANEL_START_X - 0.8 * TEXT_SIZE, TEXT_START_Y);
 }
