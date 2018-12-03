@@ -2,6 +2,8 @@ import Shared from "../shared";
 let shared = new Shared();
 
 let drawText = require("./drawText");
+let valueOf = require("./valueOf");
+let getCurrentWeek = require("./getCurrentWeek");
 let isClicked = require("./isClicked");
 let drawButton = require("./drawButton");
 let drawRankList = require("./drawRankList");
@@ -51,11 +53,6 @@ const RESTART_BTN = {
 
 const MAX_RECORD_START_Y = 0.95 * canvasHeight;
 
-// indices
-const WEEK_RECORD = 0;
-const CURRENT = 1;
-const MAX_RECORD = 2;
-
 /*----------------------------------------------------------------------------*/
 
 // triple ranks to be drawn
@@ -66,13 +63,15 @@ module.exports = {
                 shared.asyncAllowed = false;
 
                 wx.getFriendCloudStorage({
-                        keyList: ["wkRecord", "currentScore", "maxRecord"],
+                        keyList: ["week", "wkRecord", "currentScore", "maxRecord"],
                         success: res => {
-                                res.data = res.data.filter(d => d.KVDataList.length == 3);
+                                res.data = res.data.filter(d => {
+                                        return valueOf("week", d.KVDataList) == getCurrentWeek();
+                                });
 
                                 res.data.sort((d1, d2) => {
-                                        return parseInt(d2.KVDataList[WEEK_RECORD].value) -
-                                                parseInt(d1.KVDataList[WEEK_RECORD].value);
+                                        return parseInt(valueOf("wkRecord", d2.KVDataList)) -
+                                                parseInt(valueOf("wkRecord", d1.KVDataList));
                                 });
 
                                 shared.ranks = res.data;
@@ -134,7 +133,7 @@ function drawRankPanel() {
         if (shared.fontLoaded) {
                 shared.txt.fontSize = SCORE_SIZE;
                 shared.txt.textAlign = "center";
-                shared.txt.draw(ctx, triple[1].KVDataList[CURRENT].value, SCORE_X, SCORE_Y);
+                shared.txt.draw(ctx, valueOf("currentScore", triple[1].KVDataList), SCORE_X, SCORE_Y);
         }
 
         for (let i = 0; i < triple.length; i++) {
@@ -181,7 +180,7 @@ function drawRankPanel() {
                         shared.txt.textAlign = "center";
                         shared.txt.draw(
                                 ctx,
-                                triple[i].KVDataList[WEEK_RECORD].value,
+                                valueOf("wkRecord", triple[i].KVDataList),
                                 centX,
                                 PANEL_START_Y + PANEL_HEIGHT * 0.775
                         );
@@ -205,7 +204,7 @@ function drawRankPanel() {
         ctx.font = `${TEXT_SIZE}px Arial`;
         ctx.textAlign = "center";
         ctx.fillText(
-                `历史最高分 : ${triple[1].KVDataList[MAX_RECORD].value}`,
+                `历史最高分 : ${valueOf("maxRecord", triple[1].KVDataList)}`,
                 0.5 * canvasWidth,
                 MAX_RECORD_START_Y
         );

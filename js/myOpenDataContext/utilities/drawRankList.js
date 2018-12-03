@@ -2,6 +2,8 @@ import Shared from "../shared";
 let shared = new Shared();
 
 let drawText = require("./drawText");
+let valueOf = require("./valueOf");
+let getCurrentWeek = require("./getCurrentWeek");
 
 /*----------------------------------------------------------------------------*/
 
@@ -57,16 +59,18 @@ module.exports = function() {
         }
 
         wx.getFriendCloudStorage({
-                keyList: ["wkRecord"],
+                keyList: ["week", "wkRecord"],
                 success: res => {
-                        res.data = res.data.filter(d => d.KVDataList.length > 0);
+                        res.data = res.data.filter(d => {
+                                return valueOf("week", d.KVDataList) == getCurrentWeek();
+                        });
 
                         res.data.sort((d1, d2) => {
-                                return d2.KVDataList[0].value - d1.KVDataList[0].value;
+                                return valueOf("wkRecord", d2.KVDataList) -
+                                        valueOf("wkRecord", d1.KVDataList);
                         });
 
                         shared.ranks = res.data;
-                        rankListCanvas.height = Math.ceil(shared.ranks.length / 6) * PANEL_HEIGHT;
 
                         wx.getUserInfo({
                                 openIdList: ['selfOpenId'],
@@ -87,6 +91,7 @@ module.exports = function() {
                                                         avatarUrl: avatarUrl,
                                                         nickname: nickName,
                                                         KVDataList: [{
+                                                                key: "wkRecord",
                                                                 value: 0
                                                         }]
                                                 }
@@ -95,6 +100,7 @@ module.exports = function() {
                                                 shared.selfRank = shared.ranks[shared.selfRankIndex];
                                         }
 
+                                        rankListCanvas.height = Math.ceil(shared.ranks.length / 6) * PANEL_HEIGHT;
                                         if (shared.asyncAllowed) {
                                                 drawPage(currentPage);
                                                 drawSelfRank();
@@ -224,7 +230,12 @@ function drawRankText(i, user, textHeight, ctx) {
         if (shared.fontLoaded) {
                 shared.txt.fontSize = RANK_ITEM_HEIGHT / 3;
                 shared.txt.textAlign = 'right';
-                shared.txt.draw(ctx, user.KVDataList[0].value, 580, textHeight - 0.3 * RANK_ITEM_HEIGHT);
+                shared.txt.draw(
+                        ctx,
+                        valueOf("wkRecord", user.KVDataList),
+                        580,
+                        textHeight - 0.3 * RANK_ITEM_HEIGHT
+                );
         }
 }
 
