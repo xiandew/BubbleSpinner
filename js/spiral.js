@@ -151,7 +151,7 @@ export default class Spiral {
                 gameInfo.holes.forEach(hole => {
                         if (hole instanceof Ball &&
                                 hole != this.pivot &&
-                                typeof(hole.dropping) == "undefined") {
+                                hole.dropping == undefined) {
 
                                 nballs++;
                         }
@@ -223,7 +223,7 @@ export default class Spiral {
                 // find balls not attached to the pivot
                 gameInfo.holes.forEach(ball => {
                         if (ball instanceof Ball && ball != this.pivot &&
-                                !ball.visited && typeof(ball.dropping) == "undefined") {
+                                !ball.visited && ball.dropping == undefined) {
 
                                 ball.initDropping(this.shooter);
 
@@ -253,7 +253,7 @@ function findAround(target) {
 
 function visitAttachedBalls(target) {
         findAround(target).forEach(ball => {
-                if (typeof(ball.dropping) == "undefined") {
+                if (ball.dropping == undefined) {
                         ball.visited = true;
                         visitAttachedBalls(ball);
                 }

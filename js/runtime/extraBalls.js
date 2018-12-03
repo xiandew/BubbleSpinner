@@ -60,8 +60,7 @@ export default class ExtraBalls {
                 for (let i = this.balls.length - 1, ball, angle; i >= 0; i--) {
                         ball = this.balls[i];
 
-                        if (typeof(ball.speedX) == "undefined" ||
-                                typeof(ball.speedY) == "undefined") {
+                        if (ball.speedX == undefined || ball.speedY == undefined) {
                                 angle = Math.atan2(
                                         gameInfo.holes[0].y - ball.y,
                                         gameInfo.holes[0].x - ball.x
