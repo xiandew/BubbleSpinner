@@ -121,6 +121,13 @@ export default class Main {
                                 gameInfo.showRank = false;
                         }
 
+			//////////////////////////////////////////////////////////////////////////////////////////
+			// if (isClicked(e, "GroupRankList")) {
+			// 	wx.shareAppMessage({
+			// 		title: '转发标题'
+			// 	});
+			// }
+
                         if (gameInfo.showRank) {
                                 return;
                         }
@@ -154,7 +161,6 @@ export default class Main {
         touchendHandler(e) {
                 e.preventDefault();
                 if (!gameInfo.over) {
-
                         this.hasEventBind = false;
 
                         canvas.removeEventListener('touchend', this.touchender);

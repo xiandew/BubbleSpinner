@@ -1,6 +1,7 @@
 import Shared from "../shared";
 let shared = new Shared();
 
+let drawButton = require("./drawButton");
 let drawText = require("./drawText");
 let valueOf = require("./valueOf");
 let getCurrentWeek = require("./getCurrentWeek");
@@ -34,6 +35,23 @@ const RETURN_START_X = 0.08 * canvasWidth;
 const RETURN_START_Y = 0.9 * canvasHeight;
 const RETURN_HEIGHT = 0.08 * canvasWidth;
 const RETURN_WIDTH = RETURN_HEIGHT;
+
+const GROUP_RANK_BTN = {
+	imgSrc: 'images/groupRank.png',
+	x: 0.68 * canvasWidth,
+	y: 0.92 * canvasHeight,
+	h: 0.05 * canvasWidth,
+	bgColour: "#888888",
+	area: {
+		startX: 0.45 * canvasWidth,
+		endX: 0.91 * canvasWidth,
+		startY: 0.92 * canvasHeight - 0.07 * canvasWidth,
+		endY: 0.92 * canvasHeight + 0.07 * canvasWidth,
+		w: 0.46 * canvasWidth,
+		h: 0.14 * canvasWidth
+	}
+};
+GROUP_RANK_BTN.w = GROUP_RANK_BTN.h * 5;
 
 /*----------------------------------------------------------------------------*/
 
@@ -289,6 +307,8 @@ function drawBackground() {
                 );
         }
         return_btn.src = 'images/return.png';
+
+	drawButton(GROUP_RANK_BTN);
 }
 
 let startY, endY;
