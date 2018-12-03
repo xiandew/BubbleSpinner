@@ -3,14 +3,14 @@ import GameInfo, {
         BALL_SIZE
 } from './runtime/gameInfo';
 
-let randomBall = require("./utilities/randomBall");
+let optimalBall = require("./utilities/optimalBall");
 let ctx = canvas.getContext('2d');
 let gameInfo = new GameInfo();
 
 export default class Ball extends Sprite {
         constructor(hole = {}, ballSrc = false) {
                 if (!ballSrc) {
-                        ballSrc = randomBall();
+                        ballSrc = optimalBall();
                 }
                 super(ballSrc, BALL_SIZE, BALL_SIZE, hole.x, hole.y, true);
 
