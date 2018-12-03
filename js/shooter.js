@@ -1,21 +1,25 @@
 import GameInfo, {
-        BALL_SIZE
+        BALL_SIZE,
+        SHOOTER_SPEED
 } from './runtime/gameInfo';
-import Hole from './hole';
 import Sprite from './sprite';
+import Hole from './hole';
 
-let isCollideSpiral = require("./utilities/isCollideSpiral");
-let newImage = require("./utilities/newImage");
-let randomBall = require("./utilities/randomBall");
 let gameInfo = new GameInfo();
 let ctx = canvas.getContext('2d');
+
+/*----------------------------------------------------------------------------*/
+
+let newImage = require("./utilities/newImage");
+let randomBall = require("./utilities/randomBall");
+let isCollideSpiral = require("./utilities/isCollideSpiral");
+
+/*----------------------------------------------------------------------------*/
 
 const NEXT_SHOOTER_SIZE = 0.5 * BALL_SIZE;
 const NEXT_SHOOTER_X = 0.5 * canvas.width - 0.5 * NEXT_SHOOTER_SIZE;
 const NEXT_SHOOTER_Y = canvas.height - BALL_SIZE;
 const BOTTOM_BOUND = canvas.height - 1.5 * BALL_SIZE;
-
-export const LINEAR_SPEED = 15;
 
 /*----------------------------------------------------------------------------*/
 
@@ -197,8 +201,8 @@ export default class Shooter extends Sprite {
 
         initSpeed() {
                 let angle = Math.atan2(this.touchY - this.y, this.touchX - this.x);
-                this.speedX = LINEAR_SPEED * Math.cos(angle);
-                this.speedY = LINEAR_SPEED * Math.sin(angle);
+                this.speedX = SHOOTER_SPEED * Math.cos(angle);
+                this.speedY = SHOOTER_SPEED * Math.sin(angle);
         }
 
         renderArrow() {

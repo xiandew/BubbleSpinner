@@ -1,15 +1,16 @@
 import GameInfo, {
-        BALL_SIZE
+        BALL_SIZE,
+        SHOOTER_SPEED
 } from './runtime/gameInfo';
 import Pivot from './pivot';
 import Hole from './hole';
 import Ball from './ball';
-import Shooter, {
-        LINEAR_SPEED
-} from './shooter';
+import Shooter from './shooter';
 
 let gameInfo = new GameInfo();
 let ctx = canvas.getContext('2d');
+
+/*----------------------------------------------------------------------------*/
 
 const FRICTION = -0.001;
 const PIVOT_X = 0.5 * canvas.width;
@@ -112,12 +113,11 @@ export default class Spiral {
                 });
         }
 
-        onCollision(shooter) {
-                // adjust the shooter ball's position to align with the hexagon properly
-                // then remove balls which have the same colour and connections to it
-                this.fillClosestHole(shooter);
+        onCollision(other) {
+                // adjust the other ball's position to align with the hexagon properly
+                this.fillClosestHole(other);
 
-                if (shooter instanceof Shooter) {
+                if (other instanceof Shooter) {
                         this.removeSameBalls();
                         this.romoveFloatBalls();
                 }
@@ -125,7 +125,7 @@ export default class Spiral {
                 this.rotating = true;
 
                 // y = kx + m, x = (y - m) / k
-                let k = shooter.speedY / shooter.speedX;
+                let k = other.speedY / other.speedX;
                 let m = this.target.y - k * this.target.x;
 
                 // the tangent speed is proportional to the distance between the pivot and the linear speed line
@@ -135,11 +135,11 @@ export default class Spiral {
                 let d = Math.abs((px - this.pivot.x) * (py - this.pivot.y)) /
                         Math.sqrt((py - this.pivot.y) ** 2 + (px - this.pivot.x) ** 2);
                 let ratio = d / canvas.width;
-                let tangentSpeed = LINEAR_SPEED * ratio;
+                let tangentSpeed = SHOOTER_SPEED * ratio;
                 this.friction = FRICTION;
 
-                if (shooter.speedX < 0 && (k * this.pivot.x + m) > this.pivot.y ||
-                        shooter.speedX > 0 && (k * this.pivot.x + m) < this.pivot.y) {
+                if (other.speedX < 0 && (k * this.pivot.x + m) > this.pivot.y ||
+                        other.speedX > 0 && (k * this.pivot.x + m) < this.pivot.y) {
                         tangentSpeed *= (-1);
                         this.friction *= (-1);
                 }
@@ -148,7 +148,8 @@ export default class Spiral {
                 let nballs = 0;
                 gameInfo.holes.forEach(hole => {
                         if (hole instanceof Ball &&
-                                hole != this.pivot && typeof(hole.dropping) == "undefined") {
+                                hole != this.pivot &&
+                                typeof(hole.dropping) == "undefined") {
 
                                 nballs++;
                         }
@@ -163,8 +164,8 @@ export default class Spiral {
                         }
                 }
 
-                if (shooter instanceof Shooter) {
-                        shooter.initShooter();
+                if (other instanceof Shooter) {
+                        other.initShooter();
                 }
         }
 
