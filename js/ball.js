@@ -1,11 +1,12 @@
-import Sprite from './sprite';
 import GameInfo, {
         BALL_SIZE
 } from './runtime/gameInfo';
+import Sprite from './sprite';
+
+let gameInfo = new GameInfo();
+let ctx = canvas.getContext('2d');
 
 let optimalBall = require("./utilities/optimalBall");
-let ctx = canvas.getContext('2d');
-let gameInfo = new GameInfo();
 
 export default class Ball extends Sprite {
         constructor(hole = {}, ballSrc = false) {

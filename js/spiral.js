@@ -118,6 +118,8 @@ export default class Spiral {
                 this.fillClosestHole(other);
 
                 if (other instanceof Shooter) {
+                        this.shooter = other;
+
                         this.removeSameBalls();
                         this.romoveFloatBalls();
                 }
@@ -169,18 +171,19 @@ export default class Spiral {
                 }
         }
 
-        fillClosestHole(shooter) {
+        fillClosestHole(target) {
                 let minSquare = canvas.width ** 2;
                 let closest, index;
                 gameInfo.holes.forEach((hole, i) => {
                         if (hole instanceof Hole) {
                                 // square of the distance
-                                let square = (shooter.x - hole.x) ** 2 + (shooter.y - hole.y) ** 2;
+                                let square = (target.x - hole.x) ** 2 + (target.y - hole.y) ** 2;
                                 square <= minSquare ? ([closest, index] = [hole, i], minSquare = square) : true;
                         }
                 });
 
-                this.target = new Ball(closest, shooter.img.src);
+                this.target = new Ball(closest, target.img.src);
+
                 gameInfo.holes.splice(index, 1, this.target);
         }
 
@@ -202,7 +205,7 @@ export default class Spiral {
 
                 if (this.sameBalls.length >= 3) {
                         this.sameBalls.forEach(ball => {
-                                ball.initDropping(this.target);
+                                ball.initDropping(this.shooter);
 
                                 gameInfo.holes.push(new Hole(ball.x, ball.y, ball.layer));
                         });
@@ -221,7 +224,8 @@ export default class Spiral {
                 gameInfo.holes.forEach(ball => {
                         if (ball instanceof Ball && ball != this.pivot &&
                                 !ball.visited && typeof(ball.dropping) == "undefined") {
-                                ball.initDropping(this.target);
+
+                                ball.initDropping(this.shooter);
 
                                 gameInfo.holes.push(new Hole(ball.x, ball.y, ball.layer));
                         }
