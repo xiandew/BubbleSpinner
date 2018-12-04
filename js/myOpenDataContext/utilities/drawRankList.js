@@ -41,7 +41,7 @@ const GROUP_RANK_BTN = {
         x: 0.68 * canvasWidth,
         y: 0.92 * canvasHeight,
         h: 0.05 * canvasWidth,
-        bgColour: "#888888",
+        bgColour: "#000000",
         area: {
                 startX: 0.45 * canvasWidth,
                 endX: 0.91 * canvasWidth,
