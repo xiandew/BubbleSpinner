@@ -1,3 +1,5 @@
+// Usage: js/myOpenDataContext/utilities/drawRankListThumbnail.js
+
 import Shared from "../shared";
 let shared = new Shared();
 let canvasWidth = wx.getSystemInfoSync().screenWidth;
@@ -25,6 +27,8 @@ const btnAreas = {
                 endY: 0.75 * canvasHeight + 0.07 * canvasWidth
         }
 };
+
+/*----------------------------------------------------------------------------*/
 
 module.exports = {
         addEvents: function(callback) {

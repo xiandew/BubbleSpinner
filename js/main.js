@@ -1,11 +1,12 @@
-import Spiral from './spiral';
-import Shooter from './shooter';
-import Lives from "./lives";
-import ExtraBalls from "./runtime/extraBalls";
 import GameInfo, {
         SHARE_IMG
 } from './runtime/gameInfo';
 import Scene from './runtime/scene';
+import ExtraBalls from "./runtime/extraBalls";
+
+import Lives from "./lives";
+import Spiral from './spiral';
+import Shooter from './shooter';
 
 let isClicked = require('./utilities/isClicked');
 let gameInfo = new GameInfo();
@@ -36,16 +37,6 @@ export default class Main {
         restart() {
                 this.spiral.toChange = true;
                 this.hasEventBind = false;
-        }
-
-        addEvents() {
-                !this.touchender ? this.touchender = this.touchendHandler.bind(this) : true;
-                canvas.addEventListener('touchend', this.touchender);
-        }
-
-        removeEvents() {
-                this.hasEventBind = false;
-                canvas.removeEventListener('touchend', this.touchender);
         }
 
         update() {
@@ -112,57 +103,6 @@ export default class Main {
                         }
 
                         Scene.renderGameOver();
-                }
-        }
-
-        touchendHandler(e) {
-                e.preventDefault();
-
-                if (!gameInfo.start) {
-
-                        if (isClicked(e, "RankListReturn")) {
-                                gameInfo.showRank = false;
-                        }
-
-                        //////////////////////////////////////////////////////////////////////////////////////////
-                        // if (isClicked(e, "GroupRankList")) {
-                        // 	wx.shareAppMessage({
-                        // 		title: '转发标题'
-                        // 	});
-                        // }
-
-                        if (gameInfo.showRank) {
-                                return;
-                        }
-
-                        if (isClicked(e, "StartBtn")) {
-                                gameInfo.reset();
-                                this.removeEvents();
-                        }
-
-                        if (isClicked(e, "RankListIcon")) {
-                                gameInfo.showRank = true;
-                                gameInfo.openDataContext.postMessage({
-                                        cmd: "showRankList"
-                                });
-                        }
-                }
-
-                if (gameInfo.start) {
-                        if (gameInfo.over) {
-                                if (isClicked(e, "RestartButton")) {
-                                        gameInfo.reset();
-
-                                        // cannot change the status of the spiral later in touchendHandler
-                                        // since the non-stopping loop will execute update first instead of
-                                        // touchendHandler.
-                                        this.spiral.toChange = true;
-                                }
-                        }
-
-                        if (!gameInfo.over) {
-                                this.removeEvents();
-                        }
                 }
         }
 
