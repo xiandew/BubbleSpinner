@@ -18,19 +18,20 @@ export default class Shared {
                 this.ctx = sharedCanvas.getContext('2d');
 
                 // Draw on the shared canvas with respect to width of 750.
-                this.scale = sharedCanvas.width / 750;
-                this.ctx.scale(this.scale, this.scale);
-
                 this.canvasWidth = 750;
-                this.canvasHeight = 750 * sharedCanvas.height / sharedCanvas.width;
+                this.canvasHeight = this.canvasWidth * sharedCanvas.height / sharedCanvas.width;
+
+                this.scale = sharedCanvas.width / this.canvasWidth;
+                this.ctx.scale(this.scale, this.scale);
 
                 this.selfRankIndex = undefined;
                 this.selfRank = undefined;
+		// record friend ranks but not group ranks
                 this.ranks = undefined;
 
                 this.asyncAllowed = true;
 
-		this.fontLoaded = false;
+                this.fontLoaded = false;
                 let impact_white = new BitmapFont();
                 impact_white.loadFont(IMPACT_WHITE_JSON, function() {
                         this.fontLoaded = true;

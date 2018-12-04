@@ -1,17 +1,18 @@
-import Spiral from './spiral';
-import Shooter from './shooter';
-import Lives from "./lives";
-import ExtraBalls from "./runtime/extraBalls";
 import GameInfo, {
-	SHARE_IMG
+        SHARE_IMG
 } from './runtime/gameInfo';
 import Scene from './runtime/scene';
+import ExtraBalls from "./runtime/extraBalls";
 
-let isClicked = require('./utilities/isClicked');
+import Lives from "./lives";
+import Spiral from './spiral';
+import Shooter from './shooter';
+
 let gameInfo = new GameInfo();
-
 let ctx = canvas.getContext('2d');
 ctx.imageSmoothingQuality = "high";
+
+let touch = require('./utilities/touch');
 
 /*----------------------------------------------------------------------------*/
 
@@ -25,7 +26,8 @@ export default class Main {
 
                 // make sure only add event listener once in 'update'
                 this.hasEventBind = true;
-                this.addEvents();
+                this.bindCallback = this.callback.bind(this);
+                touch.addEvents(this.bindCallback);
 
                 this.spiral.toChange = true;
 
@@ -36,13 +38,6 @@ export default class Main {
         restart() {
                 this.spiral.toChange = true;
                 this.hasEventBind = false;
-        }
-
-        addEvents() {
-                !this.touchstarter ? this.touchstarter = this.touchstartHandler.bind(this) : true;
-                !this.touchender ? this.touchender = this.touchendHandler.bind(this) : true;
-                canvas.addEventListener('touchstart', this.touchstarter);
-                canvas.addEventListener('touchend', this.touchender);
         }
 
         update() {
@@ -104,66 +99,10 @@ export default class Main {
                                         score: gameInfo.score
                                 });
 
-                                this.addEvents();
                                 this.hasEventBind = true;
+                                touch.addEvents(this.bindCallback);
                         }
-
                         Scene.renderGameOver();
-                }
-        }
-
-        touchstartHandler(e) {
-                e.preventDefault()
-
-                if (!gameInfo.start) {
-
-                        if (isClicked(e, "RankListReturn")) {
-                                gameInfo.showRank = false;
-                        }
-
-			//////////////////////////////////////////////////////////////////////////////////////////
-			// if (isClicked(e, "GroupRankList")) {
-			// 	wx.shareAppMessage({
-			// 		title: '转发标题'
-			// 	});
-			// }
-
-                        if (gameInfo.showRank) {
-                                return;
-                        }
-
-                        if (isClicked(e, "StartBtn")) {
-                                gameInfo.reset();
-                                canvas.removeEventListener('touchstart', this.touchstarter);
-                        }
-
-                        if (isClicked(e, "RankListIcon")) {
-                                gameInfo.showRank = true;
-                                gameInfo.openDataContext.postMessage({
-                                        cmd: "showRankList"
-                                });
-                        }
-                }
-                if (gameInfo.over) {
-                        if (isClicked(e, "RestartButton")) {
-                                gameInfo.reset();
-
-                                // cannot change the status of the spiral later in touchendHandler
-                                // since the non-stopping loop will execute update first instead of
-                                // touchendHandler.
-                                this.spiral.toChange = true;
-
-                                canvas.removeEventListener('touchstart', this.touchstarter);
-                        }
-                }
-        }
-
-        touchendHandler(e) {
-                e.preventDefault();
-                if (!gameInfo.over) {
-                        this.hasEventBind = false;
-
-                        canvas.removeEventListener('touchend', this.touchender);
                 }
         }
 
@@ -174,14 +113,100 @@ export default class Main {
 
                 this.frameID = requestAnimationFrame(this.bindLoop);
         }
+
+        // touch event callback
+        callback(btn) {
+                switch (btn) {
+                        case "RankListReturn":
+                                if (!gameInfo.showRank) {
+                                        return;
+                                }
+
+                                gameInfo.showRank = false;
+                                gameInfo.showGroupRank = false;
+                                break;
+                        case "GroupRankList":
+                                if (!gameInfo.showRank || gameInfo.showGroupRank) {
+                                        return;
+                                }
+
+                                wx.shareAppMessage({
+                                        title: "查看群排行",
+                                        imageUrl: "images/share/rankListIcon.png"
+                                });
+                                break;
+                        case "StartButton":
+                                if (gameInfo.start || gameInfo.showRank) {
+                                        return;
+                                }
+
+                                gameInfo.reset();
+
+                                this.hasEventBind = false;
+                                touch.removeEvents();
+                                break;
+                        case "RankListIcon":
+                                if (gameInfo.start || gameInfo.showRank) {
+                                        return;
+                                }
+
+                                gameInfo.showRank = true;
+                                gameInfo.openDataContext.postMessage({
+                                        cmd: "showRankList"
+                                });
+                                break;
+                        case "FullRankList":
+                                if (!gameInfo.start || !gameInfo.over) {
+                                        return;
+                                }
+
+                                gameInfo.showRank = true;
+                                break;
+                        case "RestartButton":
+                                if (!gameInfo.start || !gameInfo.over || gameInfo.showRank) {
+                                        return;
+                                }
+
+                                gameInfo.reset();
+
+                                // cannot change the status of the spiral later in touchendHandler
+                                // since the non-stopping loop will execute update first instead of
+                                // touchendHandler.
+                                this.spiral.toChange = true;
+
+                                this.hasEventBind = false;
+                                touch.removeEvents();
+                                break;
+                }
+        }
 }
 
 wx.showShareMenu({
-	withShareTicket: true,
+        withShareTicket: true,
 });
-wx.onShareAppMessage(function () {
-	return {
-		title: 'Shoot it!!',
-		imageUrl: SHARE_IMG[Math.floor(Math.random() * SHARE_IMG.length)]
-	}
+
+wx.onShareAppMessage(function() {
+        return {
+                title: 'Shoot it!!',
+                imageUrl: SHARE_IMG[Math.floor(Math.random() * SHARE_IMG.length)]
+        }
+});
+
+// show group rank
+wx.onShow(res => {
+        let shareTicket = res.shareTicket;
+        if (shareTicket) {
+                gameInfo.showRank = true;
+
+                // for muting the showGroupRank button
+                gameInfo.showGroupRank = true;
+
+                gameInfo.openDataContext.postMessage({
+                        cmd: "clearSharedCanvas"
+                });
+                gameInfo.openDataContext.postMessage({
+                        cmd: "groupRankList",
+                        ticket: shareTicket
+                });
+        }
 });

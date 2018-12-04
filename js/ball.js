@@ -9,6 +9,10 @@ let ctx = canvas.getContext('2d');
 
 let optimalBall = require("./utilities/optimalBall");
 
+/*----------------------------------------------------------------------------*/
+
+let acc = 0;
+
 export default class Ball extends Sprite {
         constructor(hole = {}, ballSrc = false) {
                 if (!ballSrc) {
@@ -73,6 +77,10 @@ export default class Ball extends Sprite {
 
                 this.speedX = theSpeed * Math.cos(ha);
                 this.speedY = theSpeed * Math.sin(ha);
+
+                // the init position of the score for a ball
+                this.scoreX = this.x;
+                this.scoreY = this.y;
         }
 
         // draw a circle shape instead of image. Not display well on the phone

@@ -34,15 +34,15 @@ const HIT_PEAS = {
 }
 HIT_PEAS.h = HIT_PEAS.w / 5;
 
-export const START_BTN = {
+export const START_BUTTON = {
         img: newImage('images/startGame.png'),
         x: 0.5 * canvas.width,
         y: 0.8 * canvas.height,
         h: 0.05 * canvas.width,
         bgColour: "#ffffff"
 };
-START_BTN.w = (305 / 60) * START_BTN.h;
-START_BTN.area = btnArea(START_BTN);
+START_BUTTON.w = (305 / 60) * START_BUTTON.h;
+START_BUTTON.area = btnArea(START_BUTTON);
 
 export const RANK_LIST_ICON = {
         img: newImage('images/rankListIcon.png'),
@@ -71,6 +71,11 @@ export default class Scene {
 
         }
         static renderGameStart(spiral) {
+                if (gameInfo.showRank) {
+                        Scene.renderRankList();
+                        return;
+                }
+
                 animeAngle += 0.01;
                 ctx.save();
                 ctx.translate(canvas.width / 2, canvas.height / 2);
@@ -85,12 +90,8 @@ export default class Scene {
                 ctx.closePath();
 
                 Scene.draw(HIT_PEAS);
-                Scene.drawButton(START_BTN);
+                Scene.drawButton(START_BUTTON);
                 Scene.draw(RANK_LIST_ICON);
-
-                if (gameInfo.showRank) {
-                        Scene.renderRankList();
-                }
         }
 
         static changeSpiralAnime(spiral) {
