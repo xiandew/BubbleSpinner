@@ -81,9 +81,9 @@ module.exports = function() {
         wx.getFriendCloudStorage({
                 keyList: ["week", "wkRecord"],
                 success: res => {
-                        // res.data = res.data.filter(d => {
-                        //         return valueOf("week", d.KVDataList) == getCurrentWeek();
-                        // });
+                        res.data = res.data.filter(d => {
+                                return valueOf("week", d.KVDataList) == getCurrentWeek();
+                        });
 
                         res.data.sort((d1, d2) => {
                                 return valueOf("wkRecord", d2.KVDataList) -

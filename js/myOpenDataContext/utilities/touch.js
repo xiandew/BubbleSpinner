@@ -35,13 +35,11 @@ module.exports = {
                 wx.onTouchStart(e => touchstartHandler(e));
                 wx.onTouchEnd(e => touchendHandler(e, callback));
         },
-	removeEvents: function() {
-		wx.offTouchStart();
-		wx.offTouchEnd();
-	}
+        removeEvents: function() {
+                wx.offTouchStart();
+                wx.offTouchEnd();
+        }
 }
-
-let touchstart = {};
 
 function isClicked(e, btn) {
         let x = (e.touches[0] || e.changedTouches[0]).clientX;
@@ -49,6 +47,8 @@ function isClicked(e, btn) {
         let area = btnAreas[btn];
         return x >= area.startX && x <= area.endX && y >= area.startY && y <= area.endY;
 }
+
+let touchstart = {};
 
 function touchstartHandler(e) {
         for (let btn in btnAreas) {

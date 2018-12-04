@@ -65,9 +65,9 @@ module.exports = {
                 wx.getFriendCloudStorage({
                         keyList: ["week", "wkRecord", "currentScore", "maxRecord"],
                         success: res => {
-                                // res.data = res.data.filter(d => {
-                                //         return valueOf("week", d.KVDataList) == getCurrentWeek();
-                                // });
+                                res.data = res.data.filter(d => {
+                                        return valueOf("week", d.KVDataList) == getCurrentWeek();
+                                });
 
                                 res.data.sort((d1, d2) => {
                                         return parseInt(valueOf("wkRecord", d2.KVDataList)) -
@@ -115,26 +115,26 @@ module.exports = {
 function callback(clicked) {
 
         switch (clicked) {
-		case "FullRankList":
-			if (!shared.asyncAllowed) {
-				shared.asyncAllowed = true;
-				drawRankList();
-			}
-			break;
+                case "FullRankList":
+                        if (!shared.asyncAllowed) {
+                                shared.asyncAllowed = true;
+                                drawRankList();
+                        }
+                        break;
 
-		case "RankListReturn":
-			if (shared.asyncAllowed) {
-				shared.asyncAllowed = false;
-				drawRankListThumbnail();
-			}
-			break;
+                case "RankListReturn":
+                        if (shared.asyncAllowed) {
+                                shared.asyncAllowed = false;
+                                drawRankListThumbnail();
+                        }
+                        break;
 
-		case "GroupRankList":
-			break;
+                case "GroupRankList":
+                        break;
 
-		case "Restart":
-			touch.removeEvents();
-			break;
+                case "Restart":
+                        touch.removeEvents();
+                        break;
         }
 }
 

@@ -8,11 +8,11 @@ import Lives from "./lives";
 import Spiral from './spiral';
 import Shooter from './shooter';
 
-let isClicked = require('./utilities/isClicked');
 let gameInfo = new GameInfo();
-
 let ctx = canvas.getContext('2d');
 ctx.imageSmoothingQuality = "high";
+
+let touch = require('./utilities/touch');
 
 /*----------------------------------------------------------------------------*/
 
@@ -26,7 +26,8 @@ export default class Main {
 
                 // make sure only add event listener once in 'update'
                 this.hasEventBind = true;
-                this.addEvents();
+                this.bindCallback = this.callback.bind(this);
+                touch.addEvents(this.bindCallback);
 
                 this.spiral.toChange = true;
 
@@ -98,10 +99,9 @@ export default class Main {
                                         score: gameInfo.score
                                 });
 
-                                this.addEvents();
                                 this.hasEventBind = true;
+                                touch.addEvents(this.bindCallback);
                         }
-
                         Scene.renderGameOver();
                 }
         }
@@ -112,6 +112,63 @@ export default class Main {
                 this.render();
 
                 this.frameID = requestAnimationFrame(this.bindLoop);
+        }
+
+        // touch event callback
+        callback(btn) {
+                if (!gameInfo.start) {
+
+                        switch (btn) {
+                                case "RankListReturn":
+                                        gameInfo.showRank = false;
+                                        break;
+                                case "GroupRankList":
+                                        wx.shareAppMessage({
+                                                title: '查看群排行'
+                                        });
+                                        break;
+                        }
+
+                        if (gameInfo.showRank) {
+                                return;
+                        }
+
+                        switch (btn) {
+                                case "StartButton":
+                                        gameInfo.reset();
+
+                                        this.hasEventBind = false;
+                                        touch.removeEvents();
+                                        break;
+                                case "RankListIcon":
+                                        gameInfo.showRank = true;
+                                        gameInfo.openDataContext.postMessage({
+                                                cmd: "showRankList"
+                                        });
+                                        break;
+                        }
+                }
+
+                if (gameInfo.start) {
+                        if (gameInfo.over) {
+
+                                switch (btn) {
+                                        case "RestartButton":
+                                                gameInfo.reset();
+
+                                                // cannot change the status of the spiral later
+                                                // in touchendHandler since the non-stopping
+                                                // loop will execute update first instead of
+                                                // touchendHandler.
+                                                this.spiral.toChange = true;
+                                }
+                        }
+
+                        if (!gameInfo.over) {
+                                this.hasEventBind = false;
+                                touch.removeEvents();
+                        }
+                }
         }
 }
 
