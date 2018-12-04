@@ -3,7 +3,7 @@ import Shooter from './shooter';
 import Lives from "./lives";
 import ExtraBalls from "./runtime/extraBalls";
 import GameInfo, {
-	SHARE_IMG
+        SHARE_IMG
 } from './runtime/gameInfo';
 import Scene from './runtime/scene';
 
@@ -39,10 +39,13 @@ export default class Main {
         }
 
         addEvents() {
-                !this.touchstarter ? this.touchstarter = this.touchstartHandler.bind(this) : true;
                 !this.touchender ? this.touchender = this.touchendHandler.bind(this) : true;
-                canvas.addEventListener('touchstart', this.touchstarter);
                 canvas.addEventListener('touchend', this.touchender);
+        }
+
+        removeEvents() {
+                this.hasEventBind = false;
+                canvas.removeEventListener('touchend', this.touchender);
         }
 
         update() {
@@ -112,8 +115,8 @@ export default class Main {
                 }
         }
 
-        touchstartHandler(e) {
-                e.preventDefault()
+        touchendHandler(e) {
+                e.preventDefault();
 
                 if (!gameInfo.start) {
 
@@ -121,12 +124,12 @@ export default class Main {
                                 gameInfo.showRank = false;
                         }
 
-			//////////////////////////////////////////////////////////////////////////////////////////
-			// if (isClicked(e, "GroupRankList")) {
-			// 	wx.shareAppMessage({
-			// 		title: '转发标题'
-			// 	});
-			// }
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        // if (isClicked(e, "GroupRankList")) {
+                        // 	wx.shareAppMessage({
+                        // 		title: '转发标题'
+                        // 	});
+                        // }
 
                         if (gameInfo.showRank) {
                                 return;
@@ -134,7 +137,7 @@ export default class Main {
 
                         if (isClicked(e, "StartBtn")) {
                                 gameInfo.reset();
-                                canvas.removeEventListener('touchstart', this.touchstarter);
+                                this.removeEvents();
                         }
 
                         if (isClicked(e, "RankListIcon")) {
@@ -144,26 +147,22 @@ export default class Main {
                                 });
                         }
                 }
-                if (gameInfo.over) {
-                        if (isClicked(e, "RestartButton")) {
-                                gameInfo.reset();
 
-                                // cannot change the status of the spiral later in touchendHandler
-                                // since the non-stopping loop will execute update first instead of
-                                // touchendHandler.
-                                this.spiral.toChange = true;
+                if (gameInfo.start) {
+                        if (gameInfo.over) {
+                                if (isClicked(e, "RestartButton")) {
+                                        gameInfo.reset();
 
-                                canvas.removeEventListener('touchstart', this.touchstarter);
+                                        // cannot change the status of the spiral later in touchendHandler
+                                        // since the non-stopping loop will execute update first instead of
+                                        // touchendHandler.
+                                        this.spiral.toChange = true;
+                                }
                         }
-                }
-        }
 
-        touchendHandler(e) {
-                e.preventDefault();
-                if (!gameInfo.over) {
-                        this.hasEventBind = false;
-
-                        canvas.removeEventListener('touchend', this.touchender);
+                        if (!gameInfo.over) {
+                                this.removeEvents();
+                        }
                 }
         }
 
@@ -177,11 +176,11 @@ export default class Main {
 }
 
 wx.showShareMenu({
-	withShareTicket: true,
+        withShareTicket: true,
 });
-wx.onShareAppMessage(function () {
-	return {
-		title: 'Shoot it!!',
-		imageUrl: SHARE_IMG[Math.floor(Math.random() * SHARE_IMG.length)]
-	}
+wx.onShareAppMessage(function() {
+        return {
+                title: 'Shoot it!!',
+                imageUrl: SHARE_IMG[Math.floor(Math.random() * SHARE_IMG.length)]
+        }
 });

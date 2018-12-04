@@ -18,8 +18,8 @@ const RESTART_BTN_AREA = {
 }
 
 module.exports = function(e, btn) {
-        let x = e.touches[0].clientX;
-        let y = e.touches[0].clientY;
+        let x = e.changedTouches[0].clientX;
+        let y = e.changedTouches[0].clientY;
         let area;
         switch (btn) {
                 case "StartBtn":
@@ -36,6 +36,7 @@ module.exports = function(e, btn) {
 			break;
 		case "RestartButton":
 			area = RESTART_BTN_AREA;
+			break;
         }
         return x >= area.startX && x <= area.endX && y >= area.startY && y <= area.endY;
 }

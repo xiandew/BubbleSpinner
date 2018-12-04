@@ -37,19 +37,19 @@ const RETURN_HEIGHT = 0.08 * canvasWidth;
 const RETURN_WIDTH = RETURN_HEIGHT;
 
 const GROUP_RANK_BTN = {
-	imgSrc: 'images/groupRank.png',
-	x: 0.68 * canvasWidth,
-	y: 0.92 * canvasHeight,
-	h: 0.05 * canvasWidth,
-	bgColour: "#888888",
-	area: {
-		startX: 0.45 * canvasWidth,
-		endX: 0.91 * canvasWidth,
-		startY: 0.92 * canvasHeight - 0.07 * canvasWidth,
-		endY: 0.92 * canvasHeight + 0.07 * canvasWidth,
-		w: 0.46 * canvasWidth,
-		h: 0.14 * canvasWidth
-	}
+        imgSrc: 'images/groupRank.png',
+        x: 0.68 * canvasWidth,
+        y: 0.92 * canvasHeight,
+        h: 0.05 * canvasWidth,
+        bgColour: "#888888",
+        area: {
+                startX: 0.45 * canvasWidth,
+                endX: 0.91 * canvasWidth,
+                startY: 0.92 * canvasHeight - 0.07 * canvasWidth,
+                endY: 0.92 * canvasHeight + 0.07 * canvasWidth,
+                w: 0.46 * canvasWidth,
+                h: 0.14 * canvasWidth
+        }
 };
 GROUP_RANK_BTN.w = GROUP_RANK_BTN.h * 5;
 
@@ -64,11 +64,13 @@ let selfRank = selfRankCanvas.getContext('2d');
 selfRankCanvas.width = PANEL_WIDTH;
 selfRankCanvas.height = 0.125 * canvasHeight;
 
-let currentPage = 0;
+let currentPage;
 
 /*----------------------------------------------------------------------------*/
 
 module.exports = function() {
+        currentPage = 0;
+
         drawBackground();
 
         if (shared.ranks && shared.selfRank) {
@@ -79,9 +81,9 @@ module.exports = function() {
         wx.getFriendCloudStorage({
                 keyList: ["week", "wkRecord"],
                 success: res => {
-                        res.data = res.data.filter(d => {
-                                return valueOf("week", d.KVDataList) == getCurrentWeek();
-                        });
+                        // res.data = res.data.filter(d => {
+                        //         return valueOf("week", d.KVDataList) == getCurrentWeek();
+                        // });
 
                         res.data.sort((d1, d2) => {
                                 return valueOf("wkRecord", d2.KVDataList) -
@@ -308,7 +310,7 @@ function drawBackground() {
         }
         return_btn.src = 'images/return.png';
 
-	drawButton(GROUP_RANK_BTN);
+        drawButton(GROUP_RANK_BTN);
 }
 
 let startY, endY;
@@ -325,9 +327,9 @@ wx.onTouchEnd(e => {
         }
 
         if (endY > startY) {
-                drawPage(currentPage - 1);
+                //drawPage(currentPage - 1);
         }
         if (endY < startY) {
-                drawPage(currentPage + 1);
+                //drawPage(currentPage + 1);
         }
 });

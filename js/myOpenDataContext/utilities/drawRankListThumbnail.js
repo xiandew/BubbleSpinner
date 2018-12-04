@@ -1,12 +1,12 @@
 import Shared from "../shared";
 let shared = new Shared();
 
-let drawText = require("./drawText");
+let touch = require("./touch");
 let valueOf = require("./valueOf");
-let getCurrentWeek = require("./getCurrentWeek");
-let isClicked = require("./isClicked");
+let drawText = require("./drawText");
 let drawButton = require("./drawButton");
 let drawRankList = require("./drawRankList");
+let getCurrentWeek = require("./getCurrentWeek");
 
 /*----------------------------------------------------------------------------*/
 
@@ -65,9 +65,9 @@ module.exports = {
                 wx.getFriendCloudStorage({
                         keyList: ["week", "wkRecord", "currentScore", "maxRecord"],
                         success: res => {
-                                res.data = res.data.filter(d => {
-                                        return valueOf("week", d.KVDataList) == getCurrentWeek();
-                                });
+                                // res.data = res.data.filter(d => {
+                                //         return valueOf("week", d.KVDataList) == getCurrentWeek();
+                                // });
 
                                 res.data.sort((d1, d2) => {
                                         return parseInt(valueOf("wkRecord", d2.KVDataList)) -
@@ -97,12 +97,12 @@ module.exports = {
                                                 triple[2] = shared.ranks[shared.selfRankIndex + 1];
 
                                                 drawRankPanel();
+
+                                                touch.addEvents(callback);
                                         }
                                 });
                         }
                 });
-
-                wx.onTouchStart(e => touchstartHandler(e));
         },
 
         drawBackground: function() {
@@ -112,14 +112,29 @@ module.exports = {
 
 }
 
-function touchstartHandler(e) {
-        if (!shared.asyncAllowed && isClicked(e, "FullRankList")) {
-                shared.asyncAllowed = true;
-                drawRankList();
-        }
-        if (shared.asyncAllowed && isClicked(e, "RankListReturn")) {
-                shared.asyncAllowed = false;
-                drawRankListThumbnail();
+function callback(clicked) {
+
+        switch (clicked) {
+		case "FullRankList":
+			if (!shared.asyncAllowed) {
+				shared.asyncAllowed = true;
+				drawRankList();
+			}
+			break;
+
+		case "RankListReturn":
+			if (shared.asyncAllowed) {
+				shared.asyncAllowed = false;
+				drawRankListThumbnail();
+			}
+			break;
+
+		case "GroupRankList":
+			break;
+
+		case "Restart":
+			touch.removeEvents();
+			break;
         }
 }
 
