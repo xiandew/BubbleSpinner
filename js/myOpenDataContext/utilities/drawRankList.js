@@ -66,73 +66,95 @@ selfRankCanvas.height = 0.125 * canvasHeight;
 
 let currentPage;
 
+let groupRank;
+let ranks;
+
 /*----------------------------------------------------------------------------*/
 
-module.exports = function() {
+module.exports = function(ticket) {
         currentPage = 0;
-
         drawBackground();
 
-        if (shared.ranks && shared.selfRank) {
-                drawPage(currentPage);
-                drawSelfRank();
-        }
+        if (!ticket) {
+                groupRank = false;
 
-        wx.getFriendCloudStorage({
-                keyList: ["week", "wkRecord"],
-                success: res => {
-                        res.data = res.data.filter(d => {
-                                return valueOf("week", d.KVDataList) == getCurrentWeek();
-                        });
+                if (shared.ranks && shared.selfRank) {
+                        ranks = shared.ranks;
 
-                        res.data.sort((d1, d2) => {
-                                return valueOf("wkRecord", d2.KVDataList) -
-                                        valueOf("wkRecord", d1.KVDataList);
-                        });
-
-                        shared.ranks = res.data;
-
-                        wx.getUserInfo({
-                                openIdList: ['selfOpenId'],
-                                success: function(user) {
-                                        let userInfo = user.data[0];
-
-                                        let nickName = userInfo.nickName;
-                                        let avatarUrl = userInfo.avatarUrl;
-
-                                        shared.selfRankIndex = shared.ranks.findIndex(user => {
-                                                return user.nickname == nickName &&
-                                                        user.avatarUrl == avatarUrl;
-                                        });
-
-                                        if (shared.selfRankIndex < 0) {
-                                                shared.selfRankIndex = shared.ranks.length;
-                                                shared.selfRank = {
-                                                        avatarUrl: avatarUrl,
-                                                        nickname: nickName,
-                                                        KVDataList: [{
-                                                                key: "wkRecord",
-                                                                value: 0
-                                                        }]
-                                                }
-                                                shared.ranks.push(shared.selfRank);
-                                        } else {
-                                                shared.selfRank = shared.ranks[shared.selfRankIndex];
-                                        }
-
-                                        rankListCanvas.height = Math.ceil(shared.ranks.length / 6) * PANEL_HEIGHT;
-                                        if (shared.asyncAllowed) {
-                                                drawPage(currentPage);
-                                                drawSelfRank();
-                                        }
-                                }
-                        })
+                        drawPage(currentPage);
+                        drawSelfRank();
                 }
-        });
+                wx.getFriendCloudStorage({
+                        keyList: ["week", "wkRecord"],
+                        success: res => drawRankList(res)
+                });
+        } else {
+                groupRank = true;
+
+                wx.getGroupCloudStorage({
+                        shareTicket: ticket,
+                        keyList: ["week", "wkRecord"],
+                        success: res => drawRankList(res)
+                });
+        }
 }
 
+function drawRankList(res) {
+        res.data = res.data.filter(d => {
+                return valueOf("week", d.KVDataList) == getCurrentWeek();
+        });
+
+        res.data.sort((d1, d2) => {
+                return valueOf("wkRecord", d2.KVDataList) -
+                        valueOf("wkRecord", d1.KVDataList);
+        });
+
+        if (!groupRank) {
+                shared.ranks = res.data;
+        }
+        ranks = res.data;
+
+        wx.getUserInfo({
+                openIdList: ['selfOpenId'],
+                success: function(user) {
+                        let userInfo = user.data[0];
+
+                        let nickName = userInfo.nickName;
+                        let avatarUrl = userInfo.avatarUrl;
+
+                        shared.selfRankIndex = ranks.findIndex(user => {
+                                return user.nickname == nickName &&
+                                        user.avatarUrl == avatarUrl;
+                        });
+
+                        if (shared.selfRankIndex < 0) {
+                                shared.selfRankIndex = ranks.length;
+                                shared.selfRank = {
+                                        avatarUrl: avatarUrl,
+                                        nickname: nickName,
+                                        KVDataList: [{
+                                                key: "wkRecord",
+                                                value: 0
+                                        }]
+                                }
+                                ranks.push(shared.selfRank);
+                        } else {
+                                shared.selfRank = ranks[shared.selfRankIndex];
+                        }
+
+                        rankListCanvas.height = Math.ceil(ranks.length / 6) * PANEL_HEIGHT;
+                        if (shared.asyncAllowed) {
+                                drawPage(currentPage);
+                                drawSelfRank();
+                        }
+                }
+        })
+}
+
+
+
 function drawPage(pageIndex) {
-        if (pageIndex < 0 || pageIndex >= Math.ceil(shared.ranks.length / 6)) {
+        if (pageIndex < 0 || pageIndex >= Math.ceil(ranks.length / 6)) {
                 return;
         }
         currentPage = pageIndex;
@@ -140,10 +162,10 @@ function drawPage(pageIndex) {
         rankList.clearRect(0, 0, rankListCanvas.width, rankListCanvas.height);
 
         let first = pageIndex * 6;
-        let last = first + Math.min(6, shared.ranks.length - first);
+        let last = first + Math.min(6, ranks.length - first);
 
         for (let i = first; i < last; i++) {
-                let user = shared.ranks[i];
+                let user = ranks[i];
 
                 // alternating colours of items
                 if (i % 2) {
@@ -273,7 +295,7 @@ function drawBackground() {
         ctx.fillStyle = "#ffffff";
         ctx.font = `bold ${TITLE_SIZE}px Arial`;
         ctx.textAlign = "center";
-        ctx.fillText('好友排行榜', TITLE_X, TITLE_Y);
+        ctx.fillText(groupRank ? "群排行榜" : "好友排行榜", TITLE_X, TITLE_Y);
 
         ctx.fillStyle = "#3c3c3c";
         ctx.fillRect(BG_START_X, BG_START_Y, PANEL_WIDTH, BG_HEIGHT);
@@ -310,7 +332,9 @@ function drawBackground() {
         }
         return_btn.src = 'images/return.png';
 
-        drawButton(GROUP_RANK_BTN);
+        if (!groupRank) {
+                drawButton(GROUP_RANK_BTN);
+        }
 }
 
 let startY, endY;
@@ -322,7 +346,7 @@ wx.onTouchMove(e => {
         endY = e.touches[0].clientY;
 });
 wx.onTouchEnd(e => {
-        if (!shared.ranks) {
+        if (!ranks) {
                 return;
         }
 

@@ -26,6 +26,7 @@ export default class Shared {
 
                 this.selfRankIndex = undefined;
                 this.selfRank = undefined;
+		// record friend ranks but not group ranks
                 this.ranks = undefined;
 
                 this.asyncAllowed = true;

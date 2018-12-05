@@ -123,9 +123,10 @@ export default class Main {
                                 }
 
                                 gameInfo.showRank = false;
+                                gameInfo.showGroupRank = false;
                                 break;
                         case "GroupRankList":
-                                if (!gameInfo.showRank) {
+                                if (!gameInfo.showRank || gameInfo.showGroupRank) {
                                         return;
                                 }
 
@@ -191,12 +192,22 @@ wx.onShareAppMessage(function() {
         }
 });
 
+// show group rank
 wx.onShow(res => {
-	let shareTicket = res.shareTicket;
-	if (shareTicket) {
-		gameInfo.openDataContext.postMessage({
-			cmd: "groupRankList", 
-			ticket: shareTicket
-		});
-	}
+        let shareTicket = res.shareTicket;
+        if (shareTicket) {
+                gameInfo.showRank = true;
+
+                // for muting the showGroupRank button
+                gameInfo.showGroupRank = true;
+
+                gameInfo.openDataContext.postMessage({
+                        cmd: "clearSharedCanvas"
+                });
+
+                gameInfo.openDataContext.postMessage({
+                        cmd: "groupRankList",
+                        ticket: shareTicket
+                });
+        }
 });

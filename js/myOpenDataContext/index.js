@@ -23,6 +23,7 @@ wx.onMessage(data => {
                         break;
 
                 case "groupRankList":
+			drawRankList(data.ticket);
                         break;
         }
 })
