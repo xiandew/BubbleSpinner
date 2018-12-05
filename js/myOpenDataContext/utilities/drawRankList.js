@@ -72,12 +72,18 @@ let ranks;
 /*----------------------------------------------------------------------------*/
 
 module.exports = function(ticket) {
+        groupRank = ticket ? true : false;
+
         currentPage = 0;
         drawBackground();
 
-        if (!ticket) {
-                groupRank = false;
-
+        if (groupRank) {
+                wx.getGroupCloudStorage({
+                        shareTicket: ticket,
+                        keyList: ["week", "wkRecord"],
+                        success: res => drawRankList(res)
+                });
+        } else {
                 if (shared.ranks && shared.selfRank) {
                         ranks = shared.ranks;
 
@@ -85,14 +91,6 @@ module.exports = function(ticket) {
                         drawSelfRank();
                 }
                 wx.getFriendCloudStorage({
-                        keyList: ["week", "wkRecord"],
-                        success: res => drawRankList(res)
-                });
-        } else {
-                groupRank = true;
-
-                wx.getGroupCloudStorage({
-                        shareTicket: ticket,
                         keyList: ["week", "wkRecord"],
                         success: res => drawRankList(res)
                 });

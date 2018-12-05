@@ -204,7 +204,6 @@ wx.onShow(res => {
                 gameInfo.openDataContext.postMessage({
                         cmd: "clearSharedCanvas"
                 });
-
                 gameInfo.openDataContext.postMessage({
                         cmd: "groupRankList",
                         ticket: shareTicket
