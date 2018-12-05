@@ -116,58 +116,66 @@ export default class Main {
 
         // touch event callback
         callback(btn) {
-                if (!gameInfo.start) {
-
-                        switch (btn) {
-                                case "RankListReturn":
-                                        gameInfo.showRank = false;
-                                        break;
-                                case "GroupRankList":
-                                        wx.shareAppMessage({
-                                                title: '查看群排行'
-                                        });
-                                        break;
-                        }
-
-                        if (gameInfo.showRank) {
-                                return;
-                        }
-
-                        switch (btn) {
-                                case "StartButton":
-                                        gameInfo.reset();
-
-                                        this.hasEventBind = false;
-                                        touch.removeEvents();
-                                        break;
-                                case "RankListIcon":
-                                        gameInfo.showRank = true;
-                                        gameInfo.openDataContext.postMessage({
-                                                cmd: "showRankList"
-                                        });
-                                        break;
-                        }
-                }
-
-                if (gameInfo.start) {
-                        if (gameInfo.over) {
-
-                                switch (btn) {
-                                        case "RestartButton":
-                                                gameInfo.reset();
-
-                                                // cannot change the status of the spiral later
-                                                // in touchendHandler since the non-stopping
-                                                // loop will execute update first instead of
-                                                // touchendHandler.
-                                                this.spiral.toChange = true;
+                switch (btn) {
+                        case "RankListReturn":
+                                if (!gameInfo.showRank) {
+                                        return;
                                 }
-                        }
 
-                        if (!gameInfo.over) {
+                                gameInfo.showRank = false;
+                                break;
+                        case "GroupRankList":
+                                if (!gameInfo.showRank) {
+                                        return;
+                                }
+
+                                wx.shareAppMessage({
+                                        title: "查看群排行",
+                                        imageUrl: "images/share/rankListIcon.png"
+                                });
+                                break;
+                        case "StartButton":
+                                if (gameInfo.start || gameInfo.showRank) {
+                                        return;
+                                }
+
+                                gameInfo.reset();
+
                                 this.hasEventBind = false;
                                 touch.removeEvents();
-                        }
+                                break;
+                        case "RankListIcon":
+                                if (gameInfo.start || gameInfo.showRank) {
+                                        return;
+                                }
+
+                                gameInfo.showRank = true;
+                                gameInfo.openDataContext.postMessage({
+                                        cmd: "showRankList"
+                                });
+                                break;
+                        case "FullRankList":
+                                if (!gameInfo.start || !gameInfo.over) {
+                                        return;
+                                }
+
+                                gameInfo.showRank = true;
+                                break;
+                        case "RestartButton":
+                                if (!gameInfo.start || !gameInfo.over || gameInfo.showRank) {
+                                        return;
+                                }
+
+                                gameInfo.reset();
+
+                                // cannot change the status of the spiral later in touchendHandler
+                                // since the non-stopping loop will execute update first instead of
+                                // touchendHandler.
+                                this.spiral.toChange = true;
+
+                                this.hasEventBind = false;
+                                touch.removeEvents();
+                                break;
                 }
         }
 }

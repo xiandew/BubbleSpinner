@@ -129,11 +129,14 @@ function callback(clicked) {
                         }
                         break;
 
-                case "GroupRankList":
+                case "RestartButton":
+                        if (shared.asyncAllowed) {
+                                return;
+                        }
+                        touch.removeEvents();
                         break;
 
-                case "Restart":
-                        touch.removeEvents();
+                case "GroupRankList":
                         break;
         }
 }

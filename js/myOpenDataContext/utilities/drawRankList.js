@@ -38,17 +38,17 @@ const RETURN_WIDTH = RETURN_HEIGHT;
 
 const GROUP_RANK_BTN = {
         imgSrc: 'images/groupRank.png',
-        x: 0.68 * canvasWidth,
-        y: 0.92 * canvasHeight,
-        h: 0.05 * canvasWidth,
-        bgColour: "#000000",
+        x: 0.728 * canvasWidth,
+        y: 0.923 * canvasHeight,
+        h: 0.04 * canvasWidth,
+        bgColour: "#3f3f3f",
         area: {
-                startX: 0.45 * canvasWidth,
-                endX: 0.91 * canvasWidth,
-                startY: 0.92 * canvasHeight - 0.07 * canvasWidth,
-                endY: 0.92 * canvasHeight + 0.07 * canvasWidth,
-                w: 0.46 * canvasWidth,
-                h: 0.14 * canvasWidth
+                startX: 0.544 * canvasWidth,
+                endX: 0.912 * canvasWidth,
+                startY: 0.923 * canvasHeight - 0.056 * canvasWidth,
+                endY: 0.923 * canvasHeight + 0.056 * canvasWidth,
+                w: 0.368 * canvasWidth,
+                h: 0.112 * canvasWidth
         }
 };
 GROUP_RANK_BTN.w = GROUP_RANK_BTN.h * 5;

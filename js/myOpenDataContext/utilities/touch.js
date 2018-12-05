@@ -20,11 +20,17 @@ const btnAreas = {
                 endX: 0.925 * canvasWidth,
                 endY: 0.56875 * canvasHeight
         },
-        "Restart": {
+        "RestartButton": {
                 startX: 0.2679 * canvasWidth,
                 endX: 0.7321 * canvasWidth,
                 startY: 0.75 * canvasHeight - 0.07 * canvasWidth,
                 endY: 0.75 * canvasHeight + 0.07 * canvasWidth
+        },
+        "GroupRankList": {
+                startX: 0.544 * canvasWidth,
+                endX: 0.912 * canvasWidth,
+                startY: 0.923 * canvasHeight - 0.056 * canvasWidth,
+                endY: 0.923 * canvasHeight + 0.056 * canvasWidth
         }
 };
 

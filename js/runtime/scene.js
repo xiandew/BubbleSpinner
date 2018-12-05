@@ -71,6 +71,11 @@ export default class Scene {
 
         }
         static renderGameStart(spiral) {
+                if (gameInfo.showRank) {
+                        Scene.renderRankList();
+                        return;
+                }
+
                 animeAngle += 0.01;
                 ctx.save();
                 ctx.translate(canvas.width / 2, canvas.height / 2);
@@ -87,10 +92,6 @@ export default class Scene {
                 Scene.draw(HIT_PEAS);
                 Scene.drawButton(START_BUTTON);
                 Scene.draw(RANK_LIST_ICON);
-
-                if (gameInfo.showRank) {
-                        Scene.renderRankList();
-                }
         }
 
         static changeSpiralAnime(spiral) {

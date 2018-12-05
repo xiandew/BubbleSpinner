@@ -21,6 +21,18 @@ const btnAreas = {
                 endX: 0.7321 * canvas.width,
                 startY: 0.75 * canvas.height - 0.07 * canvas.width,
                 endY: 0.75 * canvas.height + 0.07 * canvas.width
+        },
+        "FullRankList": {
+                startX: 0.642 * canvas.width,
+                startY: 0.525 * canvas.height,
+                endX: 0.925 * canvas.width,
+                endY: 0.56875 * canvas.height
+        },
+        "GroupRankList": {
+                startX: 0.544 * canvas.width,
+                endX: 0.912 * canvas.width,
+                startY: 0.923 * canvas.height - 0.056 * canvas.width,
+                endY: 0.923 * canvas.height + 0.056 * canvas.width
         }
 }
 
