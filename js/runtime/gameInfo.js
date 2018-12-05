@@ -2,7 +2,9 @@ let instance;
 let ctx = canvas.getContext('2d');
 
 const MAX_NUM_LIVES = 6;
+
 const LAYERS = [2, 3, 4, 5, 6];
+
 export const BALLS = [
         'images/b_blue.png',
         'images/b_cyan.png',
@@ -14,6 +16,7 @@ export const BALLS = [
 export const BALL_SIZE = 0.055 * canvas.width;
 export const SHOOTER_SPEED = 15;
 
+/*----------------------------------------------------------------------------*/
 
 export default class GameInfo {
         constructor() {
@@ -48,6 +51,11 @@ export default class GameInfo {
 
                 this.renewLives();
         }
+
+	getEachWorth() {
+		// 1, 1, 1, 2, 3, 4..
+		return this.level <= 2 ? 1 : this.level - 1;
+	}
 
         getLayers() {
                 return this.level < LAYERS.length ? LAYERS[this.level] : LAYERS[LAYERS.length - 1];

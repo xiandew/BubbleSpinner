@@ -135,9 +135,6 @@ function callback(clicked) {
                         }
                         touch.removeEvents();
                         break;
-
-                case "GroupRankList":
-                        break;
         }
 }
 

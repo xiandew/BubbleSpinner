@@ -335,23 +335,26 @@ function drawBackground() {
         }
 }
 
+
 let startY, endY;
+
 wx.onTouchStart(e => {
-        startY = e.touches[0].clientY;
+	startY = e.touches[0].clientY / wx.getSystemInfoSync().screenWidth * canvasWidth;
 });
 
 wx.onTouchMove(e => {
-        endY = e.touches[0].clientY;
+	endY = e.touches[0].clientY;
 });
 wx.onTouchEnd(e => {
-        if (!ranks) {
+        if (!ranks || !(PANEL_START_Y <= startY && startY <= PANEL_START_Y + PANEL_HEIGHT)) {
                 return;
         }
+	console.log(1);
 
         if (endY > startY) {
-                //drawPage(currentPage - 1);
+                drawPage(currentPage - 1);
         }
         if (endY < startY) {
-                //drawPage(currentPage + 1);
+                drawPage(currentPage + 1);
         }
 });
