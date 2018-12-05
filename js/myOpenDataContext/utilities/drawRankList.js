@@ -337,19 +337,19 @@ function drawBackground() {
 
 
 let startY, endY;
-
+let screenWidth = wx.getSystemInfoSync().screenWidth;
 wx.onTouchStart(e => {
-	startY = e.touches[0].clientY / wx.getSystemInfoSync().screenWidth * canvasWidth;
+        startY = e.touches[0].clientY / screenWidth * canvasWidth;
 });
-
 wx.onTouchMove(e => {
-	endY = e.touches[0].clientY;
+        endY = e.touches[0].clientY / screenWidth * canvasWidth;
 });
 wx.onTouchEnd(e => {
-        if (!ranks || !(PANEL_START_Y <= startY && startY <= PANEL_START_Y + PANEL_HEIGHT)) {
+        if (!ranks || !shared.asyncAllowed ||
+                !(startY >= PANEL_START_Y &&
+                        startY <= PANEL_START_Y + PANEL_HEIGHT)) {
                 return;
         }
-	console.log(1);
 
         if (endY > startY) {
                 drawPage(currentPage - 1);
