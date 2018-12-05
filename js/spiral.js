@@ -12,13 +12,13 @@ let ctx = canvas.getContext('2d');
 
 /*----------------------------------------------------------------------------*/
 
-import IMPACT_BLACK_JSON from '../fonts/impact_black';
+import IMPACT_WHITE_JSON from '../fonts/impact_white';
 import BitmapFont from "./utilities/bitmapFont";
 import BitmapText from "./utilities/bitmapText";
 let impact_black = new BitmapFont();
 let fontLoaded = false;
 let txt;
-impact_black.loadFont(IMPACT_BLACK_JSON, function () {
+impact_black.loadFont(IMPACT_WHITE_JSON, function () {
 	fontLoaded = true;
 	txt = new BitmapText(impact_black);
 });
@@ -111,9 +111,15 @@ export default class Spiral {
                         }
                 });
 
-		if (fontLoaded) {
+		if (!this.toChange && fontLoaded) {
 			txt.fontSize = 0.075 * canvas.width;
-			txt.draw(ctx, "1", 0.48 * canvas.width, 0.48 * canvas.height);
+			txt.textAlign = "center";
+			txt.draw(
+				ctx,
+				gameInfo.getEachWorth(),
+				0.5 * canvas.width,
+				0.48 * canvas.height
+			);
 		}
         }
 
