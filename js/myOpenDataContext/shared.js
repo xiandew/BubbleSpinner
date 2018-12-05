@@ -26,9 +26,10 @@ export default class Shared {
 
                 this.selfRankIndex = undefined;
                 this.selfRank = undefined;
-		// record friend ranks but not group ranks
+                // record friend ranks but not group ranks
                 this.ranks = undefined;
 
+                // when the fullRankList is allowed to be drawn on the shared canvas
                 this.asyncAllowed = true;
 
                 this.fontLoaded = false;
