@@ -3,9 +3,14 @@ export default class BitmapFont {
 
         loadFont(jsonData, onloaded) {
 
-		let bitmapFont = JSON.parse(jsonData);
+                let bitmapFont = JSON.parse(jsonData);
                 this.defaultSize = Math.abs(parseInt(bitmapFont.info.size));
-                this.chars = bitmapFont.chars.char;
+
+                this.chars = {};
+                bitmapFont.chars.char.forEach(ch => {
+                        this.chars[String.fromCharCode(ch.id)] = ch;
+                });
+
                 this.bitmap = wx.createImage();
                 this.bitmap.onload = function() {
                         onloaded();
