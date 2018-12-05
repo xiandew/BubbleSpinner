@@ -7,17 +7,23 @@ let valueOf = require("./utilities/valueOf");
 let getCurrentWeek = require("./utilities/getCurrentWeek");
 
 wx.onMessage(data => {
-        if (data.cmd == "showRankList") {
-                drawRankList();
-        }
 
-        if (data.cmd == "updateScore") {
-                rankListThumbnail.drawBackground();
-                updateScore(data.score);
-        }
+        switch (data.cmd) {
+                case "showRankList":
+                        drawRankList();
+                        break;
 
-        if (data.cmd == "clearSharedCanvas") {
-                shared.ctx.clearRect(0, 0, shared.canvasWidth, shared.canvasHeight);
+                case "updateScore":
+                        rankListThumbnail.drawBackground();
+                        updateScore(data.score);
+                        break;
+
+                case "clearSharedCanvas":
+                        shared.ctx.clearRect(0, 0, shared.canvasWidth, shared.canvasHeight);
+                        break;
+
+                case "groupRankList":
+                        break;
         }
 })
 

@@ -183,9 +183,20 @@ export default class Main {
 wx.showShareMenu({
         withShareTicket: true,
 });
+
 wx.onShareAppMessage(function() {
         return {
                 title: 'Shoot it!!',
                 imageUrl: SHARE_IMG[Math.floor(Math.random() * SHARE_IMG.length)]
         }
+});
+
+wx.onShow(res => {
+	let shareTicket = res.shareTicket;
+	if (shareTicket) {
+		gameInfo.openDataContext.postMessage({
+			cmd: "groupRankList", 
+			ticket: shareTicket
+		});
+	}
 });
