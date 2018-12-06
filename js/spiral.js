@@ -62,12 +62,15 @@ export default class Spiral {
 
                 let layers = gameInfo.getLayers();
 
+                // clear the spiral for optimising the distribution of the spiral
+                gameInfo.holes.forEach((hole, i) => {
+                        if (hole != this.pivot) {
+                                gameInfo.holes.splice(i, 1, new Hole(hole.x, hole.y, hole.layer));
+                        }
+                });
                 gameInfo.holes.forEach((hole, i) => {
                         if (hole.layer <= layers) {
                                 gameInfo.holes.splice(i, 1, new Ball(hole));
-                        }
-                        if (hole.layer > layers && !(hole instanceof Hole)) {
-                                gameInfo.holes.splice(i, 1, new Hole(hole.x, hole.y, hole.layer));
                         }
                 });
         }
@@ -207,8 +210,6 @@ export default class Spiral {
                 if (this.sameBalls.length >= 3) {
                         this.sameBalls.forEach(ball => {
                                 ball.initDropping(this.shooter);
-
-                                gameInfo.holes.push(new Hole(ball.x, ball.y, ball.layer));
                         });
                 } else {
                         gameInfo.loseLive = true;
@@ -227,8 +228,6 @@ export default class Spiral {
                                 !ball.visited && ball.dropping == undefined) {
 
                                 ball.initDropping(this.shooter);
-
-                                gameInfo.holes.push(new Hole(ball.x, ball.y, ball.layer));
                         }
                 });
 

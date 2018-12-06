@@ -33,8 +33,8 @@ module.exports = function() {
                 return b1.count - b2.count;
         });
 
-        arr = arr.filter(ball => ball.count == arr[0].count);
         arr.length > 1 && prevBall ? arr.filter(ball => ball.src != prevBall) : true;
+        arr = arr.filter(ball => ball.count == arr[0].count);
 
         thisBall = prevBall = arr[Math.floor(Math.random() * arr.length)].src;
         return thisBall;

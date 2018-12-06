@@ -3,6 +3,7 @@ import GameInfo, {
         SHOOTER_SPEED
 } from './runtime/gameInfo';
 import Sprite from './sprite';
+import Hole from './hole';
 
 /*----------------------------------------------------------------------------*/
 
@@ -61,17 +62,6 @@ export default class Ball extends Sprite {
         render() {
                 if (this.dropping) {
 
-                        if (!this.toChange && fontLoaded) {
-                                txt.fontSize = 0.075 * canvas.width;
-                                txt.textAlign = "center";
-                                txt.draw(
-                                        ctx,
-                                        gameInfo.getEachWorth(),
-                                        this.x,
-                                        this.y
-                                );
-                        }
-
                         this.speedX *= 0.998;
                         this.speedY += 0.98;
 
@@ -83,11 +73,38 @@ export default class Ball extends Sprite {
                                 gameInfo.score += (gameInfo.level + 1);
                         }
                 }
-
+                this.renderScore();
                 super.render();
         }
 
+        renderScore() {
+                if (this.dropping == undefined) {
+                        return;
+                }
+                if (this.y > canvas.height - 5 * this.width && !this.scoreX && !this.scoreY) {
+                        this.scoreX = this.x;
+                        this.scoreY = this.y;
+                }
+
+                if (fontLoaded) {
+                        txt.fontSize = 0.075 * canvas.width;
+                        txt.textAlign = "center";
+                        txt.draw(
+                                ctx,
+                                `+${gameInfo.getEachWorth()}`,
+                                this.scoreX,
+                                this.scoreY
+                        );
+                }
+        }
+
         initDropping(shooter) {
+                gameInfo.holes.push(new Hole(this.x, this.y, this.layer));
+
+                // place each hole in the same order as before for optimising the distribution
+                // of the spiral when restarting
+                swap(gameInfo.holes, gameInfo.holes.indexOf(this), gameInfo.holes.length - 1);
+
                 this.dropping = true;
 
                 // angle between the horizontal and velocity
@@ -121,4 +138,8 @@ export default class Ball extends Sprite {
         //         ctx.fill()
         //         ctx.closePath()
         // }
+}
+
+function swap(arr, i, j) {
+        arr[i] = arr.splice(j, 1, arr[i])[0];
 }

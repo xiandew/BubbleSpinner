@@ -34,16 +34,16 @@ export default class ExtraBalls {
                         } else if (y > canvas.height + BALL_SIZE) {
                                 y = canvas.height + BALL_SIZE;
                         }
-
-                        coords.push([x, y]);
+                        coords.push({
+                                x: x,
+                                y: y
+                        });
                 }
 
                 this.balls = [];
 
-                coords.forEach((coord, i) => {
-                        let ball = new Ball();
-                        [ball.x, ball.y] = coord;
-                        ball.img.src = randomBall();
+                coords.forEach(coord => {
+                        let ball = new Ball(coord, randomBall());
                         this.balls.push(ball);
                 });
         }
@@ -60,7 +60,7 @@ export default class ExtraBalls {
                 for (let i = this.balls.length - 1, ball, angle; i >= 0; i--) {
                         ball = this.balls[i];
 
-                        if (ball.speedX == undefined || ball.speedY == undefined) {
+                        if (!ball.speedX || !ball.speedY) {
                                 angle = Math.atan2(
                                         gameInfo.holes[0].y - ball.y,
                                         gameInfo.holes[0].x - ball.x
