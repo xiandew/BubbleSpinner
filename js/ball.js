@@ -3,12 +3,25 @@ import GameInfo, {
         SHOOTER_SPEED
 } from './runtime/gameInfo';
 import Sprite from './sprite';
+import Hole from './hole';
+
+/*----------------------------------------------------------------------------*/
+
+import IMPACT_BLACK_JSON from '../fonts/impact_black';
+import BitmapFont from "./utilities/bitmapFont";
+import BitmapText from "./utilities/bitmapText";
+let impact_black = new BitmapFont();
+let fontLoaded = false;
+let txt;
+impact_black.loadFont(IMPACT_BLACK_JSON, function() {
+        fontLoaded = true;
+        txt = new BitmapText(impact_black);
+});
 
 /*----------------------------------------------------------------------------*/
 
 let gameInfo = new GameInfo();
 let ctx = canvas.getContext('2d');
-
 let optimalBall = require("./utilities/optimalBall");
 
 /*----------------------------------------------------------------------------*/
@@ -27,7 +40,7 @@ export default class Ball extends Sprite {
         }
 
         rotate(angle) {
-                if (typeof(this.dropping) != "undefined") {
+                if (this.dropping != undefined) {
                         return;
                 }
 
@@ -42,7 +55,7 @@ export default class Ball extends Sprite {
                                 (this.x - this.width / 2) <= 0 ||
                                 (this.y + this.height / 2) >= canvas.height ||
                                 (this.y - this.height / 2) <= 0)) {
-                        gameInfo.over = true;
+			return true;
                 }
         }
 
@@ -60,11 +73,34 @@ export default class Ball extends Sprite {
                                 gameInfo.score += (gameInfo.level + 1);
                         }
                 }
-
+                this.renderScore();
                 super.render();
         }
 
+        renderScore() {
+                if (this.dropping == undefined) {
+                        return;
+                }
+                if (this.y > canvas.height - 5 * this.width && !this.scoreX && !this.scoreY) {
+                        this.scoreX = this.x;
+                        this.scoreY = this.y;
+                }
+
+                if (fontLoaded) {
+                        txt.fontSize = 0.075 * canvas.width;
+                        txt.textAlign = "center";
+                        txt.draw(
+                                ctx,
+                                `+${gameInfo.getEachWorth()}`,
+                                this.scoreX,
+                                this.scoreY
+                        );
+                }
+        }
+
         initDropping(shooter) {
+                gameInfo.holes.push(new Hole(this.x, this.y, this.layer));
+
                 this.dropping = true;
 
                 // angle between the horizontal and velocity
@@ -98,4 +134,8 @@ export default class Ball extends Sprite {
         //         ctx.fill()
         //         ctx.closePath()
         // }
+}
+
+function swap(arr, i, j) {
+        arr[i] = arr.splice(j, 1, arr[i])[0];
 }

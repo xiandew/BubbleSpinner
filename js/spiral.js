@@ -12,19 +12,6 @@ let ctx = canvas.getContext('2d');
 
 /*----------------------------------------------------------------------------*/
 
-import IMPACT_WHITE_JSON from '../fonts/impact_white';
-import BitmapFont from "./utilities/bitmapFont";
-import BitmapText from "./utilities/bitmapText";
-let impact_black = new BitmapFont();
-let fontLoaded = false;
-let txt;
-impact_black.loadFont(IMPACT_WHITE_JSON, function () {
-	fontLoaded = true;
-	txt = new BitmapText(impact_black);
-});
-
-/*----------------------------------------------------------------------------*/
-
 const FRICTION = -0.001;
 const PIVOT_X = 0.5 * canvas.width;
 const PIVOT_Y = 0.5 * canvas.height;
@@ -72,15 +59,20 @@ export default class Spiral {
 
         initBalls() {
                 this.rotating = false;
+		this.collideBorder = false;
 
                 let layers = gameInfo.getLayers();
+
+                // clear the spiral for optimising the distribution of the spiral
+                gameInfo.holes.forEach((hole, i) => {
+                        if (hole != this.pivot) {
+                                gameInfo.holes.splice(i, 1, new Hole(hole.x, hole.y, hole.layer));
+                        }
+                });
 
                 gameInfo.holes.forEach((hole, i) => {
                         if (hole.layer <= layers) {
                                 gameInfo.holes.splice(i, 1, new Ball(hole));
-                        }
-                        if (hole.layer > layers && !(hole instanceof Hole)) {
-                                gameInfo.holes.splice(i, 1, new Hole(hole.x, hole.y, hole.layer));
                         }
                 });
         }
@@ -99,7 +91,13 @@ export default class Spiral {
                 }
 
                 if (this.rotating) {
-                        this.rotate();
+                        if (this.collideBorder) {
+                                if (countDroppingBalls() == 0) {
+                                        gameInfo.over = true;
+                                }
+                        } else {
+                                this.rotate();
+                        }
                 }
         }
 
@@ -110,17 +108,6 @@ export default class Spiral {
                                 hole.render();
                         }
                 });
-
-		if (!this.toChange && fontLoaded) {
-			txt.fontSize = 0.075 * canvas.width;
-			txt.textAlign = "center";
-			txt.draw(
-				ctx,
-				gameInfo.getEachWorth(),
-				0.5 * canvas.width,
-				0.48 * canvas.height
-			);
-		}
         }
 
         rotate() {
@@ -133,9 +120,11 @@ export default class Spiral {
                         this.rotating = false;
                 }
 
-                gameInfo.holes.forEach(hole => {
-                        hole.rotate(this.angleSpeed);
-                });
+		for (let i =0, hole; i < gameInfo.holes.length; i++) {
+			hole = gameInfo.holes[i];
+			let collideBorder = hole.rotate(this.angleSpeed);
+			collideBorder ? this.collideBorder = collideBorder : true;
+		}
         }
 
         onCollision(other) {
@@ -231,8 +220,6 @@ export default class Spiral {
                 if (this.sameBalls.length >= 3) {
                         this.sameBalls.forEach(ball => {
                                 ball.initDropping(this.shooter);
-
-                                gameInfo.holes.push(new Hole(ball.x, ball.y, ball.layer));
                         });
                 } else {
                         gameInfo.loseLive = true;
@@ -251,8 +238,6 @@ export default class Spiral {
                                 !ball.visited && ball.dropping == undefined) {
 
                                 ball.initDropping(this.shooter);
-
-                                gameInfo.holes.push(new Hole(ball.x, ball.y, ball.layer));
                         }
                 });
 
@@ -307,6 +292,17 @@ function countOnScreenBalls() {
         let nballs = 0;
         gameInfo.holes.forEach(hole => {
                 if (hole instanceof Ball && !(hole instanceof Pivot)) {
+                        nballs++;
+                }
+        });
+
+        return nballs;
+}
+
+function countDroppingBalls() {
+        let nballs = 0;
+        gameInfo.holes.forEach(ball => {
+                if (ball.dropping != undefined) {
                         nballs++;
                 }
         });
