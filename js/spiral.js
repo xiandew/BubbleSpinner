@@ -12,19 +12,6 @@ let ctx = canvas.getContext('2d');
 
 /*----------------------------------------------------------------------------*/
 
-import IMPACT_WHITE_JSON from '../fonts/impact_white';
-import BitmapFont from "./utilities/bitmapFont";
-import BitmapText from "./utilities/bitmapText";
-let impact_black = new BitmapFont();
-let fontLoaded = false;
-let txt;
-impact_black.loadFont(IMPACT_WHITE_JSON, function () {
-	fontLoaded = true;
-	txt = new BitmapText(impact_black);
-});
-
-/*----------------------------------------------------------------------------*/
-
 const FRICTION = -0.001;
 const PIVOT_X = 0.5 * canvas.width;
 const PIVOT_Y = 0.5 * canvas.height;
@@ -110,17 +97,6 @@ export default class Spiral {
                                 hole.render();
                         }
                 });
-
-		if (!this.toChange && fontLoaded) {
-			txt.fontSize = 0.075 * canvas.width;
-			txt.textAlign = "center";
-			txt.draw(
-				ctx,
-				gameInfo.getEachWorth(),
-				0.5 * canvas.width,
-				0.48 * canvas.height
-			);
-		}
         }
 
         rotate() {

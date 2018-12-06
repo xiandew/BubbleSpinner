@@ -1,7 +1,7 @@
 import Shared from "../shared";
 let shared = new Shared();
 
-let touch = require("./touch");
+let click = require("./click");
 let valueOf = require("./valueOf");
 let drawText = require("./drawText");
 let drawButton = require("./drawButton");
@@ -98,7 +98,7 @@ module.exports = {
 
                                                 drawRankPanel();
 
-                                                touch.addEvents(callback);
+                                                click.addEvents(callback);
                                         }
                                 });
                         }
@@ -133,7 +133,7 @@ function callback(clicked) {
                         if (shared.asyncAllowed) {
                                 return;
                         }
-                        touch.removeEvents();
+                        click.removeEvents();
                         break;
         }
 }

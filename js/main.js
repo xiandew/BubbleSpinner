@@ -12,7 +12,7 @@ let gameInfo = new GameInfo();
 let ctx = canvas.getContext('2d');
 ctx.imageSmoothingQuality = "high";
 
-let touch = require('./utilities/touch');
+let click = require('./utilities/click');
 
 /*----------------------------------------------------------------------------*/
 
@@ -27,7 +27,7 @@ export default class Main {
                 // make sure only add event listener once in 'update'
                 this.hasEventBind = true;
                 this.bindCallback = this.callback.bind(this);
-                touch.addEvents(this.bindCallback);
+                click.addEvents(this.bindCallback);
 
                 this.spiral.toChange = true;
 
@@ -100,7 +100,7 @@ export default class Main {
                                 });
 
                                 this.hasEventBind = true;
-                                touch.addEvents(this.bindCallback);
+                                click.addEvents(this.bindCallback);
                         }
                         Scene.renderGameOver();
                 }
@@ -114,7 +114,7 @@ export default class Main {
                 this.frameID = requestAnimationFrame(this.bindLoop);
         }
 
-        // touch event callback
+        // click event callback
         callback(btn) {
                 switch (btn) {
                         case "RankListReturn":
@@ -143,7 +143,7 @@ export default class Main {
                                 gameInfo.reset();
 
                                 this.hasEventBind = false;
-                                touch.removeEvents();
+                                click.removeEvents();
                                 break;
                         case "RankListIcon":
                                 if (gameInfo.start || gameInfo.showRank) {
@@ -169,13 +169,10 @@ export default class Main {
 
                                 gameInfo.reset();
 
-                                // cannot change the status of the spiral later in touchendHandler
-                                // since the non-stopping loop will execute update first instead of
-                                // touchendHandler.
                                 this.spiral.toChange = true;
 
                                 this.hasEventBind = false;
-                                touch.removeEvents();
+                                click.removeEvents();
                                 break;
                 }
         }
