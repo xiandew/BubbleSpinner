@@ -65,7 +65,7 @@ export default class ExtraBalls {
                 });
 
                 this.dests = arr
-                        .slice(0, Math.ceil(Math.random() * this.balls.length))
+                        .slice(0, Math.ceil(Math.random() * this.balls.length / 2))
                         .map(a => {
                                 return a.v;
                         });
@@ -97,6 +97,11 @@ export default class ExtraBalls {
 
                         if (isCollideSpiral(ball)) {
                                 spiral.onCollision(ball);
+                                this.balls.splice(i, 1);
+                                continue;
+                        }
+                        if (ball.x < -BALL_SIZE || ball.x >= canvas.width + BALL_SIZE ||
+                                ball.y < -BALL_SIZE || ball.y >= canvas.height + BALL_SIZE) {
                                 this.balls.splice(i, 1);
                         }
                 }
