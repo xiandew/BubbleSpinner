@@ -52,7 +52,7 @@ module.exports = {
         }
 }
 
-function isClicked(e, btn) {
+function isTouchedOn(e, btn) {
         let x = (e.touches[0] || e.changedTouches[0]).clientX;
         let y = (e.touches[0] || e.changedTouches[0]).clientY;
         let area = btnAreas[btn];
@@ -63,7 +63,7 @@ let touchstart = {};
 
 function touchstartHandler(e) {
         for (let btn in btnAreas) {
-                if (isClicked(e, btn)) {
+                if (isTouchedOn(e, btn)) {
                         touchstart[btn] = true;
                 }
         }
@@ -71,7 +71,7 @@ function touchstartHandler(e) {
 
 function touchendHandler(e) {
         for (let btn in btnAreas) {
-                if (touchstart[btn] && isClicked(e, btn)) {
+                if (touchstart[btn] && isTouchedOn(e, btn)) {
                         touchstart[btn] = false;
                         return thiscallback(btn);
                 }
