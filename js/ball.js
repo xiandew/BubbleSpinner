@@ -40,7 +40,7 @@ export default class Ball extends Sprite {
         }
 
         rotate(angle) {
-                if (typeof(this.dropping) != "undefined") {
+                if (this.dropping != undefined) {
                         return;
                 }
 
@@ -55,7 +55,7 @@ export default class Ball extends Sprite {
                                 (this.x - this.width / 2) <= 0 ||
                                 (this.y + this.height / 2) >= canvas.height ||
                                 (this.y - this.height / 2) <= 0)) {
-                        gameInfo.over = true;
+			return true;
                 }
         }
 
@@ -100,10 +100,6 @@ export default class Ball extends Sprite {
 
         initDropping(shooter) {
                 gameInfo.holes.push(new Hole(this.x, this.y, this.layer));
-
-                // place each hole in the same order as before for optimising the distribution
-                // of the spiral when restarting
-                swap(gameInfo.holes, gameInfo.holes.indexOf(this), gameInfo.holes.length - 1);
 
                 this.dropping = true;
 

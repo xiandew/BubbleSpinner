@@ -59,6 +59,7 @@ export default class Spiral {
 
         initBalls() {
                 this.rotating = false;
+		this.collideBorder = false;
 
                 let layers = gameInfo.getLayers();
 
@@ -68,6 +69,7 @@ export default class Spiral {
                                 gameInfo.holes.splice(i, 1, new Hole(hole.x, hole.y, hole.layer));
                         }
                 });
+
                 gameInfo.holes.forEach((hole, i) => {
                         if (hole.layer <= layers) {
                                 gameInfo.holes.splice(i, 1, new Ball(hole));
@@ -89,7 +91,13 @@ export default class Spiral {
                 }
 
                 if (this.rotating) {
-                        this.rotate();
+                        if (this.collideBorder) {
+                                if (countDroppingBalls() == 0) {
+                                        gameInfo.over = true;
+                                }
+                        } else {
+                                this.rotate();
+                        }
                 }
         }
 
@@ -112,9 +120,11 @@ export default class Spiral {
                         this.rotating = false;
                 }
 
-                gameInfo.holes.forEach(hole => {
-                        hole.rotate(this.angleSpeed);
-                });
+		for (let i =0, hole; i < gameInfo.holes.length; i++) {
+			hole = gameInfo.holes[i];
+			let collideBorder = hole.rotate(this.angleSpeed);
+			collideBorder ? this.collideBorder = collideBorder : true;
+		}
         }
 
         onCollision(other) {
@@ -282,6 +292,17 @@ function countOnScreenBalls() {
         let nballs = 0;
         gameInfo.holes.forEach(hole => {
                 if (hole instanceof Ball && !(hole instanceof Pivot)) {
+                        nballs++;
+                }
+        });
+
+        return nballs;
+}
+
+function countDroppingBalls() {
+        let nballs = 0;
+        gameInfo.holes.forEach(ball => {
+                if (ball.dropping != undefined) {
                         nballs++;
                 }
         });
