@@ -6,9 +6,21 @@ import Sprite from './sprite';
 
 /*----------------------------------------------------------------------------*/
 
+import IMPACT_BLACK_JSON from '../fonts/impact_black';
+import BitmapFont from "./utilities/bitmapFont";
+import BitmapText from "./utilities/bitmapText";
+let impact_black = new BitmapFont();
+let fontLoaded = false;
+let txt;
+impact_black.loadFont(IMPACT_BLACK_JSON, function() {
+        fontLoaded = true;
+        txt = new BitmapText(impact_black);
+});
+
+/*----------------------------------------------------------------------------*/
+
 let gameInfo = new GameInfo();
 let ctx = canvas.getContext('2d');
-
 let optimalBall = require("./utilities/optimalBall");
 
 /*----------------------------------------------------------------------------*/
@@ -48,6 +60,17 @@ export default class Ball extends Sprite {
 
         render() {
                 if (this.dropping) {
+
+                        if (!this.toChange && fontLoaded) {
+                                txt.fontSize = 0.075 * canvas.width;
+                                txt.textAlign = "center";
+                                txt.draw(
+                                        ctx,
+                                        gameInfo.getEachWorth(),
+                                        0.5 * canvas.width,
+                                        0.48 * canvas.height
+                                );
+                        }
 
                         this.speedX *= 0.998;
                         this.speedY += 0.98;
