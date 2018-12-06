@@ -67,8 +67,8 @@ export default class Ball extends Sprite {
                                 txt.draw(
                                         ctx,
                                         gameInfo.getEachWorth(),
-                                        0.5 * canvas.width,
-                                        0.48 * canvas.height
+                                        this.x,
+                                        this.y
                                 );
                         }
 

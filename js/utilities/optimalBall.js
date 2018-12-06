@@ -3,31 +3,39 @@ import Ball from '../ball';
 import Pivot from "../pivot";
 
 let gameInfo = new GameInfo();
+let thisBall, prevBall;
 
 // return a ball with the colour which is of the minimum number on the spiral
 module.exports = function() {
-	let balls = gameInfo.getBalls();
+        let balls = gameInfo.getBalls();
 
-	let ballDict = {};
-	balls.forEach(ballSrc => {
-		ballDict[ballSrc] = 0;
-	});
+        let dict = {};
+        balls.forEach(ballSrc => {
+                dict[ballSrc] = 0;
+        });
 
-	gameInfo.holes.forEach(ball => {
-		if (ball instanceof Ball && !(ball instanceof Pivot)) {
-			let ballSrc = ball.img.src;
-			ballDict[ballSrc.substring(ballSrc.lastIndexOf("images/"))]++;
-		}
-	});
+        gameInfo.holes.forEach(ball => {
+                if (ball instanceof Ball && !(ball instanceof Pivot)) {
+                        let ballSrc = ball.img.src;
+                        dict[ballSrc.substring(ballSrc.lastIndexOf("images/"))]++;
+                }
+        });
 
-	let ballArr = [];
-	for(let key in ballDict){
-		ballArr.push({ballSrc: key, count: ballDict[key]});
-	}
-	ballArr.sort((b1, b2) => {
-		return b1.count - b2.count;
-	});
-	ballArr = ballArr.filter(ball => ball.count == ballArr[0].count);
+        let arr = [];
+        for (let key in dict) {
+                arr.push({
+                        src: key,
+                        count: dict[key]
+                });
+        }
 
-	return ballArr[Math.floor(Math.random() * ballArr.length)].ballSrc;
+        arr.sort((b1, b2) => {
+                return b1.count - b2.count;
+        });
+
+        arr = arr.filter(ball => ball.count == arr[0].count);
+        arr.length > 1 && prevBall ? arr.filter(ball => ball.src != prevBall) : true;
+
+        thisBall = prevBall = arr[Math.floor(Math.random() * arr.length)].src;
+        return thisBall;
 }
