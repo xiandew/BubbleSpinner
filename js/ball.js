@@ -26,8 +26,6 @@ let optimalBall = require("./utilities/optimalBall");
 
 /*----------------------------------------------------------------------------*/
 
-let acc = 0;
-
 export default class Ball extends Sprite {
         constructor(hole = {}, ballSrc = false) {
                 if (!ballSrc) {
@@ -37,6 +35,8 @@ export default class Ball extends Sprite {
 
                 this.layer = hole.layer;
                 this.visited = false;
+
+                this.acc = 0;
         }
 
         rotate(angle) {
@@ -55,7 +55,7 @@ export default class Ball extends Sprite {
                                 (this.x - this.width / 2) <= 0 ||
                                 (this.y + this.height / 2) >= canvas.height ||
                                 (this.y - this.height / 2) <= 0)) {
-			return true;
+                        return true;
                 }
         }
 
@@ -68,10 +68,6 @@ export default class Ball extends Sprite {
                         this.y += this.speedY;
                         this.x += this.speedX;
 
-                        if (this.y > canvas.height + BALL_SIZE) {
-                                this.dropping = false;
-                                gameInfo.score += (gameInfo.level + 1);
-                        }
                 }
                 this.renderScore();
                 super.render();
@@ -81,20 +77,37 @@ export default class Ball extends Sprite {
                 if (this.dropping == undefined) {
                         return;
                 }
+
                 if (this.y > canvas.height - 5 * this.width && !this.scoreX && !this.scoreY) {
-                        this.scoreX = this.x;
+                        this.scoreX =
+                                this.x <= BALL_SIZE ? BALL_SIZE :
+                                this.x >= canvas.width - BALL_SIZE ? canvas.width - BALL_SIZE :
+                                this.x;
                         this.scoreY = this.y;
                 }
 
+                if (this.acc >= Math.PI / 2) {
+                        this.acc = Math.PI / 2;
+                        this.dropping = false;
+                        gameInfo.score += gameInfo.getEachWorth();
+                }
+
+                ctx.save();
+                ctx.globalAlpha = 1 - Math.sin(this.acc);
                 if (fontLoaded) {
-                        txt.fontSize = 0.075 * canvas.width;
+                        txt.fontSize = 0.065 * canvas.width;
                         txt.textAlign = "center";
                         txt.draw(
                                 ctx,
                                 `+${gameInfo.getEachWorth()}`,
                                 this.scoreX,
-                                this.scoreY
+                                this.scoreY - Math.sin(this.acc) * 30
                         );
+                }
+                ctx.restore();
+
+                if (this.dropping) {
+                        this.acc += 0.025;
                 }
         }
 

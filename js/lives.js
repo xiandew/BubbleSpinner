@@ -43,12 +43,10 @@ export default class Lives {
                         this.fadeOut();
                 }
         }
-        fadeIn() {
-                // TODO
-        }
+
         fadeOut() {
 
-                if (acc > Math.PI / 2) {
+                if (acc >= Math.PI / 2) {
                         acc = Math.PI / 2;
                         gameInfo.lives--;
                         gameInfo.loseLive = false;

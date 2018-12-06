@@ -16,6 +16,7 @@ export default class ExtraBalls {
                 this.balls = [];
         }
         generate() {
+
                 let num = 2 + Math.round(Math.random() * 6);
                 let coords = [];
                 for (let i = 0, angle, x, y; i < num; i++) {
@@ -41,11 +42,33 @@ export default class ExtraBalls {
                 }
 
                 this.balls = [];
-
                 coords.forEach(coord => {
                         let ball = new Ball(coord, randomBall());
                         this.balls.push(ball);
                 });
+
+                // find optimal destinations
+                let arr = [];
+                gameInfo.holes.map(ball => {
+                        if (ball instanceof Ball) {
+                                let d = Math.sqrt(
+                                        (ball.x - gameInfo.pivot.x) ** 2 +
+                                        (ball.y - gameInfo.pivot.y) ** 2);
+                                arr.push({
+                                        k: d,
+                                        v: ball
+                                });
+                        }
+                });
+                arr.sort((b1, b2) => {
+                        return b2.k - b1.k;
+                });
+
+                this.dests = arr
+                        .slice(0, Math.ceil(Math.random() * this.balls.length))
+                        .map(a => {
+                                return a.v;
+                        });
         }
 
         update(spiral) {
@@ -61,9 +84,10 @@ export default class ExtraBalls {
                         ball = this.balls[i];
 
                         if (!ball.speedX || !ball.speedY) {
+                                let dest = this.dests[Math.floor(Math.random() * this.dests.length)];
                                 angle = Math.atan2(
-                                        gameInfo.holes[0].y - ball.y,
-                                        gameInfo.holes[0].x - ball.x
+                                        dest.y - ball.y,
+                                        dest.x - ball.x
                                 );
                                 ball.speedX = LINEAR_SPEED * Math.cos(angle);
                                 ball.speedY = LINEAR_SPEED * Math.sin(angle);

@@ -32,7 +32,7 @@ export default class Spiral {
                 let maxLayers = Math.floor(canvas.width / BALL_SIZE);
 
                 this.toChange = true;
-                this.pivot = new Pivot(new Hole(PIVOT_X, PIVOT_Y));
+                this.pivot = gameInfo.pivot = new Pivot(new Hole(PIVOT_X, PIVOT_Y));
 
                 //all holes on the spiral
                 gameInfo.holes.push(this.pivot);
