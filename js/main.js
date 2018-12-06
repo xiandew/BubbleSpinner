@@ -184,7 +184,7 @@ wx.showShareMenu({
 
 wx.onShareAppMessage(function() {
         return {
-                title: 'Shoot it!!',
+		title: '咻咻咻',
                 imageUrl: SHARE_IMG[Math.floor(Math.random() * SHARE_IMG.length)]
         }
 });
