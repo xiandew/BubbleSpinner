@@ -52,10 +52,10 @@ export default class GameInfo {
                 this.renewLives();
         }
 
-	getEachWorth() {
-		// 1, 1, 1, 2, 3, 4..
-		return this.level <= 2 ? 1 : this.level - 1;
-	}
+        getEachWorth() {
+                // 1, 1, 1, 2, 3, 4..
+                return this.level <= 2 ? 1 : this.level - 1;
+        }
 
         getLayers() {
                 return this.level < LAYERS.length ? LAYERS[this.level] : LAYERS[LAYERS.length - 1];
@@ -66,7 +66,7 @@ export default class GameInfo {
         }
 
         renewLives() {
-                this.lives = 1 + Math.round(Math.random() * MAX_NUM_LIVES);
+                this.lives = Math.ceil(Math.random() * MAX_NUM_LIVES);
                 this.loseLive = false;
         }
 }
@@ -80,10 +80,10 @@ function shuffle(a) {
 }
 
 export const SHARE_IMG = [
-	'images/share/b_blue.png',
-	'images/share/b_cyan.png',
-	'images/share/b_green.png',
-	'images/share/b_pink.png',
-	'images/share/b_red.png',
-	'images/share/b_yellow.png'
+        'images/share/b_blue.png',
+        'images/share/b_cyan.png',
+        'images/share/b_green.png',
+        'images/share/b_pink.png',
+        'images/share/b_red.png',
+        'images/share/b_yellow.png'
 ];
