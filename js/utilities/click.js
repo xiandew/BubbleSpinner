@@ -72,8 +72,8 @@ function touchstartHandler(e) {
 function touchendHandler(e) {
         for (let btn in btnAreas) {
                 if (touchstart[btn] && isTouchedOn(e, btn)) {
-                        touchstart[btn] = false;
-                        return thiscallback(btn);
+                        thiscallback(btn);
                 }
+                touchstart[btn] = false;
         }
 }
