@@ -201,7 +201,7 @@ export default class Spiral {
                                 }
                         }
                 });
-		
+
                 let minSquare = canvas.width ** 2;
                 let closest;
                 candidateHoles.forEach(hole => {
