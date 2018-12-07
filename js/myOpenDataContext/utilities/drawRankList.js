@@ -20,9 +20,9 @@ const PANEL_WIDTH = 0.85 * canvasWidth;
 const PANEL_HEIGHT = 0.5 * canvasHeight;
 const PANEL_START_Y = 0.2 * canvasHeight;
 
-const BG_HEIGHT = PANEL_HEIGHT + 1.05 * TITLE_SIZE;
+const BG_HEIGHT = PANEL_HEIGHT + 1.15 * TITLE_SIZE;
 const BG_START_X = 0.075 * canvasWidth;
-const BG_START_Y = PANEL_START_Y - 1.05 * TITLE_SIZE;
+const BG_START_Y = PANEL_START_Y - 1.15 * TITLE_SIZE;
 
 const RANK_ITEM_HEIGHT = PANEL_HEIGHT / 6;
 const AVATAR_SIZE = 0.5 * RANK_ITEM_HEIGHT;

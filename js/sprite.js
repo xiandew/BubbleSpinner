@@ -3,7 +3,7 @@ let newImage = require('./utilities/newImage');
 
 // Top level `abstract` class for the game
 export default class Sprite {
-        constructor(imgSrc, width, height, x, y) {
+        constructor(imgSrc = "", width = 0, height = 0, x = 0, y = 0) {
                 this.img = newImage(imgSrc);
                 this.width = width;
                 this.height = height;
