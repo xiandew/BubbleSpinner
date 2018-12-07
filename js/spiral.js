@@ -147,7 +147,7 @@ export default class Spiral {
                 let m = this.target.y - k * this.target.x;
 
                 // the tangent speed is proportional to the distance between
-		// the pivot and the linear speed line
+                // the pivot and the linear speed line
                 let px = (this.pivot.y - m) / k;
                 let py = k * this.pivot.x + m;
 
@@ -193,8 +193,8 @@ export default class Spiral {
                 gameInfo.holes.forEach(hole => {
                         if (hole instanceof Hole) {
                                 let dSquare = Math.floor(
-                                        (hole.x - target.x) ** 2 +
-                                        (hole.y - target.y) ** 2
+                                        (hole.x - collidingBall.x) ** 2 +
+                                        (hole.y - collidingBall.y) ** 2
                                 );
                                 if (dSquare <= separation ** 2) {
                                         candidateHoles.push(hole);

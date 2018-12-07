@@ -146,7 +146,7 @@ export default class Shooter extends Sprite {
         }
 
         update(spiral) {
-                if ((!this.shown) || (!this.shooting)) {
+                if (!this.shown || !this.shooting || !gameInfo.lives) {
                         return;
                 }
                 let bounced = false;
