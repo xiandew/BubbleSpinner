@@ -87,7 +87,6 @@ export default class Main {
 
                 if (gameInfo.over) {
                         if (!this.hasEventBind) {
-                                this.shooter.initShooter();
                                 this.shooter.removeEvents();
 
                                 gameInfo.openDataContext.postMessage({
@@ -169,6 +168,7 @@ export default class Main {
 
                                 gameInfo.reset();
 
+                                this.shooter.initShooter();
                                 this.spiral.toChange = true;
 
                                 this.hasEventBind = false;
@@ -184,7 +184,7 @@ wx.showShareMenu({
 
 wx.onShareAppMessage(function() {
         return {
-		title: '咻咻咻',
+                title: '咻咻咻',
                 imageUrl: SHARE_IMG[Math.floor(Math.random() * SHARE_IMG.length)]
         }
 });
