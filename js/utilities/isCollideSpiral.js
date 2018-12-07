@@ -6,9 +6,9 @@ module.exports = function(target) {
 
         for (let i = 0; i < gameInfo.holes.length; i++) {
                 let hole = gameInfo.holes[i];
-		if (!(hole instanceof Hole) && hole.isCollideWith(target)) {
-                        return true;
+                if (!(hole instanceof Hole) && hole.isCollideWith(target)) {
+                        return hole;
                 }
         }
-	return false;
+        return false;
 }

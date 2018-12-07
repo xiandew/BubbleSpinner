@@ -14,8 +14,10 @@ const LINEAR_SPEED = 10;
 export default class ExtraBalls {
         constructor() {
                 this.balls = [];
+                this.generated = false;
         }
         generate() {
+                this.generated = true;
 
                 let num = 2 + Math.round(Math.random() * 6);
                 let coords = [];
@@ -76,7 +78,7 @@ export default class ExtraBalls {
                         return;
                 }
 
-                if (this.balls.length == 0) {
+                if (this.balls.length == 0 && !spiral.rotating) {
                         this.generate();
                 }
 
@@ -95,18 +97,21 @@ export default class ExtraBalls {
                         ball.x += ball.speedX;
                         ball.y += ball.speedY;
 
-                        if (isCollideSpiral(ball)) {
-                                spiral.onCollision(ball);
+                        let c = isCollideSpiral(ball);
+                        if (c) {
+                                spiral.onCollision(ball, c);
                                 this.balls.splice(i, 1);
                                 continue;
                         }
+
                         if (ball.x < -BALL_SIZE || ball.x >= canvas.width + BALL_SIZE ||
                                 ball.y < -BALL_SIZE || ball.y >= canvas.height + BALL_SIZE) {
                                 this.balls.splice(i, 1);
                         }
                 }
 
-                if (this.balls.length == 0) {
+                if (this.balls.length == 0 && this.generated) {
+                        this.generated = false;
                         gameInfo.renewLives();
                 }
         }

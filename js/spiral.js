@@ -59,7 +59,7 @@ export default class Spiral {
 
         initBalls() {
                 this.rotating = false;
-		this.collideBorder = false;
+                this.collideBorder = false;
 
                 let layers = gameInfo.getLayers();
 
@@ -120,23 +120,25 @@ export default class Spiral {
                         this.rotating = false;
                 }
 
-		for (let i =0, hole; i < gameInfo.holes.length; i++) {
-			hole = gameInfo.holes[i];
-			let collideBorder = hole.rotate(this.angleSpeed);
-			collideBorder ? this.collideBorder = collideBorder : true;
-		}
+                for (let i = 0, hole; i < gameInfo.holes.length; i++) {
+                        hole = gameInfo.holes[i];
+                        let collideBorder = hole.rotate(this.angleSpeed);
+                        collideBorder ? this.collideBorder = collideBorder : true;
+                }
         }
 
-        onCollision(other) {
+        onCollision(other, c) {
                 // adjust the other ball's position to align with the hexagon properly
-                this.fillClosestHole(other);
+                this.fillClosestHole(other, c);
 
-                if (other instanceof Shooter) {
-                        this.shooter = other;
-
-                        this.removeSameBalls();
-                        this.romoveFloatBalls();
+                if (!(other instanceof Shooter)) {
+                        return;
                 }
+
+                this.shooter = other;
+
+                this.removeSameBalls();
+                this.romoveFloatBalls();
 
                 this.rotating = true;
 
@@ -144,7 +146,8 @@ export default class Spiral {
                 let k = other.speedY / other.speedX;
                 let m = this.target.y - k * this.target.x;
 
-                // the tangent speed is proportional to the distance between the pivot and the linear speed line
+                // the tangent speed is proportional to the distance between
+		// the pivot and the linear speed line
                 let px = (this.pivot.y - m) / k;
                 let py = k * this.pivot.x + m;
 
@@ -180,25 +183,38 @@ export default class Spiral {
                         }
                 }
 
-                if (other instanceof Shooter) {
-                        other.initShooter();
-                }
+                other.initShooter();
+
         }
 
-        fillClosestHole(target) {
-                let minSquare = canvas.width ** 2;
-                let closest, index;
-                gameInfo.holes.forEach((hole, i) => {
+        fillClosestHole(target, collidingBall) {
+                let candidateHoles = [];
+
+                gameInfo.holes.forEach(hole => {
                         if (hole instanceof Hole) {
-                                // square of the distance
-                                let square = (target.x - hole.x) ** 2 + (target.y - hole.y) ** 2;
-                                square <= minSquare ? ([closest, index] = [hole, i], minSquare = square) : true;
+                                let dSquare = Math.floor(
+                                        (hole.x - target.x) ** 2 +
+                                        (hole.y - target.y) ** 2
+                                );
+                                if (dSquare <= separation ** 2) {
+                                        candidateHoles.push(hole);
+                                }
+                        }
+                });
+
+                let minSquare = canvas.width ** 2;
+                let closest;
+                candidateHoles.forEach(hole => {
+                        // square of the distance
+                        let square = (target.x - hole.x) ** 2 + (target.y - hole.y) ** 2;
+                        if (square <= minSquare) {
+                                closest = hole;
+                                minSquare = square;
                         }
                 });
 
                 this.target = new Ball(closest, target.img.src);
-
-                gameInfo.holes.splice(index, 1, this.target);
+                gameInfo.holes.splice(gameInfo.holes.indexOf(closest), 1, this.target);
         }
 
         findSameBalls(target) {
@@ -251,7 +267,10 @@ function findAround(target) {
 
         gameInfo.holes.forEach(hole => {
                 if (!(hole instanceof Hole)) {
-                        let dSquare = Math.floor((hole.x - target.x) ** 2 + (hole.y - target.y) ** 2);
+                        let dSquare = Math.floor(
+                                (hole.x - target.x) ** 2 +
+                                (hole.y - target.y) ** 2
+                        );
                         if (!hole.visited && hole !== target && dSquare <= separation ** 2) {
                                 around.push(hole);
                         }
