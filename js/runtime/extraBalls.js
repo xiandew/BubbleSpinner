@@ -117,7 +117,7 @@ export default class ExtraBalls {
         }
 
         render() {
-                if (gameInfo.lives || !this.balls) {
+                if (gameInfo.lives || !this.balls.length) {
                         return;
                 }
 
