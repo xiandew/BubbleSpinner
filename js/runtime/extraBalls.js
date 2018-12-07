@@ -15,8 +15,10 @@ const LINEAR_SPEED = canvas.width / 32;
 export default class ExtraBalls {
         constructor() {
                 this.balls = [];
+                this.generated = false;
         }
         generate() {
+                this.generated = true;
 
                 let num = 2 + Math.round(Math.random() * 6);
                 let coords = [];
@@ -77,7 +79,7 @@ export default class ExtraBalls {
                         return;
                 }
 
-                if (this.balls.length == 0) {
+                if (this.balls.length == 0 && !spiral.rotating) {
                         this.generate();
                 }
 
@@ -109,8 +111,9 @@ export default class ExtraBalls {
                         }
                 }
 
-                if (this.balls.length == 0) {
+                if (this.balls.length == 0 && this.generated) {
                         gameInfo.renewLives();
+                        this.generated = false;
                 }
         }
 

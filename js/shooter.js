@@ -78,7 +78,7 @@ export default class Shooter extends Sprite {
 
         touchstartHandler(e) {
                 e.preventDefault();
-                if (!this.shooting && !this.dropping) {
+                if (!this.shooting && !this.dropping && gameInfo.lives) {
                         this.touched = true;
                         this.touchX = e.touches[0].clientX;
                         this.touchY = e.touches[0].clientY;
@@ -145,7 +145,7 @@ export default class Shooter extends Sprite {
         }
 
         update(spiral) {
-                if (!this.shown || !this.shooting || !gameInfo.lives) {
+                if (!this.shown || !this.shooting) {
                         return;
                 }
                 let bounced = false;
