@@ -14,7 +14,8 @@ export const BALLS = [
         'images/b_yellow.png'
 ];
 export const BALL_SIZE = 0.055 * canvas.width;
-export const SHOOTER_SPEED = 15;
+// SHOOTER_SPEED = 15 when canvas.width = 320;
+export const SHOOTER_SPEED = canvas.width * 3 / 64;
 
 /*----------------------------------------------------------------------------*/
 

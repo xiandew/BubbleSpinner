@@ -12,7 +12,8 @@ let ctx = canvas.getContext('2d');
 
 /*----------------------------------------------------------------------------*/
 
-const FRICTION = -0.001;
+// FRICTION = -0.001 when canvas.width = 320
+const FRICTION = -canvas.width / 320000;
 const PIVOT_X = 0.5 * canvas.width;
 const PIVOT_Y = 0.5 * canvas.height;
 

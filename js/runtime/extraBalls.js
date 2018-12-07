@@ -9,15 +9,14 @@ let isCollideSpiral = require("../utilities/isCollideSpiral");
 
 /*----------------------------------------------------------------------------*/
 
-const LINEAR_SPEED = 10;
+// LINEAR_SPEED = 10 when canvas.width = 320
+const LINEAR_SPEED = canvas.width / 32;
 
 export default class ExtraBalls {
         constructor() {
                 this.balls = [];
-                this.generated = false;
         }
         generate() {
-                this.generated = true;
 
                 let num = 2 + Math.round(Math.random() * 6);
                 let coords = [];
@@ -78,7 +77,7 @@ export default class ExtraBalls {
                         return;
                 }
 
-                if (this.balls.length == 0 && !spiral.rotating) {
+                if (this.balls.length == 0) {
                         this.generate();
                 }
 
@@ -110,8 +109,7 @@ export default class ExtraBalls {
                         }
                 }
 
-                if (this.balls.length == 0 && this.generated) {
-                        this.generated = false;
+                if (this.balls.length == 0) {
                         gameInfo.renewLives();
                 }
         }
