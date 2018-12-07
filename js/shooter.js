@@ -113,17 +113,6 @@ export default class Shooter extends Sprite {
                 delta = Math.sin(this.acc) * BALL_SIZE * 0.5;
                 this.y = NEXT_SHOOTER_Y - delta;
                 this.width = this.height = NEXT_SHOOTER_SIZE + delta;
-
-                nextShooterImg = newImage(this.nextShooterSrc);
-                nextShooterSize = NEXT_SHOOTER_SIZE * Math.sin(this.acc);
-                ctx.drawImage(
-                        nextShooterImg,
-                        0.5 * canvas.width - 0.5 * nextShooterSize,
-                        canvas.height - Math.sin(this.acc) * BALL_SIZE,
-                        nextShooterSize,
-                        nextShooterSize
-                );
-
                 this.display();
 
                 this.acc += 0.05;
@@ -140,6 +129,16 @@ export default class Shooter extends Sprite {
                                 NEXT_SHOOTER_SIZE);
 
                         this.touched ? this.renderArrow() : true;
+                } else {
+                        nextShooterImg = newImage(this.nextShooterSrc);
+                        nextShooterSize = NEXT_SHOOTER_SIZE * Math.sin(this.acc);
+                        ctx.drawImage(
+                                nextShooterImg,
+                                0.5 * canvas.width - 0.5 * nextShooterSize,
+                                canvas.height - Math.sin(this.acc) * BALL_SIZE,
+                                nextShooterSize,
+                                nextShooterSize
+                        );
                 }
 
                 super.render();
