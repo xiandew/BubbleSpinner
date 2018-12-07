@@ -192,17 +192,16 @@ export default class Spiral {
 
                 gameInfo.holes.forEach(hole => {
                         if (hole instanceof Hole) {
-                                let dSquare =
+                                let dSquare = Math.floor(
                                         (hole.x - collidingBall.x) ** 2 +
-                                        (hole.y - collidingBall.y) ** 2;
+                                        (hole.y - collidingBall.y) ** 2
+                                );
                                 if (dSquare <= separation ** 2) {
                                         candidateHoles.push(hole);
                                 }
                         }
                 });
-
-                console.log(candidateHoles);
-
+		
                 let minSquare = canvas.width ** 2;
                 let closest;
                 candidateHoles.forEach(hole => {
