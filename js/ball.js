@@ -31,7 +31,7 @@ export default class Ball extends Sprite {
                 if (!ballSrc) {
                         ballSrc = optimalBall();
                 }
-                super(ballSrc, BALL_SIZE, BALL_SIZE, hole.x, hole.y, true);
+                super(ballSrc, BALL_SIZE, BALL_SIZE, hole.x, hole.y);
 
                 this.layer = hole.layer;
                 this.visited = false;
