@@ -67,18 +67,17 @@ export default class Ball extends Sprite {
 
                         this.y += this.speedY;
                         this.x += this.speedX;
-
                 }
                 this.renderScore();
                 super.render();
         }
 
         renderScore() {
-                if (this.dropping == undefined) {
+                if (this.dropping == undefined || this.y <= canvas.height - 5 * this.width) {
                         return;
                 }
 
-                if (this.y > canvas.height - 5 * this.width && !this.scoreX && !this.scoreY) {
+                if (!this.scoreX || !this.scoreY) {
                         this.scoreX =
                                 this.x <= BALL_SIZE ? BALL_SIZE :
                                 this.x >= canvas.width - BALL_SIZE ? canvas.width - BALL_SIZE :
@@ -107,7 +106,7 @@ export default class Ball extends Sprite {
                 ctx.restore();
 
                 if (this.dropping) {
-                        this.acc += 0.025;
+                        this.acc += 0.035;
                 }
         }
 
