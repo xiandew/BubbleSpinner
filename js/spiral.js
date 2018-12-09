@@ -33,17 +33,17 @@ export default class Spiral {
                 let maxLayers = Math.floor(canvas.width / BALL_SIZE);
 
                 this.toChange = true;
-                this.pivot = gameInfo.pivot = new Pivot(new Hole(PIVOT_X, PIVOT_Y));
+                gameInfo.pivot = new Pivot(new Hole(PIVOT_X, PIVOT_Y));
 
                 //all holes on the spiral
-                gameInfo.holes.push(this.pivot);
+                gameInfo.holes.push(gameInfo.pivot);
 
                 for (let layer = 1; layer <= maxLayers; layer++) {
                         for (let diagonal = 0; diagonal < 6; diagonal++) {
                                 // draw a ball on the diagonal of the hexagon
                                 let angle = Math.PI / 3 * diagonal;
-                                let x = this.pivot.x - Math.cos(angle) * separation * layer;
-                                let y = this.pivot.y - Math.sin(angle) * separation * layer;
+                                let x = gameInfo.pivot.x - Math.cos(angle) * separation * layer;
+                                let y = gameInfo.pivot.y - Math.sin(angle) * separation * layer;
 
                                 gameInfo.holes.push(new Hole(x, y, layer));
 
@@ -52,7 +52,6 @@ export default class Spiral {
                                         gameInfo.holes.push(new Hole(
                                                 x + Math.cos(angle + Math.PI / 3) * n * separation,
                                                 y + Math.sin(angle + Math.PI / 3) * n * separation, layer));
-
                                 }
                         }
                 }
@@ -66,13 +65,13 @@ export default class Spiral {
 
                 // clear the spiral for optimising the distribution of the spiral
                 gameInfo.holes.forEach((hole, i) => {
-                        if (hole != this.pivot) {
+                        if (hole != gameInfo.pivot && hole instanceof Ball) {
                                 gameInfo.holes.splice(i, 1, new Hole(hole.x, hole.y, hole.layer));
                         }
                 });
 
                 gameInfo.holes.forEach((hole, i) => {
-                        if (hole.layer <= layers) {
+                        if (hole != gameInfo.pivot && hole.layer <= layers) {
                                 gameInfo.holes.splice(i, 1, new Ball(hole));
                         }
                 });
@@ -149,17 +148,17 @@ export default class Spiral {
 
                 // the tangent speed is proportional to the distance between
                 // the pivot and the linear speed line
-                let px = (this.pivot.y - m) / k;
-                let py = k * this.pivot.x + m;
+                let px = (gameInfo.pivot.y - m) / k;
+                let py = k * gameInfo.pivot.x + m;
 
-                let d = Math.abs((px - this.pivot.x) * (py - this.pivot.y)) /
-                        Math.sqrt((py - this.pivot.y) ** 2 + (px - this.pivot.x) ** 2);
+                let d = Math.abs((px - gameInfo.pivot.x) * (py - gameInfo.pivot.y)) /
+                        Math.sqrt((py - gameInfo.pivot.y) ** 2 + (px - gameInfo.pivot.x) ** 2);
                 let ratio = d / canvas.width;
                 let tangentSpeed = SHOOTER_SPEED * ratio;
                 this.friction = FRICTION;
 
-                if (other.speedX < 0 && (k * this.pivot.x + m) > this.pivot.y ||
-                        other.speedX > 0 && (k * this.pivot.x + m) < this.pivot.y) {
+                if (other.speedX < 0 && (k * gameInfo.pivot.x + m) > gameInfo.pivot.y ||
+                        other.speedX > 0 && (k * gameInfo.pivot.x + m) < gameInfo.pivot.y) {
                         tangentSpeed *= (-1);
                         this.friction *= (-1);
                 }
@@ -168,7 +167,7 @@ export default class Spiral {
                 let nballs = 0;
                 gameInfo.holes.forEach(hole => {
                         if (hole instanceof Ball &&
-                                hole != this.pivot &&
+                                hole != gameInfo.pivot &&
                                 hole.dropping == undefined) {
 
                                 nballs++;
@@ -247,11 +246,11 @@ export default class Spiral {
                 revertVisited();
 
                 // visit balls that attached to the pivot
-                visitAttachedBalls(this.pivot);
+                visitAttachedBalls(gameInfo.pivot);
 
                 // find balls not attached to the pivot
                 gameInfo.holes.forEach(ball => {
-                        if (ball instanceof Ball && ball != this.pivot &&
+                        if (ball instanceof Ball && ball != gameInfo.pivot &&
                                 !ball.visited && ball.dropping == undefined) {
 
                                 ball.initDropping(this.shooter);

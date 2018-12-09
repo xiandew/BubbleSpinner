@@ -46,19 +46,17 @@ export default class ExtraBalls {
 
                 this.balls = [];
                 coords.forEach(coord => {
-                        let ball = new Ball(coord, randomBall());
-                        this.balls.push(ball);
+                        this.balls.push(new Ball(coord, randomBall()));
                 });
 
                 // find optimal destinations
                 let arr = [];
                 gameInfo.holes.map(ball => {
                         if (ball instanceof Ball) {
-                                let d = Math.sqrt(
-                                        (ball.x - gameInfo.pivot.x) ** 2 +
-                                        (ball.y - gameInfo.pivot.y) ** 2);
                                 arr.push({
-                                        k: d,
+                                        k: Math.sqrt(
+                                                (ball.x - gameInfo.pivot.x) ** 2 +
+                                                (ball.y - gameInfo.pivot.y) ** 2),
                                         v: ball
                                 });
                         }
