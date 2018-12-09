@@ -106,7 +106,7 @@ export default class Ball extends Sprite {
                 ctx.restore();
 
                 if (this.dropping) {
-                        this.acc += 0.025;
+                        this.acc += 0.035;
                 }
         }
 
