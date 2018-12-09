@@ -147,7 +147,3 @@ export default class Ball extends Sprite {
         //         ctx.closePath()
         // }
 }
-
-function swap(arr, i, j) {
-        arr[i] = arr.splice(j, 1, arr[i])[0];
-}
