@@ -82,7 +82,7 @@ export default class Spiral {
                         return;
                 }
 
-                deleteOutScreenBalls();
+                deleteOffScreenBalls();
                 if (countOnScreenBalls() == 0) {
                         this.toChange = true;
 
@@ -184,7 +184,9 @@ export default class Spiral {
                 }
 
                 other.initShooter();
-
+                // delete the reference to the new added ball, otherwise
+                // it cannot be deleted later when it's off screen
+                this.target = undefined;
         }
 
         fillClosestHole(target, collidingBall) {
@@ -298,10 +300,10 @@ function revertVisited() {
         });
 }
 
-function deleteOutScreenBalls() {
+function deleteOffScreenBalls() {
         for (let i = gameInfo.holes.length - 1, ball; i >= 0; i--) {
                 ball = gameInfo.holes[i];
-                if (ball.dropping == false) {
+                if (ball instanceof Ball && ball.dropping == false) {
                         gameInfo.holes.splice(i, 1);
                 }
         }
@@ -309,8 +311,8 @@ function deleteOutScreenBalls() {
 
 function countOnScreenBalls() {
         let nballs = 0;
-        gameInfo.holes.forEach(hole => {
-                if (hole instanceof Ball && !(hole instanceof Pivot)) {
+        gameInfo.holes.forEach(ball => {
+                if (ball instanceof Ball && ball != gameInfo.pivot) {
                         nballs++;
                 }
         });
