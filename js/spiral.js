@@ -127,9 +127,9 @@ export default class Spiral {
                 }
         }
 
-        onCollision(other, c) {
+        onCollision(other) {
                 // adjust the other ball's position to align with the hexagon properly
-                this.fillClosestHole(other, c);
+                this.fillClosestHole(other);
 
                 if (!(other instanceof Shooter)) {
                         return;
@@ -189,34 +189,22 @@ export default class Spiral {
                 this.target = undefined;
         }
 
-        fillClosestHole(target, collidingBall) {
-                let candidateHoles = [];
-
-                gameInfo.holes.forEach(hole => {
+        fillClosestHole(target) {
+                let minSquare = canvas.width ** 2;
+                let closest, index;
+                gameInfo.holes.forEach((hole, i) => {
                         if (hole instanceof Hole) {
-                                let dSquare = Math.floor(
-                                        (hole.x - collidingBall.x) ** 2 +
-                                        (hole.y - collidingBall.y) ** 2
-                                );
-                                if (dSquare <= separation ** 2) {
-                                        candidateHoles.push(hole);
+                                // square of the distance
+                                let square = (target.x - hole.x) ** 2 + (target.y - hole.y) ** 2;
+                                if (square <= minSquare) {
+                                        [closest, index] = [hole, i];
+                                        minSquare = square;
                                 }
                         }
                 });
 
-                let minSquare = canvas.width ** 2;
-                let closest;
-                candidateHoles.forEach(hole => {
-                        // square of the distance
-                        let square = (target.x - hole.x) ** 2 + (target.y - hole.y) ** 2;
-                        if (square <= minSquare) {
-                                closest = hole;
-                                minSquare = square;
-                        }
-                });
-
                 this.target = new Ball(closest, target.img.src);
-                gameInfo.holes.splice(gameInfo.holes.indexOf(closest), 1, this.target);
+                gameInfo.holes.splice(index, 1, this.target);
         }
 
         findSameBalls(target) {

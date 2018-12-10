@@ -10,7 +10,7 @@ module.exports = function(target) {
                         hole.dropping == undefined &&
                         hole.isCollideWith(target)) {
 
-                        return hole;
+                        return true;
                 }
         }
         return false;
