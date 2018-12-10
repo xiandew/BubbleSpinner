@@ -30,7 +30,7 @@ export default class Spiral {
         }
 
         initSpiral() {
-                let maxLayers = Math.floor(canvas.width / BALL_SIZE);
+                let maxLayers = Math.floor(Math.max(canvas.width, canvas.height / 2) / BALL_SIZE);
 
                 this.toChange = true;
                 gameInfo.pivot = new Pivot(new Hole(PIVOT_X, PIVOT_Y));
@@ -190,7 +190,10 @@ export default class Spiral {
                 let minSquare = canvas.width ** 2;
                 let closest, index;
                 gameInfo.holes.forEach((hole, i) => {
-                        if (hole instanceof Hole) {
+                        if (hole instanceof Hole &&
+                                Math.abs(target.x - hole.x) < separation * 2 &&
+                                Math.abs(target.y - hole.y) < separation * 2) {
+
                                 // square of the distance
                                 let square = (target.x - hole.x) ** 2 + (target.y - hole.y) ** 2;
                                 if (square <= minSquare) {
