@@ -184,9 +184,6 @@ export default class Spiral {
                 }
 
                 other.initShooter();
-                // delete the reference to the new added ball, otherwise
-                // it cannot be deleted later when it's off screen
-                this.target = undefined;
         }
 
         fillClosestHole(target) {
