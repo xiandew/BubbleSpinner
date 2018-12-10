@@ -96,9 +96,8 @@ export default class ExtraBalls {
                         ball.x += ball.speedX;
                         ball.y += ball.speedY;
 
-                        let c = isCollideSpiral(ball);
-                        if (c) {
-                                spiral.onCollision(ball, c);
+                        if (isCollideSpiral(ball)) {
+                                spiral.onCollision(ball);
                                 this.balls.splice(i, 1);
                                 continue;
                         }

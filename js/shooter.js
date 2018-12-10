@@ -177,9 +177,8 @@ export default class Shooter extends Sprite {
                 this.y >= BOTTOM_BOUND ? this.y = BOTTOM_BOUND : true;
 
                 // for finding a closest hole
-                let c = isCollideSpiral(this);
-                if (c) {
-                        spiral.onCollision(this, c);
+                if (isCollideSpiral(this)) {
+                        spiral.onCollision(this);
                         this.shooting = false;
                         return;
                 }
