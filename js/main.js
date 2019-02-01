@@ -14,8 +14,6 @@ let ctx = canvas.getContext('2d');
 ctx.imageSmoothingEnabled = true;
 ctx.imageSmoothingQuality = 'high';
 
-wx.setPreferredFramesPerSecond(60);
-
 /*----------------------------------------------------------------------------*/
 
 // The entry class of the game
