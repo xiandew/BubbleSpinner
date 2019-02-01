@@ -10,6 +10,8 @@ import Shooter from './shooter';
 
 let gameInfo = new GameInfo();
 let ctx = canvas.getContext('2d');
+ctx.imageSmoothingEnabled = true;
+ctx.imageSmoothingQuality = 'high';
 
 let click = require('./utilities/click');
 
