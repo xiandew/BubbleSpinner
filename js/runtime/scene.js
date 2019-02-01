@@ -133,18 +133,18 @@ export default class Scene {
 			gameInfo.sharedCanvas,
 			0,
 			0,
-			canvas.width  * (canvas.width / 750),
-			canvas.height * (canvas.width / 750)
+			gameInfo.canvasWidth,
+			gameInfo.canvasHeight
 		);
         }
 
         static renderGameOver() {
-                ctx.drawImage(
+		ctx.drawImage(
 			gameInfo.sharedCanvas,
 			0,
 			0,
-			canvas.width * (canvas.width / 750),
-			canvas.height * (canvas.width / 750)
+			gameInfo.canvasWidth,
+			gameInfo.canvasHeight
 		);
         }
 
