@@ -8,7 +8,7 @@ import BitmapText from "../utilities/bitmapText";
 
 let btnArea = require('../utilities/buttonArea');
 let newImage = require('../utilities/newImage');
-
+let gameInfo = new GameInfo();
 /*----------------------------------------------------------------------------*/
 
 let impact_black = new BitmapFont();
@@ -19,26 +19,26 @@ impact_black.loadFont(IMPACT_BLACK_JSON, function() {
         txt = new BitmapText(impact_black);
 });
 
-const SCORE_H = 0.075 * canvas.width;
-const SCORE_X = 0.055 * canvas.width;
-const SCORE_Y = 0.165 * canvas.width;
+const SCORE_H = 0.075 * gameInfo.canvasWidth;
+const SCORE_X = 0.055 * gameInfo.canvasWidth;
+const SCORE_Y = 0.165 * gameInfo.canvasWidth;
 
-const LARGE_SCORE_Y = 0.55 * canvas.height;
-const LARGE_SCORE_H = 0.15 * canvas.width;
+const LARGE_SCORE_Y = 0.55 * gameInfo.canvasHeight;
+const LARGE_SCORE_H = 0.15 * gameInfo.canvasWidth;
 
 const HIT_PEAS = {
         img: newImage('images/HitPeas.png'),
-        x: 0.5 * canvas.width,
-        y: 0.2 * canvas.height,
-        w: 0.6 * canvas.width,
+        x: 0.5 * gameInfo.canvasWidth,
+        y: 0.2 * gameInfo.canvasHeight,
+        w: 0.6 * gameInfo.canvasWidth,
 }
 HIT_PEAS.h = HIT_PEAS.w / 5;
 
 export const START_BUTTON = {
         img: newImage('images/startGame.png'),
-        x: 0.5 * canvas.width,
-        y: 0.8 * canvas.height,
-        h: 0.05 * canvas.width,
+        x: 0.5 * gameInfo.canvasWidth,
+        y: 0.8 * gameInfo.canvasHeight,
+        h: 0.05 * gameInfo.canvasWidth,
         bgColour: "#ffffff"
 };
 START_BUTTON.w = (305 / 60) * START_BUTTON.h;
@@ -46,9 +46,9 @@ START_BUTTON.area = btnArea(START_BUTTON);
 
 export const RANK_LIST_ICON = {
         img: newImage('images/rankListIcon.png'),
-        x: 0.5 * canvas.width,
-        y: 0.92 * canvas.height,
-        h: 0.08 * canvas.width,
+        x: 0.5 * gameInfo.canvasWidth,
+        y: 0.92 * gameInfo.canvasHeight,
+        h: 0.08 * gameInfo.canvasWidth,
 };
 RANK_LIST_ICON.w = RANK_LIST_ICON.h;
 RANK_LIST_ICON.area = btnArea(RANK_LIST_ICON, true);
@@ -56,8 +56,6 @@ RANK_LIST_ICON.area = btnArea(RANK_LIST_ICON, true);
 /*----------------------------------------------------------------------------*/
 
 let ctx = canvas.getContext('2d');
-
-let gameInfo = new GameInfo();
 let animeAngle = 0;
 let spiralFullSize = false;
 
@@ -78,15 +76,21 @@ export default class Scene {
 
                 animeAngle += 0.01;
                 ctx.save();
-                ctx.translate(canvas.width / 2, canvas.height / 2);
+		ctx.translate(
+			gameInfo.canvasWidth / 2,
+			gameInfo.canvasHeight / 2
+		);
                 ctx.rotate(animeAngle);
-                ctx.translate(-canvas.width / 2, -canvas.height / 2);
+                ctx.translate(
+			-gameInfo.canvasWidth / 2,
+			-gameInfo.canvasHeight / 2
+		);
                 spiral.render();
                 ctx.restore();
 
                 ctx.beginPath();
                 ctx.fillStyle = "rgba(117, 119, 126, 0.8)";
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillRect(0, 0, gameInfo.canvasWidth, gameInfo.canvasHeight);
                 ctx.closePath();
 
                 Scene.draw(HIT_PEAS);
@@ -115,21 +119,33 @@ export default class Scene {
                 let scale = Math.sin(acc);
 
                 ctx.save();
-                ctx.translate(canvas.width / 2, canvas.height / 2);
+                ctx.translate(gameInfo.canvasWidth / 2, gameInfo.canvasHeight / 2);
                 ctx.scale(scale, scale);
                 ctx.rotate(Math.PI * 2 * scale);
-                ctx.translate(-canvas.width / 2, -canvas.height / 2);
+                ctx.translate(-gameInfo.canvasWidth / 2, -gameInfo.canvasHeight / 2);
 
                 spiral.render();
                 ctx.restore();
         }
 
         static renderRankList() {
-                ctx.drawImage(gameInfo.sharedCanvas, 0, 0, canvas.width, canvas.height);
+		ctx.drawImage(
+			gameInfo.sharedCanvas,
+			0,
+			0,
+			canvas.width  * (canvas.width / 750),
+			canvas.height * (canvas.width / 750)
+		);
         }
 
         static renderGameOver() {
-                ctx.drawImage(gameInfo.sharedCanvas, 0, 0, canvas.width, canvas.height);
+                ctx.drawImage(
+			gameInfo.sharedCanvas,
+			0,
+			0,
+			canvas.width * (canvas.width / 750),
+			canvas.height * (canvas.width / 750)
+		);
         }
 
         static renderGameScore() {

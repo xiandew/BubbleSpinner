@@ -26,16 +26,23 @@ export default class GameInfo {
                 }
                 instance = this;
 
+		this.pixelRatio = wx.getSystemInfoSync().pixelRatio;
+
+		// onscreen canvas
+		this.canvasWidth  = canvas.width;
+		this.canvasHeight = canvas.height;
+		canvas.width  *= this.pixelRatio;
+		canvas.height *= this.pixelRatio;
+		ctx.scale(this.pixelRatio, this.pixelRatio);
+
+		// shared canvas
                 this.openDataContext = wx.getOpenDataContext();
                 this.sharedCanvas = this.openDataContext.canvas;
-
                 // resize the sharedCanvas for better display of text.
-                this.pixelRatio = wx.getSystemInfoSync().pixelRatio;
-                this.sharedCanvas.width = canvas.width * this.pixelRatio;
+                this.sharedCanvas.width  = canvas.width  * this.pixelRatio;
                 this.sharedCanvas.height = canvas.height * this.pixelRatio;
 
                 this.balls = shuffle(BALLS);
-
                 this.holes = [];
                 this.start = false;
                 this.level = 0;

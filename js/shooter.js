@@ -17,9 +17,9 @@ let isCollideSpiral = require("./utilities/isCollideSpiral");
 /*----------------------------------------------------------------------------*/
 
 const NEXT_SHOOTER_SIZE = 0.5 * BALL_SIZE;
-const NEXT_SHOOTER_X = 0.5 * canvas.width - 0.5 * NEXT_SHOOTER_SIZE;
-const NEXT_SHOOTER_Y = canvas.height - BALL_SIZE;
-const BOTTOM_BOUND = canvas.height - 1.5 * BALL_SIZE;
+const NEXT_SHOOTER_X = 0.5 * gameInfo.canvasWidth - 0.5 * NEXT_SHOOTER_SIZE;
+const NEXT_SHOOTER_Y = gameInfo.canvasHeight - BALL_SIZE;
+const BOTTOM_BOUND = gameInfo.canvasHeight - 1.5 * BALL_SIZE;
 
 /*----------------------------------------------------------------------------*/
 
@@ -50,7 +50,7 @@ export default class Shooter extends Sprite {
 
                 this.width = this.height = NEXT_SHOOTER_SIZE;
 
-                this.x = canvas.width / 2;
+                this.x = gameInfo.canvasWidth / 2;
                 this.y = NEXT_SHOOTER_Y;
 
                 this.img.src =
@@ -137,8 +137,8 @@ export default class Shooter extends Sprite {
                         nextShooterSize = NEXT_SHOOTER_SIZE * Math.sin(this.acc);
                         ctx.drawImage(
                                 nextShooterImg,
-                                0.5 * canvas.width - 0.5 * nextShooterSize,
-                                canvas.height - Math.sin(this.acc) * BALL_SIZE,
+                                0.5 * gameInfo.canvasWidth - 0.5 * nextShooterSize,
+                                gameInfo.canvasHeight - Math.sin(this.acc) * BALL_SIZE,
                                 nextShooterSize,
                                 nextShooterSize
                         );
@@ -153,7 +153,7 @@ export default class Shooter extends Sprite {
                 }
                 let bounced = false;
 
-                if (this.speedX > 0 && (this.x + this.width / 2) >= canvas.width ||
+                if (this.speedX > 0 && (this.x + this.width / 2) >= gameInfo.canvasWidth ||
                         this.speedX < 0 && (this.x - this.width / 2) <= 0) {
 
                         !bounced ? (this.bounces++, bounced = true) : true;
@@ -191,8 +191,8 @@ export default class Shooter extends Sprite {
 
                 if (this.dropping) {
                         // 0.588235.. is the asymptotic value of the y speed by experimenting
-                        if (Math.abs(this.x - canvas.width / 2) < 1 && Math.abs(0.5883 - this.speedY) < 0.0001) {
-                                this.x = canvas.width / 2;
+                        if (Math.abs(this.x - gameInfo.canvasWidth / 2) < 1 && Math.abs(0.5883 - this.speedY) < 0.0001) {
+                                this.x = gameInfo.canvasWidth / 2;
                                 this.y = BOTTOM_BOUND
 
                                 this.dropping = false;

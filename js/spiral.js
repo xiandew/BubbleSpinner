@@ -12,10 +12,10 @@ let ctx = canvas.getContext('2d');
 
 /*----------------------------------------------------------------------------*/
 
-// FRICTION = -0.001 when canvas.width = 320
-const FRICTION = -canvas.width / 320000;
-const PIVOT_X = 0.5 * canvas.width;
-const PIVOT_Y = 0.5 * canvas.height;
+// FRICTION = -0.001 when gameInfo.canvasWidth = 320
+const FRICTION = -gameInfo.canvasWidth / 320000;
+const PIVOT_X = 0.5 * gameInfo.canvasWidth;
+const PIVOT_Y = 0.5 * gameInfo.canvasHeight;
 
 /*----------------------------------------------------------------------------*/
 
@@ -30,7 +30,7 @@ export default class Spiral {
         }
 
         initSpiral() {
-                let maxLayers = Math.floor(Math.max(canvas.width, canvas.height / 2) / BALL_SIZE);
+                let maxLayers = Math.floor(Math.max(gameInfo.canvasWidth, gameInfo.canvasHeight / 2) / BALL_SIZE);
 
                 this.toChange = true;
                 gameInfo.pivot = new Pivot(new Hole(PIVOT_X, PIVOT_Y));
@@ -153,7 +153,7 @@ export default class Spiral {
 
                 let d = Math.abs((px - gameInfo.pivot.x) * (py - gameInfo.pivot.y)) /
                         Math.sqrt((py - gameInfo.pivot.y) ** 2 + (px - gameInfo.pivot.x) ** 2);
-                let ratio = d / canvas.width;
+                let ratio = d / gameInfo.canvasWidth;
                 let tangentSpeed = SHOOTER_SPEED * ratio;
                 this.friction = FRICTION;
 
@@ -187,7 +187,7 @@ export default class Spiral {
         }
 
         fillClosestHole(target) {
-                let minSquare = canvas.width ** 2;
+                let minSquare = gameInfo.canvasWidth ** 2;
                 let closest, index;
                 gameInfo.holes.forEach((hole, i) => {
                         if (hole instanceof Hole &&
