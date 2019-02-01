@@ -9,8 +9,8 @@ let isCollideSpiral = require("../utilities/isCollideSpiral");
 
 /*----------------------------------------------------------------------------*/
 
-// LINEAR_SPEED = 10 when canvas.width = 320
-const LINEAR_SPEED = canvas.width / 32;
+// LINEAR_SPEED = 10 when gameInfo.canvasWidth = 320
+const LINEAR_SPEED = gameInfo.canvasWidth / 32;
 
 export default class ExtraBalls {
         constructor() {
@@ -24,19 +24,19 @@ export default class ExtraBalls {
                 let coords = [];
                 for (let i = 0, angle, x, y; i < num; i++) {
                         angle = Math.random() * Math.PI * 2;
-                        x = Math.cos(angle) * canvas.height;
-                        y = Math.sin(angle) * canvas.height;
+                        x = Math.cos(angle) * gameInfo.canvasHeight;
+                        y = Math.sin(angle) * gameInfo.canvasHeight;
 
                         if (x < -BALL_SIZE) {
                                 x = -BALL_SIZE;
-                        } else if (x > canvas.width + BALL_SIZE) {
-                                x = canvas.width + BALL_SIZE;
+                        } else if (x > gameInfo.canvasWidth + BALL_SIZE) {
+                                x = gameInfo.canvasWidth + BALL_SIZE;
                         }
 
                         if (y < -BALL_SIZE) {
                                 y = -BALL_SIZE;
-                        } else if (y > canvas.height + BALL_SIZE) {
-                                y = canvas.height + BALL_SIZE;
+                        } else if (y > gameInfo.canvasHeight + BALL_SIZE) {
+                                y = gameInfo.canvasHeight + BALL_SIZE;
                         }
                         coords.push({
                                 x: x,
@@ -102,8 +102,8 @@ export default class ExtraBalls {
                                 continue;
                         }
 
-                        if (ball.x < -BALL_SIZE || ball.x >= canvas.width + BALL_SIZE ||
-                                ball.y < -BALL_SIZE || ball.y >= canvas.height + BALL_SIZE) {
+                        if (ball.x < -BALL_SIZE || ball.x >= gameInfo.canvasWidth + BALL_SIZE ||
+                                ball.y < -BALL_SIZE || ball.y >= gameInfo.canvasHeight + BALL_SIZE) {
                                 this.balls.splice(i, 1);
                         }
                 }

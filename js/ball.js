@@ -44,16 +44,16 @@ export default class Ball extends Sprite {
                         return;
                 }
 
-                let toCentY = this.y - canvas.height / 2;
-                let toCentX = this.x - canvas.width / 2;
+                let toCentY = this.y - gameInfo.canvasHeight / 2;
+                let toCentX = this.x - gameInfo.canvasWidth / 2;
 
                 let radius = Math.sqrt(toCentX ** 2 + toCentY ** 2);
-                this.x = canvas.width / 2 + (Math.cos(Math.atan2(toCentY, toCentX) - angle) * radius);
-                this.y = canvas.height / 2 + (Math.sin(Math.atan2(toCentY, toCentX) - angle) * radius);
+                this.x = gameInfo.canvasWidth  / 2 + (Math.cos(Math.atan2(toCentY, toCentX) - angle) * radius);
+                this.y = gameInfo.canvasHeight / 2 + (Math.sin(Math.atan2(toCentY, toCentX) - angle) * radius);
 
-                if (((this.x + this.width / 2) >= canvas.width ||
+                if (((this.x + this.width / 2) >= gameInfo.canvasWidth ||
                                 (this.x - this.width / 2) <= 0 ||
-                                (this.y + this.height / 2) >= canvas.height ||
+                                (this.y + this.height / 2) >= gameInfo.canvasHeight ||
                                 (this.y - this.height / 2) <= 0)) {
                         return true;
                 }
@@ -73,14 +73,14 @@ export default class Ball extends Sprite {
         }
 
         renderScore() {
-                if (this.dropping == undefined || this.y <= canvas.height - 5 * this.width) {
+                if (this.dropping == undefined || this.y <= gameInfo.canvasHeight - 5 * this.width) {
                         return;
                 }
 
                 if (!this.scoreX || !this.scoreY) {
                         this.scoreX =
                                 this.x <= BALL_SIZE ? BALL_SIZE :
-                                this.x >= canvas.width - BALL_SIZE ? canvas.width - BALL_SIZE :
+                                this.x >= gameInfo.canvasWidth - BALL_SIZE ? gameInfo.canvasWidth - BALL_SIZE :
                                 this.x;
                         this.scoreY = this.y;
                 }
@@ -94,7 +94,7 @@ export default class Ball extends Sprite {
                 ctx.save();
                 ctx.globalAlpha = 1 - Math.sin(this.acc);
                 if (fontLoaded) {
-                        txt.fontSize = 0.065 * canvas.width;
+                        txt.fontSize = 0.065 * gameInfo.canvasWidth;
                         txt.textAlign = "center";
                         txt.draw(
                                 ctx,

@@ -7,12 +7,12 @@ import ExtraBalls from "./runtime/extraBalls";
 import Lives from "./lives";
 import Spiral from './spiral';
 import Shooter from './shooter';
+let click = require('./utilities/click');
 
 let gameInfo = new GameInfo();
 let ctx = canvas.getContext('2d');
-ctx.imageSmoothingQuality = "high";
-
-let click = require('./utilities/click');
+ctx.imageSmoothingEnabled = true;
+ctx.imageSmoothingQuality = 'high';
 
 /*----------------------------------------------------------------------------*/
 
