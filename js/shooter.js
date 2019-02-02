@@ -191,9 +191,11 @@ export default class Shooter extends Sprite {
 
                 if (this.dropping) {
                         // 0.588235.. is the asymptotic value of the y speed by experimenting
-                        if (Math.abs(this.x - gameInfo.canvasWidth / 2) < 1 && Math.abs(0.5883 - this.speedY) < 0.0001) {
+                        if (Math.abs(this.x - gameInfo.canvasWidth / 2) < 1 &&
+                                Math.abs(0.5883 - this.speedY) < 0.0001) {
+
                                 this.x = gameInfo.canvasWidth / 2;
-                                this.y = BOTTOM_BOUND
+                                this.y = BOTTOM_BOUND;
 
                                 this.dropping = false;
                                 this.shooting = false;
