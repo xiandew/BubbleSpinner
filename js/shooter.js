@@ -151,6 +151,8 @@ export default class Shooter extends Sprite {
                 if (!this.shown || !this.shooting) {
                         return;
                 }
+                // for counting number of bounces. Only count once
+                // when changing both speedX and speedY.
                 let bounced = false;
 
                 if (this.speedX > 0 && (this.x + this.width / 2) >= gameInfo.canvasWidth ||
