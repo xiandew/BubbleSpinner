@@ -12,8 +12,8 @@ let ctx = canvas.getContext('2d');
 
 /*----------------------------------------------------------------------------*/
 
-// FRICTION = -0.001 when gameInfo.canvasWidth = 320
-const FRICTION = -gameInfo.canvasWidth / 320000;
+// FRICTION = -0.001 when screenWidth = 320 and pixelRatio = 2
+const FRICTION = -canvas.width / 640000;
 const PIVOT_X = 0.5 * gameInfo.canvasWidth;
 const PIVOT_Y = 0.5 * gameInfo.canvasHeight;
 
