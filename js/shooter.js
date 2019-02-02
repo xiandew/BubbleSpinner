@@ -48,13 +48,13 @@ export default class Shooter extends Sprite {
                 // for animation
                 this.acc = 0;
 
-                this.width = this.height = NEXT_SHOOTER_SIZE;
+                this.size = NEXT_SHOOTER_SIZE;
 
                 this.x = gameInfo.canvasWidth / 2;
                 this.y = NEXT_SHOOTER_Y;
 
                 this.img.src =
-                        gameInfo.getBalls().includes(this.nextShooterSrc) ?
+                        gameInfo.getBallsSrc().includes(this.nextShooterSrc) ?
                         this.nextShooterSrc :
                         randomBall();
                 this.nextShooterSrc = randomBall();
@@ -115,7 +115,7 @@ export default class Shooter extends Sprite {
 
                 delta = Math.sin(this.acc) * BALL_SIZE * 0.5;
                 this.y = NEXT_SHOOTER_Y - delta;
-                this.width = this.height = NEXT_SHOOTER_SIZE + delta;
+                this.size = NEXT_SHOOTER_SIZE + delta;
                 this.display();
 
                 this.acc += 0.05;
@@ -129,21 +129,22 @@ export default class Shooter extends Sprite {
                                 NEXT_SHOOTER_X,
                                 NEXT_SHOOTER_Y,
                                 NEXT_SHOOTER_SIZE,
-                                NEXT_SHOOTER_SIZE);
-
-                        this.touched ? this.renderArrow() : true;
+                                NEXT_SHOOTER_SIZE
+                        );
+                        if (this.touched) {
+                                this.renderArrow();
+                        }
                 } else {
                         nextShooterImg = newImage(this.nextShooterSrc);
                         nextShooterSize = NEXT_SHOOTER_SIZE * Math.sin(this.acc);
                         ctx.drawImage(
                                 nextShooterImg,
-                                0.5 * gameInfo.canvasWidth - 0.5 * nextShooterSize,
+                                gameInfo.canvasWidth * 0.5 - nextShooterSize * 0.5,
                                 gameInfo.canvasHeight - Math.sin(this.acc) * BALL_SIZE,
                                 nextShooterSize,
                                 nextShooterSize
                         );
                 }
-
                 super.render();
         }
 
@@ -151,17 +152,21 @@ export default class Shooter extends Sprite {
                 if (!this.shown || !this.shooting) {
                         return;
                 }
+                // for counting number of bounces. Only count once
+                // when changing both speedX and speedY.
                 let bounced = false;
 
-                if (this.speedX > 0 && (this.x + this.width / 2) >= gameInfo.canvasWidth ||
-                        this.speedX < 0 && (this.x - this.width / 2) <= 0) {
-
+                if (
+                        this.speedX > 0 && (this.x + this.size / 2) >= gameInfo.canvasWidth ||
+                        this.speedX < 0 && (this.x - this.size / 2) <= 0
+                ) {
                         !bounced ? (this.bounces++, bounced = true) : true;
                         this.speedX *= (-1);
                 }
-                if (this.speedY > 0 && this.y >= BOTTOM_BOUND ||
-                        this.speedY < 0 && (this.y - this.height / 2) <= 0) {
-
+                if (
+                        this.speedY > 0 && this.y >= BOTTOM_BOUND ||
+                        this.speedY < 0 && (this.y - this.size / 2) <= 0
+                ) {
                         !bounced ? (this.bounces++, bounced = true) : true;
                         this.speedY *= (-1);
 
@@ -191,9 +196,12 @@ export default class Shooter extends Sprite {
 
                 if (this.dropping) {
                         // 0.588235.. is the asymptotic value of the y speed by experimenting
-                        if (Math.abs(this.x - gameInfo.canvasWidth / 2) < 1 && Math.abs(0.5883 - this.speedY) < 0.0001) {
+                        if (
+                                Math.abs(this.x - gameInfo.canvasWidth / 2) < 1 &&
+                                Math.abs(0.5883 - this.speedY) < 0.0001
+                        ) {
                                 this.x = gameInfo.canvasWidth / 2;
-                                this.y = BOTTOM_BOUND
+                                this.y = BOTTOM_BOUND;
 
                                 this.dropping = false;
                                 this.shooting = false;
@@ -223,16 +231,19 @@ export default class Shooter extends Sprite {
 
                 // form a little triangle for the arrow head
                 // from touch point to right side of the head
-                ctx.lineTo(this.touchX - headLength * Math.cos(headAngle - Math.PI / 6),
-                        this.touchY - headLength * Math.sin(headAngle - Math.PI / 6));
+                ctx.lineTo(
+                        this.touchX - headLength * Math.cos(headAngle - Math.PI / 6),
+                        this.touchY - headLength * Math.sin(headAngle - Math.PI / 6)
+                );
                 // to bottom side of the head
-                ctx.lineTo(this.touchX - headLength * Math.cos(headAngle + Math.PI / 6),
-                        this.touchY - headLength * Math.sin(headAngle + Math.PI / 6));
+                ctx.lineTo(
+                        this.touchX - headLength * Math.cos(headAngle + Math.PI / 6),
+                        this.touchY - headLength * Math.sin(headAngle + Math.PI / 6)
+                );
                 // back to the touch point
                 ctx.lineTo(this.touchX, this.touchY);
 
                 ctx.stroke();
                 ctx.closePath();
         }
-
 }
