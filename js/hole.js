@@ -6,6 +6,8 @@ export default class Hole {
                 this.x = x;
                 this.y = y;
                 this.layer = layer;
+
+                //this.filled = false;
         }
 
         rotate(angle) {

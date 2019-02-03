@@ -37,6 +37,8 @@ export default class Ball extends Sprite {
                 this.visited = false;
 
                 this.acc = 0;
+
+                // 包含hole -> 更新filled
         }
 
         rotate(angle) {
@@ -48,13 +50,13 @@ export default class Ball extends Sprite {
                 let toCentX = this.x - gameInfo.canvasWidth / 2;
 
                 let radius = Math.sqrt(toCentX ** 2 + toCentY ** 2);
-                this.x = gameInfo.canvasWidth  / 2 + (Math.cos(Math.atan2(toCentY, toCentX) - angle) * radius);
+                this.x = gameInfo.canvasWidth / 2 + (Math.cos(Math.atan2(toCentY, toCentX) - angle) * radius);
                 this.y = gameInfo.canvasHeight / 2 + (Math.sin(Math.atan2(toCentY, toCentX) - angle) * radius);
 
-                if (((this.x + this.width / 2) >= gameInfo.canvasWidth ||
-                                (this.x - this.width / 2) <= 0 ||
-                                (this.y + this.height / 2) >= gameInfo.canvasHeight ||
-                                (this.y - this.height / 2) <= 0)) {
+                if ((this.x + this.width / 2) >= gameInfo.canvasWidth ||
+                        (this.y + this.height / 2) >= gameInfo.canvasHeight ||
+                        (this.x - this.width / 2) <= 0 ||
+                        (this.y - this.height / 2) <= 0) {
                         return true;
                 }
         }
