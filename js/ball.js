@@ -53,10 +53,12 @@ export default class Ball extends Sprite {
                 this.x = gameInfo.canvasWidth / 2 + (Math.cos(Math.atan2(toCentY, toCentX) - angle) * radius);
                 this.y = gameInfo.canvasHeight / 2 + (Math.sin(Math.atan2(toCentY, toCentX) - angle) * radius);
 
-                if ((this.x + this.width / 2) >= gameInfo.canvasWidth ||
+                if (
+                        (this.x + this.width / 2) >= gameInfo.canvasWidth ||
                         (this.y + this.height / 2) >= gameInfo.canvasHeight ||
                         (this.x - this.width / 2) <= 0 ||
-                        (this.y - this.height / 2) <= 0) {
+                        (this.y - this.height / 2) <= 0
+                ) {
                         return true;
                 }
         }
@@ -81,8 +83,12 @@ export default class Ball extends Sprite {
 
                 if (!this.scoreX || !this.scoreY) {
                         this.scoreX =
-                                this.x <= BALL_SIZE ? BALL_SIZE :
-                                this.x >= gameInfo.canvasWidth - BALL_SIZE ? gameInfo.canvasWidth - BALL_SIZE :
+                                this.x <=
+                                BALL_SIZE ?
+                                BALL_SIZE :
+                                this.x >=
+                                gameInfo.canvasWidth - BALL_SIZE ?
+                                gameInfo.canvasWidth - BALL_SIZE :
                                 this.x;
                         this.scoreY = this.y;
                 }
