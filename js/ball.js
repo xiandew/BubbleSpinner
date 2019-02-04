@@ -38,6 +38,8 @@ export default class Ball extends Sprite {
 
                 this.acc = 0;
 
+
+                this.hole = hole;
                 // 包含hole -> 更新filled
         }
 
@@ -136,7 +138,7 @@ export default class Ball extends Sprite {
                 this.speedY = theSpeed * Math.sin(ha);
         }
 
-	
+
 
         // draw a circle shape instead of image. Not display well on the phone
         // render(ctx) {

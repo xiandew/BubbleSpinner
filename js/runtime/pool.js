@@ -28,9 +28,11 @@ export default class Pool {
         getItemByClass(name, className) {
                 let pool = this.getPoolBySign(name)
 
-                let result = (pool.length ?
+                let result = (
+                        pool.length ?
                         pool.shift() :
-                        new className())
+                        new className()
+                )
 
                 return result
         }

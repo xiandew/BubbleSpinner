@@ -1,3 +1,5 @@
+import Pool from './pool'
+
 let instance;
 let ctx = canvas.getContext('2d');
 
@@ -43,14 +45,14 @@ export default class GameInfo {
                 this.sharedCanvas.width = canvas.width * this.pixelRatio;
                 this.sharedCanvas.height = canvas.height * this.pixelRatio;
 
+                this.pool = new Pool();
+
                 this.ballsSrc = shuffle(BALLS_SRC);
                 this.holes = [];
                 this.balls = [];
 
+                this.reset();
                 this.start = false;
-                this.level = 0;
-                this.score = 0;
-                this.lives = MAX_NUM_LIVES;
         }
 
         reset() {
@@ -86,7 +88,7 @@ export default class GameInfo {
          * 此后不进入帧循环
          */
         removeBall(ball) {
-                let temp = ; //this.enemys.shift()
+                let temp = this.enemys.shift()
                 temp.visible = false;
 
                 this.pool.recover('ball', ball);

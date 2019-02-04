@@ -79,7 +79,7 @@ export default class Spiral {
 
                 gameInfo.holes.forEach((hole, i) => {
                         if (hole != gameInfo.pivot && hole.layer <= layers) {
-                                gameInfo.balls.push(new Ball(hole));
+                                gameInfo.balls.push(gameInfo.pool.getItemByClass('ball', Ball));
                         }
                 });
         }
