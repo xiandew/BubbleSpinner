@@ -7,7 +7,7 @@ let thisBall, prevBall;
 
 // return a ball with the colour which is of the minimum number on the spiral
 module.exports = function() {
-        let balls = gameInfo.getBalls();
+        let balls = gameInfo.getBallsSrc();
 
         let dict = {};
         balls.forEach(ballSrc => {

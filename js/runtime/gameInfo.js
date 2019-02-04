@@ -5,7 +5,7 @@ const MAX_NUM_LIVES = 5;
 
 const LAYERS = [2, 3, 4, 5, 6];
 
-export const BALLS = [
+export const BALLS_SRC = [
         'images/b_blue.png',
         'images/b_cyan.png',
         'images/b_green.png',
@@ -27,24 +27,26 @@ export default class GameInfo {
                 }
                 instance = this;
 
-		this.pixelRatio = wx.getSystemInfoSync().pixelRatio;
+                this.pixelRatio = wx.getSystemInfoSync().pixelRatio;
 
-		// onscreen canvas
-		this.canvasWidth  = canvas.width;
-		this.canvasHeight = canvas.height;
-		canvas.width  *= this.pixelRatio;
-		canvas.height *= this.pixelRatio;
-		ctx.scale(this.pixelRatio, this.pixelRatio);
+                // onscreen canvas
+                this.canvasWidth = canvas.width;
+                this.canvasHeight = canvas.height;
+                canvas.width *= this.pixelRatio;
+                canvas.height *= this.pixelRatio;
+                ctx.scale(this.pixelRatio, this.pixelRatio);
 
-		// shared canvas
+                // shared canvas
                 this.openDataContext = wx.getOpenDataContext();
                 this.sharedCanvas = this.openDataContext.canvas;
                 // resize the sharedCanvas for better display of text.
-                this.sharedCanvas.width  = canvas.width  * this.pixelRatio;
+                this.sharedCanvas.width = canvas.width * this.pixelRatio;
                 this.sharedCanvas.height = canvas.height * this.pixelRatio;
 
-                this.balls = shuffle(BALLS);
+                this.ballsSrc = shuffle(BALLS_SRC);
                 this.holes = [];
+                this.balls = [];
+
                 this.start = false;
                 this.level = 0;
                 this.score = 0;
@@ -70,13 +72,24 @@ export default class GameInfo {
                 return this.level < LAYERS.length ? LAYERS[this.level] : LAYERS[LAYERS.length - 1];
         }
 
-        getBalls() {
-                return this.balls.slice(0, this.getLayers() + 1);
+        getBallsSrc() {
+                return this.ballsSrc.slice(0, this.getLayers() + 1);
         }
 
         renewLives() {
                 this.lives = Math.ceil(Math.random() * MAX_NUM_LIVES);
                 this.loseLive = false;
+        }
+
+        /**
+         * 回收小球，进入对象池
+         * 此后不进入帧循环
+         */
+        removeBall(ball) {
+                let temp = ; //this.enemys.shift()
+                temp.visible = false;
+
+                this.pool.recover('ball', ball);
         }
 }
 

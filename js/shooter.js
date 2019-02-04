@@ -54,7 +54,7 @@ export default class Shooter extends Sprite {
                 this.y = NEXT_SHOOTER_Y;
 
                 this.img.src =
-                        gameInfo.getBalls().includes(this.nextShooterSrc) ?
+                        gameInfo.getBallsSrc().includes(this.nextShooterSrc) ?
                         this.nextShooterSrc :
                         randomBall();
                 this.nextShooterSrc = randomBall();

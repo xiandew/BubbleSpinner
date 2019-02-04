@@ -79,7 +79,7 @@ export default class Spiral {
 
                 gameInfo.holes.forEach((hole, i) => {
                         if (hole != gameInfo.pivot && hole.layer <= layers) {
-                                gameInfo.holes.splice(i, 1, new Ball(hole));
+                                gameInfo.balls.push(new Ball(hole));
                         }
                 });
         }
