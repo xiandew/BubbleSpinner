@@ -1,54 +1,65 @@
+import {
+        BALL_SIZE
+} from './runtime/gameInfo';
+
 let ctx = canvas.getContext('2d');
 let newImage = require('./utilities/newImage');
 
-// Top level `abstract` class for the game
+// Abstract class for the ball and the shooter
 export default class Sprite {
-        constructor(imgSrc = "", width = 0, height = 0, x = 0, y = 0) {
-                this.img = newImage(imgSrc);
-                this.width = width;
-                this.height = height;
-
+        constructor(x = 0, y = 0) {
+                this.img = newImage("");
                 this.x = x;
                 this.y = y;
-
-                this.visiable = true;
+                this.size = BALL_SIZE;
+                this.visible = true;
         }
 
         // cannot use 'onload' method for drawing image during 'reuireAnimationFrame'
         render() {
-                if (!this.visiable) {
+                if (!this.visible) {
                         return;
                 }
 
                 // draw the image from the center at (x, y)
                 ctx.drawImage(
                         this.img,
-                        this.x - this.width / 2,
-                        this.y - this.height / 2,
-                        this.width,
-                        this.height
+                        this.getX() - this.size / 2,
+                        this.getY() - this.size / 2,
+                        this.size,
+                        this.size
                 );
+        }
 
-                // if (this.hole) {
-                // 	ctx.drawImage(
-                // 		this.img,
-                // 		this.hole.x - this.width / 2,
-                // 		this.hole.y - this.height / 2,
-                // 		this.width,
-                // 		this.height
-                // 	);
-                // }
+        getX() {
+                return this.hole ? this.hole.x : this.x;
+        }
+
+        getY() {
+                return this.hole ? this.hole.y : this.y;
+        }
+
+        setX(x) {
+                this.hole ? this.hole.x = x : this.x = x;
+        }
+
+        setY(y) {
+                this.hole ? this.hole.y = y : this.y = y;
+        }
+
+        getLayer() {
+                return this.hole.layer;
         }
 
         isCollideWith(other) {
-                let otherLeft = other.x - other.width / 2;
-                let otherRight = other.x + other.width / 2;
-                let otherTop = other.y - other.height / 2;
-                let otherBottom = other.y + other.height / 2;
+                let otherLeft = other.getX() - other.size / 2;
+                let otherRight = other.getX() + other.size / 2;
+                let otherTop = other.getY() - other.size / 2;
+                let otherBottom = other.getY() + other.size / 2;
 
-                return otherLeft < this.x + this.width / 2 &&
-                        otherRight > this.x - this.width / 2 &&
-                        otherTop < this.y + this.height / 2 &&
-                        otherBottom > this.y - this.height / 2;
+                return otherLeft < this.getX() + this.size / 2 &&
+                        otherRight > this.getX() - this.size / 2 &&
+                        otherTop < this.getY() + this.size / 2 &&
+                        otherBottom > this.getY() - this.size / 2;
         }
 }

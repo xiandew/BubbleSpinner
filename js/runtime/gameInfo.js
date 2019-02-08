@@ -47,6 +47,8 @@ export default class GameInfo {
 
                 this.pool = new Pool();
 
+                this.outerLayer = 3;
+
                 this.ballsSrc = shuffle(BALLS_SRC);
                 this.holes = [];
                 this.balls = [];
@@ -88,9 +90,14 @@ export default class GameInfo {
          * 此后不进入帧循环
          */
         removeBall(ball) {
-                let temp = this.enemys.shift()
+                // remove
+                let i = this.balls.indexOf(ball);
+                [this.balls[0], this.balls[i]] = [this.balls[i], this.balls[0]];
+
+                let temp = this.balls.shift();
                 temp.visible = false;
 
+                // recycle
                 this.pool.recover('ball', ball);
         }
 }

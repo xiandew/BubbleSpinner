@@ -129,21 +129,22 @@ export default class Shooter extends Sprite {
                                 NEXT_SHOOTER_X,
                                 NEXT_SHOOTER_Y,
                                 NEXT_SHOOTER_SIZE,
-                                NEXT_SHOOTER_SIZE);
-
-                        this.touched ? this.renderArrow() : true;
+                                NEXT_SHOOTER_SIZE
+                        );
+                        if (this.touched) {
+                                this.renderArrow();
+                        }
                 } else {
                         nextShooterImg = newImage(this.nextShooterSrc);
                         nextShooterSize = NEXT_SHOOTER_SIZE * Math.sin(this.acc);
                         ctx.drawImage(
                                 nextShooterImg,
-                                0.5 * gameInfo.canvasWidth - 0.5 * nextShooterSize,
+                                gameInfo.canvasWidth * 0.5 - nextShooterSize * 0.5,
                                 gameInfo.canvasHeight - Math.sin(this.acc) * BALL_SIZE,
                                 nextShooterSize,
                                 nextShooterSize
                         );
                 }
-
                 super.render();
         }
 
@@ -227,11 +228,15 @@ export default class Shooter extends Sprite {
 
                 // form a little triangle for the arrow head
                 // from touch point to right side of the head
-                ctx.lineTo(this.touchX - headLength * Math.cos(headAngle - Math.PI / 6),
-                        this.touchY - headLength * Math.sin(headAngle - Math.PI / 6));
+                ctx.lineTo(
+                        this.touchX - headLength * Math.cos(headAngle - Math.PI / 6),
+                        this.touchY - headLength * Math.sin(headAngle - Math.PI / 6)
+                );
                 // to bottom side of the head
-                ctx.lineTo(this.touchX - headLength * Math.cos(headAngle + Math.PI / 6),
-                        this.touchY - headLength * Math.sin(headAngle + Math.PI / 6));
+                ctx.lineTo(
+                        this.touchX - headLength * Math.cos(headAngle + Math.PI / 6),
+                        this.touchY - headLength * Math.sin(headAngle + Math.PI / 6)
+                );
                 // back to the touch point
                 ctx.lineTo(this.touchX, this.touchY);
 

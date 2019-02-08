@@ -4,12 +4,12 @@ let gameInfo = new GameInfo();
 
 module.exports = function(target) {
 
-        for (let i = 0; i < gameInfo.holes.length; i++) {
-                let hole = gameInfo.holes[i];
-                if (!(hole instanceof Hole) &&
-                        hole.dropping == undefined &&
-                        hole.isCollideWith(target)) {
-
+        for (let i = 0, ball; i < gameInfo.balls.length; i++) {
+                ball = gameInfo.balls[i];
+                if (
+                        ball.visible &&
+                        ball.isCollideWith(target)
+                ) {
                         return true;
                 }
         }

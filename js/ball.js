@@ -23,24 +23,23 @@ impact_black.loadFont(IMPACT_BLACK_JSON, function() {
 let gameInfo = new GameInfo();
 let ctx = canvas.getContext('2d');
 let optimalBall = require("./utilities/optimalBall");
+let newImage = require('./utilities/newImage');
 
 /*----------------------------------------------------------------------------*/
 
+/**
+ * Concrete Ball class. Extends Sprite. Repsents one ball on the spiral.
+ */
 export default class Ball extends Sprite {
-        constructor(hole = {}, ballSrc = false) {
-                if (!ballSrc) {
-                        ballSrc = optimalBall();
-                }
-                super(ballSrc, BALL_SIZE, BALL_SIZE, hole.x, hole.y);
-
-                this.layer = hole.layer;
+        constructor() {
+                super();
                 this.visited = false;
-
                 this.acc = 0;
+        }
 
-
+        init(hole = {}, ballSrc = false) {
+                this.img.src = !ballSrc ? optimalBall() : ballSrc;
                 this.hole = hole;
-                // 包含hole -> 更新filled
         }
 
         rotate(angle) {
@@ -48,18 +47,24 @@ export default class Ball extends Sprite {
                         return;
                 }
 
-                let toCentY = this.y - gameInfo.canvasHeight / 2;
-                let toCentX = this.x - gameInfo.canvasWidth / 2;
+                let toCentY = this.getY() - gameInfo.canvasHeight / 2;
+                let toCentX = this.getX() - gameInfo.canvasWidth / 2;
 
                 let radius = Math.sqrt(toCentX ** 2 + toCentY ** 2);
-                this.x = gameInfo.canvasWidth / 2 + (Math.cos(Math.atan2(toCentY, toCentX) - angle) * radius);
-                this.y = gameInfo.canvasHeight / 2 + (Math.sin(Math.atan2(toCentY, toCentX) - angle) * radius);
+                this.setX(
+                        gameInfo.canvasWidth / 2 +
+                        Math.cos(Math.atan2(toCentY, toCentX) - angle) * radius
+                );
+                this.setX(
+                        gameInfo.canvasHeight / 2 +
+                        Math.sin(Math.atan2(toCentY, toCentX) - angle) * radius
+                );
 
                 if (
-                        (this.x + this.width / 2) >= gameInfo.canvasWidth ||
-                        (this.y + this.height / 2) >= gameInfo.canvasHeight ||
-                        (this.x - this.width / 2) <= 0 ||
-                        (this.y - this.height / 2) <= 0
+                        (this.getX() + this.width / 2) >= gameInfo.canvasWidth ||
+                        (this.getY() + this.height / 2) >= gameInfo.canvasHeight ||
+                        (this.getX() - this.width / 2) <= 0 ||
+                        (this.getY() - this.height / 2) <= 0
                 ) {
                         return true;
                 }
@@ -71,33 +76,38 @@ export default class Ball extends Sprite {
                         this.speedX *= 0.998;
                         this.speedY += 0.98;
 
-                        this.y += this.speedY;
-                        this.x += this.speedX;
+                        this.setY(this.getY() + this.speedY);
+                        this.setX(this.getX() + this.speedX);
                 }
                 this.renderScore();
                 super.render();
         }
 
         renderScore() {
-                if (this.dropping == undefined || this.y <= gameInfo.canvasHeight - 5 * this.width) {
+                if (
+                        this.dropping == undefined ||
+                        this.getY() <= gameInfo.canvasHeight - 5 * this.width
+                ) {
                         return;
                 }
 
                 if (!this.scoreX || !this.scoreY) {
                         this.scoreX =
-                                this.x <=
+                                this.getX() <=
                                 BALL_SIZE ?
                                 BALL_SIZE :
-                                this.x >=
+                                this.getX() >=
                                 gameInfo.canvasWidth - BALL_SIZE ?
                                 gameInfo.canvasWidth - BALL_SIZE :
-                                this.x;
-                        this.scoreY = this.y;
+                                this.getX();
+                        this.scoreY = this.getY();
                 }
 
                 if (this.acc >= Math.PI / 2) {
                         this.acc = Math.PI / 2;
                         this.dropping = false;
+
+                        gameInfo.removeBall(this);
                         gameInfo.score += gameInfo.getEachWorth();
                 }
 
@@ -121,14 +131,14 @@ export default class Ball extends Sprite {
         }
 
         initDropping(shooter) {
-                gameInfo.holes.push(new Hole(this.x, this.y, this.layer));
+                this.hole = null;
 
                 this.dropping = true;
 
                 // angle between the horizontal and velocity
                 let va = Math.atan2(shooter.speedY, shooter.speedX);
                 // angle between the horizontal and the joint line from the ball to shooter
-                let ha = Math.atan2(this.y - shooter.y, this.x - shooter.x);
+                let ha = Math.atan2(this.getY() - shooter.y, this.getX() - shooter.x);
                 // difference between two angles
                 let da = va - ha;
 
@@ -138,24 +148,24 @@ export default class Ball extends Sprite {
                 this.speedY = theSpeed * Math.sin(ha);
         }
 
+        //draw a circle shape instead of image. Not display well on the phone
+        /*
+	render(ctx) {
+                if (!this.visible) {
+                        return
+                }
 
+                ctx.beginPath()
+                ctx.fillStyle = this.colour
+                ctx.arc(this.getX(), this.getY(), this.width / 2, 0, 2 * Math.PI)
+                ctx.fill()
+                ctx.closePath()
 
-        // draw a circle shape instead of image. Not display well on the phone
-        // render(ctx) {
-        //         if (!this.visible) {
-        //                 return
-        //         }
-
-        //         ctx.beginPath()
-        //         ctx.fillStyle = this.colour
-        //         ctx.arc(this.x, this.y, this.width / 2, 0, 2 * Math.PI)
-        //         ctx.fill()
-        //         ctx.closePath()
-
-        //         ctx.beginPath()
-        //         ctx.fillStyle = 'rgba(255, 255, 255, 0.5)'
-        //         ctx.arc(this.x - this.width / 6, this.y + this.width / 6, this.width / 6, 0, 2 * Math.PI)
-        //         ctx.fill()
-        //         ctx.closePath()
-        // }
+                ctx.beginPath()
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.5)'
+                ctx.arc(this.getX() - this.width / 6, this.getY() + this.width / 6, this.width / 6, 0, 2 * Math.PI)
+                ctx.fill()
+                ctx.closePath()
+        }
+	*/
 }

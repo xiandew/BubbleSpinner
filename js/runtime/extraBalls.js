@@ -21,45 +21,42 @@ export default class ExtraBalls {
                 this.generated = true;
 
                 let num = 2 + Math.round(Math.random() * 6);
-                let coords = [];
+                let starts = [];
                 for (let i = 0, angle, x, y; i < num; i++) {
                         angle = Math.random() * Math.PI * 2;
                         x = Math.cos(angle) * gameInfo.canvasHeight;
                         y = Math.sin(angle) * gameInfo.canvasHeight;
 
-                        if (x < -BALL_SIZE) {
-                                x = -BALL_SIZE;
-                        } else if (x > gameInfo.canvasWidth + BALL_SIZE) {
-                                x = gameInfo.canvasWidth + BALL_SIZE;
-                        }
+                        x = x < -BALL_SIZE ?
+                                -BALL_SIZE : x >
+                                gameInfo.canvasWidth + BALL_SIZE ?
+                                gameInfo.canvasWidth + BALL_SIZE : true;
+                        y = y < -BALL_SIZE ?
+                                -BALL_SIZE : y >
+                                gameInfo.canvasHeight + BALL_SIZE ?
+                                gameInfo.canvasHeight + BALL_SIZE : true;
 
-                        if (y < -BALL_SIZE) {
-                                y = -BALL_SIZE;
-                        } else if (y > gameInfo.canvasHeight + BALL_SIZE) {
-                                y = gameInfo.canvasHeight + BALL_SIZE;
-                        }
-                        coords.push({
-                                x: x,
-                                y: y
-                        });
+                        starts.push([x, y]);
                 }
 
                 this.balls = [];
-                coords.forEach(coord => {
-                        this.balls.push(new Ball(coord, randomBall()));
+                starts.forEach(coord => {
+                        let ball = gameInfo.pool.getItemByClass('ball', Ball);
+                        ball.img.src = randomBall();
+                        ball.setX(coord[0]);
+                        ball.setY(coord[1]);
+                        this.balls.push(ball);
                 });
 
                 // find optimal destinations
                 let arr = [];
-                gameInfo.holes.map(ball => {
-                        if (ball instanceof Ball) {
-                                arr.push({
-                                        k: Math.sqrt(
-                                                (ball.x - gameInfo.pivot.x) ** 2 +
-                                                (ball.y - gameInfo.pivot.y) ** 2),
-                                        v: ball
-                                });
-                        }
+                gameInfo.balls.map(ball => {
+                        arr.push({
+                                k: Math.sqrt(
+                                        (ball.getX() - gameInfo.pivot.getX()) ** 2 +
+                                        (ball.getY() - gameInfo.pivot.getY()) ** 2),
+                                v: ball
+                        });
                 });
                 arr.sort((b1, b2) => {
                         return b2.k - b1.k;
@@ -87,14 +84,14 @@ export default class ExtraBalls {
                         if (!ball.speedX || !ball.speedY) {
                                 let dest = this.dests[Math.floor(Math.random() * this.dests.length)];
                                 angle = Math.atan2(
-                                        dest.y - ball.y,
-                                        dest.x - ball.x
+                                        dest.y - ball.getY(),
+                                        dest.x - ball.getX()
                                 );
                                 ball.speedX = LINEAR_SPEED * Math.cos(angle);
                                 ball.speedY = LINEAR_SPEED * Math.sin(angle);
                         }
-                        ball.x += ball.speedX;
-                        ball.y += ball.speedY;
+                        ball.setX(ball.getX() + ball.speedX);
+                        ball.setY(ball.getY() + ball.speedY);
 
                         if (isCollideSpiral(ball)) {
                                 spiral.onCollision(ball);
