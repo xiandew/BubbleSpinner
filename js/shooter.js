@@ -48,7 +48,7 @@ export default class Shooter extends Sprite {
                 // for animation
                 this.acc = 0;
 
-                this.width = this.height = NEXT_SHOOTER_SIZE;
+                this.size = NEXT_SHOOTER_SIZE;
 
                 this.x = gameInfo.canvasWidth / 2;
                 this.y = NEXT_SHOOTER_Y;
@@ -115,7 +115,7 @@ export default class Shooter extends Sprite {
 
                 delta = Math.sin(this.acc) * BALL_SIZE * 0.5;
                 this.y = NEXT_SHOOTER_Y - delta;
-                this.width = this.height = NEXT_SHOOTER_SIZE + delta;
+                this.size = NEXT_SHOOTER_SIZE + delta;
                 this.display();
 
                 this.acc += 0.05;
@@ -156,15 +156,17 @@ export default class Shooter extends Sprite {
                 // when changing both speedX and speedY.
                 let bounced = false;
 
-                if (this.speedX > 0 && (this.x + this.width / 2) >= gameInfo.canvasWidth ||
-                        this.speedX < 0 && (this.x - this.width / 2) <= 0) {
-
+                if (
+                        this.speedX > 0 && (this.x + this.size / 2) >= gameInfo.canvasWidth ||
+                        this.speedX < 0 && (this.x - this.size / 2) <= 0
+                ) {
                         !bounced ? (this.bounces++, bounced = true) : true;
                         this.speedX *= (-1);
                 }
-                if (this.speedY > 0 && this.y >= BOTTOM_BOUND ||
-                        this.speedY < 0 && (this.y - this.height / 2) <= 0) {
-
+                if (
+                        this.speedY > 0 && this.y >= BOTTOM_BOUND ||
+                        this.speedY < 0 && (this.y - this.size / 2) <= 0
+                ) {
                         !bounced ? (this.bounces++, bounced = true) : true;
                         this.speedY *= (-1);
 
@@ -194,9 +196,10 @@ export default class Shooter extends Sprite {
 
                 if (this.dropping) {
                         // 0.588235.. is the asymptotic value of the y speed by experimenting
-                        if (Math.abs(this.x - gameInfo.canvasWidth / 2) < 1 &&
-                                Math.abs(0.5883 - this.speedY) < 0.0001) {
-
+                        if (
+                                Math.abs(this.x - gameInfo.canvasWidth / 2) < 1 &&
+                                Math.abs(0.5883 - this.speedY) < 0.0001
+                        ) {
                                 this.x = gameInfo.canvasWidth / 2;
                                 this.y = BOTTOM_BOUND;
 
@@ -243,5 +246,4 @@ export default class Shooter extends Sprite {
                 ctx.stroke();
                 ctx.closePath();
         }
-
 }

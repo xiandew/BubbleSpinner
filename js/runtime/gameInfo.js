@@ -81,7 +81,8 @@ export default class GameInfo {
         }
 
         renewLives() {
-                this.lives = Math.ceil(Math.random() * MAX_NUM_LIVES);
+                //this.lives = Math.ceil(Math.random() * MAX_NUM_LIVES);
+		this.lives = 100;
                 this.loseLive = false;
         }
 

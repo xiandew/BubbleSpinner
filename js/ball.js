@@ -61,10 +61,10 @@ export default class Ball extends Sprite {
                 );
 
                 if (
-                        (this.getX() + this.width / 2) >= gameInfo.canvasWidth ||
-                        (this.getY() + this.height / 2) >= gameInfo.canvasHeight ||
-                        (this.getX() - this.width / 2) <= 0 ||
-                        (this.getY() - this.height / 2) <= 0
+                        (this.getX() + this.size / 2) >= gameInfo.canvasWidth ||
+                        (this.getY() + this.size / 2) >= gameInfo.canvasHeight ||
+                        (this.getX() - this.size / 2) <= 0 ||
+                        (this.getY() - this.size / 2) <= 0
                 ) {
                         return true;
                 }
@@ -72,7 +72,6 @@ export default class Ball extends Sprite {
 
         render() {
                 if (this.dropping) {
-
                         this.speedX *= 0.998;
                         this.speedY += 0.98;
 
@@ -86,7 +85,7 @@ export default class Ball extends Sprite {
         renderScore() {
                 if (
                         this.dropping == undefined ||
-                        this.getY() <= gameInfo.canvasHeight - 5 * this.width
+                        this.getY() <= gameInfo.canvasHeight - 5 * this.size
                 ) {
                         return;
                 }
@@ -131,7 +130,11 @@ export default class Ball extends Sprite {
         }
 
         initDropping(shooter) {
+                this.hole.filled = false;
+                let hole = this.hole;
                 this.hole = null;
+                this.setX(hole.x);
+                this.setY(hole.y);
 
                 this.dropping = true;
 
@@ -151,19 +154,15 @@ export default class Ball extends Sprite {
         //draw a circle shape instead of image. Not display well on the phone
         /*
 	render(ctx) {
-                if (!this.visible) {
-                        return
-                }
-
-                ctx.beginPath()
+		ctx.beginPath()
                 ctx.fillStyle = this.colour
-                ctx.arc(this.getX(), this.getY(), this.width / 2, 0, 2 * Math.PI)
+                ctx.arc(this.getX(), this.getY(), this.size / 2, 0, 2 * Math.PI)
                 ctx.fill()
                 ctx.closePath()
 
                 ctx.beginPath()
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.5)'
-                ctx.arc(this.getX() - this.width / 6, this.getY() + this.width / 6, this.width / 6, 0, 2 * Math.PI)
+                ctx.arc(this.getX() - this.size / 6, this.getY() + this.size / 6, this.size / 6, 0, 2 * Math.PI)
                 ctx.fill()
                 ctx.closePath()
         }

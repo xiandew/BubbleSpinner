@@ -296,10 +296,8 @@ function visitAttachedBalls(target) {
 
 // Ensure every visible balls are not visited
 function revertVisited() {
-        gameInfo.holes.forEach(ball => {
-                if (ball instanceof Ball) {
-                        ball.visited = false;
-                }
+        gameInfo.balls.forEach(ball => {
+                ball.visited = false;
         });
 }
 
