@@ -33,13 +33,13 @@ let newImage = require('./utilities/newImage');
 export default class Ball extends Sprite {
         constructor() {
                 super();
-                this.visited = false;
-                this.acc = 0;
         }
 
         init(hole = {}, ballSrc = false) {
                 this.img.src = !ballSrc ? optimalBall() : ballSrc;
                 this.hole = hole;
+                this.acc = 0;
+                this.visited = false;
                 this.visible = true;
         }
 
@@ -103,13 +103,6 @@ export default class Ball extends Sprite {
                         this.scoreY = this.getY();
                 }
 
-                if (this.acc >= Math.PI / 2) {
-                        this.acc = Math.PI / 2;
-
-                        gameInfo.removeBall(this);
-                        gameInfo.score += gameInfo.getEachWorth();
-                }
-
                 ctx.save();
                 ctx.globalAlpha = 1 - Math.sin(this.acc);
                 if (fontLoaded) {
@@ -123,6 +116,13 @@ export default class Ball extends Sprite {
                         );
                 }
                 ctx.restore();
+
+                if (this.acc >= Math.PI / 2) {
+                        this.acc = Math.PI / 2;
+
+                        gameInfo.removeBall(this);
+                        gameInfo.score += gameInfo.getEachWorth();
+                }
 
                 if (this.dropping) {
                         this.acc += 0.035;

@@ -91,15 +91,18 @@ export default class GameInfo {
          * 此后不进入帧循环
          */
         removeBall(ball) {
-                // remove
+                // remove the ball
                 let i = this.balls.indexOf(ball);
                 [this.balls[0], this.balls[i]] = [this.balls[i], this.balls[0]];
-
                 let temp = this.balls.shift();
                 temp.visible = false;
-		temp.dropping = undefined;
 
-                // recycle
+                // clean up the removed ball
+                temp.dropping = undefined;
+                temp.visited = false;
+                temp.acc = 0;
+
+                // recycle the ball
                 this.pool.recover('ball', ball);
         }
 }

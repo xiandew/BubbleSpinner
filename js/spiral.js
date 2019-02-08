@@ -321,8 +321,10 @@ function countDroppingBalls() {
 }
 
 function newBall(hole = {}, ballSrc = false) {
-        let ball = gameInfo.pool.getItemByClass('ball', Ball);
         hole.filled = true;
+
+        let ball = gameInfo.pool.getItemByClass('ball', Ball);
         ball.init(hole, ballSrc);
+
         return ball;
 }
