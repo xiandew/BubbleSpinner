@@ -100,8 +100,10 @@ export default class ExtraBalls {
                                 continue;
                         }
 
-                        if (ball.x < -BALL_SIZE || ball.x >= gameInfo.canvasWidth + BALL_SIZE ||
-                                ball.y < -BALL_SIZE || ball.y >= gameInfo.canvasHeight + BALL_SIZE) {
+                        if (
+                                ball.x < -BALL_SIZE || ball.x >= gameInfo.canvasWidth + BALL_SIZE ||
+                                ball.y < -BALL_SIZE || ball.y >= gameInfo.canvasHeight + BALL_SIZE
+                        ) {
                                 this.balls.splice(i, 1);
                         }
                 }
