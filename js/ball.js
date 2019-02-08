@@ -43,34 +43,6 @@ export default class Ball extends Sprite {
                 this.visible = true;
         }
 
-        rotate(angle) {
-                if (this.dropping != undefined) {
-                        return;
-                }
-
-                let toCentY = this.getY() - gameInfo.canvasHeight / 2;
-                let toCentX = this.getX() - gameInfo.canvasWidth / 2;
-
-                let radius = Math.sqrt(toCentX ** 2 + toCentY ** 2);
-                this.setX(
-                        gameInfo.canvasWidth / 2 +
-                        Math.cos(Math.atan2(toCentY, toCentX) - angle) * radius
-                );
-                this.setX(
-                        gameInfo.canvasHeight / 2 +
-                        Math.sin(Math.atan2(toCentY, toCentX) - angle) * radius
-                );
-
-                if (
-                        (this.getX() + this.size / 2) >= gameInfo.canvasWidth ||
-                        (this.getY() + this.size / 2) >= gameInfo.canvasHeight ||
-                        (this.getX() - this.size / 2) <= 0 ||
-                        (this.getY() - this.size / 2) <= 0
-                ) {
-                        return true;
-                }
-        }
-
         render() {
                 if (this.dropping) {
                         this.speedX *= 0.998;

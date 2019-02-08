@@ -98,10 +98,6 @@ export default class Spiral {
         }
 
         render() {
-                // gameInfo.holes.forEach(hole => {
-                //         ctx.fillStyle = "#000000";
-                //         ctx.fillText(hole.layer, hole.x, hole.y);
-                // });
                 gameInfo.balls.forEach(ball => {
                         ball ? ball.render() : true;
                 });
@@ -122,6 +118,8 @@ export default class Spiral {
                         hole = gameInfo.holes[i];
                         if (!this.collideBorder) {
                                 this.collideBorder = hole.rotate(this.angleSpeed);
+                        } else {
+                                break;
                         }
                 }
         }
