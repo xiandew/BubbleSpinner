@@ -67,13 +67,6 @@ export default class Spiral {
 
                 let layers = gameInfo.getLayers();
 
-                // clear the spiral for optimising the distribution of the spiral
-                gameInfo.holes.forEach((hole, i) => {
-                        if (hole != gameInfo.pivot && hole instanceof Ball) {
-                                //gameInfo.holes.splice(i, 1, new Hole(hole.x, hole.y, hole.layer));
-                        }
-                });
-
                 gameInfo.holes.forEach((hole) => {
                         if (hole != gameInfo.pivot && hole.layer <= layers) {
                                 gameInfo.balls.push(newBall(hole));
@@ -86,7 +79,6 @@ export default class Spiral {
                         return;
                 }
 
-                //deleteOffScreenBalls();
                 if (countOnScreenBalls() == 0) {
                         this.toChange = true;
 
@@ -106,8 +98,12 @@ export default class Spiral {
         }
 
         render() {
+                // gameInfo.holes.forEach(hole => {
+                //         ctx.fillStyle = "#000000";
+                //         ctx.fillText(hole.layer, hole.x, hole.y);
+                // });
                 gameInfo.balls.forEach(ball => {
-                        ball.render();
+                        ball ? ball.render() : true;
                 });
         }
 
@@ -185,6 +181,8 @@ export default class Spiral {
                         if (Math.abs(this.angleSpeed) > 0.1) {
                                 this.angleSpeed = this.angleSpeed > 0 ? 0.1 : -0.1;
                         }
+                } else {
+                        this.rotating = false;
                 }
 
                 other.initShooter();
@@ -301,16 +299,6 @@ function revertVisited() {
         });
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-function deleteOffScreenBalls() {
-        for (let i = gameInfo.holes.length - 1, ball; i >= 0; i--) {
-                ball = gameInfo.holes[i];
-                if (ball instanceof Ball && ball.dropping == false) {
-                        gameInfo.holes.splice(i, 1);
-                }
-        }
-}
-
 function countOnScreenBalls() {
         let nballs = 0;
         gameInfo.balls.forEach(ball => {
@@ -333,8 +321,8 @@ function countDroppingBalls() {
 }
 
 function newBall(hole = {}, ballSrc = false) {
-        hole.filled = true;
         let ball = gameInfo.pool.getItemByClass('ball', Ball);
+        hole.filled = true;
         ball.init(hole, ballSrc);
         return ball;
 }

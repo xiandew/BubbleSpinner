@@ -45,6 +45,7 @@ export default class ExtraBalls {
                         ball.img.src = randomBall();
                         ball.setX(coord[0]);
                         ball.setY(coord[1]);
+                        ball.visible = true;
                         this.balls.push(ball);
                 });
 

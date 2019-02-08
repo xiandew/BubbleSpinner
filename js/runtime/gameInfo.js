@@ -82,7 +82,7 @@ export default class GameInfo {
 
         renewLives() {
                 //this.lives = Math.ceil(Math.random() * MAX_NUM_LIVES);
-		this.lives = 100;
+                this.lives = 100;
                 this.loseLive = false;
         }
 
@@ -97,6 +97,7 @@ export default class GameInfo {
 
                 let temp = this.balls.shift();
                 temp.visible = false;
+		temp.dropping = undefined;
 
                 // recycle
                 this.pool.recover('ball', ball);

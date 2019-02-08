@@ -40,6 +40,7 @@ export default class Ball extends Sprite {
         init(hole = {}, ballSrc = false) {
                 this.img.src = !ballSrc ? optimalBall() : ballSrc;
                 this.hole = hole;
+                this.visible = true;
         }
 
         rotate(angle) {
@@ -104,7 +105,6 @@ export default class Ball extends Sprite {
 
                 if (this.acc >= Math.PI / 2) {
                         this.acc = Math.PI / 2;
-                        this.dropping = false;
 
                         gameInfo.removeBall(this);
                         gameInfo.score += gameInfo.getEachWorth();
@@ -151,7 +151,7 @@ export default class Ball extends Sprite {
                 this.speedY = theSpeed * Math.sin(ha);
         }
 
-        //draw a circle shape instead of image. Not display well on the phone
+        // draw a circle shape instead of image. Not display well on the phone
         /*
 	render(ctx) {
 		ctx.beginPath()

@@ -1,6 +1,5 @@
 import GameInfo from '../runtime/gameInfo';
 import Ball from '../ball';
-import Pivot from "../pivot";
 
 let gameInfo = new GameInfo();
 let thisBall, prevBall;
@@ -14,8 +13,8 @@ module.exports = function() {
                 dict[ballSrc] = 0;
         });
 
-        gameInfo.holes.forEach(ball => {
-                if (ball instanceof Ball && !(ball instanceof Pivot)) {
+        gameInfo.balls.forEach(ball => {
+                if (ball != gameInfo.pivot) {
                         let ballSrc = ball.img.src;
                         dict[ballSrc.substring(ballSrc.lastIndexOf("images/"))]++;
                 }
