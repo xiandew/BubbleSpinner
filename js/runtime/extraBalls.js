@@ -30,11 +30,11 @@ export default class ExtraBalls {
                         x = x < -BALL_SIZE ?
                                 -BALL_SIZE : x >
                                 gameInfo.canvasWidth + BALL_SIZE ?
-                                gameInfo.canvasWidth + BALL_SIZE : true;
+                                gameInfo.canvasWidth + BALL_SIZE : x;
                         y = y < -BALL_SIZE ?
                                 -BALL_SIZE : y >
                                 gameInfo.canvasHeight + BALL_SIZE ?
-                                gameInfo.canvasHeight + BALL_SIZE : true;
+                                gameInfo.canvasHeight + BALL_SIZE : y;
 
                         starts.push([x, y]);
                 }
@@ -51,7 +51,7 @@ export default class ExtraBalls {
 
                 // find optimal destinations
                 let arr = [];
-                gameInfo.balls.map(ball => {
+                gameInfo.balls.forEach(ball => {
                         arr.push({
                                 k: Math.sqrt(
                                         (ball.getX() - gameInfo.pivot.getX()) ** 2 +
@@ -85,8 +85,8 @@ export default class ExtraBalls {
                         if (!ball.speedX || !ball.speedY) {
                                 let dest = this.dests[Math.floor(Math.random() * this.dests.length)];
                                 angle = Math.atan2(
-                                        dest.y - ball.getY(),
-                                        dest.x - ball.getX()
+                                        dest.getY() - ball.getY(),
+                                        dest.getX() - ball.getX()
                                 );
                                 ball.speedX = LINEAR_SPEED * Math.cos(angle);
                                 ball.speedY = LINEAR_SPEED * Math.sin(angle);

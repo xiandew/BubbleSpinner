@@ -81,8 +81,7 @@ export default class GameInfo {
         }
 
         renewLives() {
-                //this.lives = Math.ceil(Math.random() * MAX_NUM_LIVES);
-                this.lives = 100;
+                this.lives = Math.ceil(Math.random() * MAX_NUM_LIVES);
                 this.loseLive = false;
         }
 
@@ -99,6 +98,10 @@ export default class GameInfo {
 
                 // clean up the removed ball
                 temp.dropping = undefined;
+                temp.scoreX = undefined;
+                temp.scoreY = undefined;
+                temp.speedX = undefined;
+                temp.speedY = undefined;
                 temp.visited = false;
                 temp.acc = 0;
 
