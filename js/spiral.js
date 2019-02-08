@@ -65,9 +65,17 @@ export default class Spiral {
                 this.rotating = false;
                 this.collideBorder = false;
 
-                let layers = gameInfo.getLayers();
+                for (let i = gameInfo.balls.length - 1, ball; i >= 0; i--) {
+                        if (gameInfo.balls[i]) {
+                                ball = gameInfo.balls[i];
+                                if (ball != gameInfo.pivot) {
+                                        gameInfo.removeBall(ball);
+                                }
+                        }
+                }
 
-                gameInfo.holes.forEach((hole) => {
+                let layers = gameInfo.getLayers();
+                gameInfo.holes.forEach(hole => {
                         if (hole != gameInfo.pivot && hole.layer <= layers) {
                                 gameInfo.balls.push(newBall(hole));
                         }
@@ -98,10 +106,6 @@ export default class Spiral {
         }
 
         render() {
-                // gameInfo.holes.forEach(hole => {
-                //         ctx.fillStyle = "#000000";
-                //         ctx.fillText(hole.layer, hole.x, hole.y);
-                // });
                 gameInfo.balls.forEach(ball => {
                         ball ? ball.render() : true;
                 });
@@ -122,6 +126,8 @@ export default class Spiral {
                         hole = gameInfo.holes[i];
                         if (!this.collideBorder) {
                                 this.collideBorder = hole.rotate(this.angleSpeed);
+                        } else {
+                                break;
                         }
                 }
         }

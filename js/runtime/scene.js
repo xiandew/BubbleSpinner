@@ -76,15 +76,12 @@ export default class Scene {
 
                 animeAngle += 0.01;
                 ctx.save();
-		ctx.translate(
-			gameInfo.canvasWidth / 2,
-			gameInfo.canvasHeight / 2
-		);
-                ctx.rotate(animeAngle);
                 ctx.translate(
-			-gameInfo.canvasWidth / 2,
-			-gameInfo.canvasHeight / 2
-		);
+                        gameInfo.canvasWidth / 2,
+                        gameInfo.canvasHeight / 2
+                );
+                ctx.rotate(animeAngle);
+                ctx.translate(-gameInfo.canvasWidth / 2, -gameInfo.canvasHeight / 2);
                 spiral.render();
                 ctx.restore();
 
@@ -129,23 +126,23 @@ export default class Scene {
         }
 
         static renderRankList() {
-		ctx.drawImage(
-			gameInfo.sharedCanvas,
-			0,
-			0,
-			gameInfo.canvasWidth,
-			gameInfo.canvasHeight
-		);
+                ctx.drawImage(
+                        gameInfo.sharedCanvas,
+                        0,
+                        0,
+                        gameInfo.canvasWidth,
+                        gameInfo.canvasHeight
+                );
         }
 
         static renderGameOver() {
-		ctx.drawImage(
-			gameInfo.sharedCanvas,
-			0,
-			0,
-			gameInfo.canvasWidth,
-			gameInfo.canvasHeight
-		);
+                ctx.drawImage(
+                        gameInfo.sharedCanvas,
+                        0,
+                        0,
+                        gameInfo.canvasWidth,
+                        gameInfo.canvasHeight
+                );
         }
 
         static renderGameScore() {
