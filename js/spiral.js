@@ -7,6 +7,8 @@ import Hole from './hole';
 import Ball from './ball';
 import Shooter from './shooter';
 
+let rotate = require('./utilities/rotate');
+
 let gameInfo = new GameInfo();
 let ctx = canvas.getContext('2d');
 
@@ -125,7 +127,7 @@ export default class Spiral {
                 for (let i = 0, hole; i < gameInfo.holes.length; i++) {
                         hole = gameInfo.holes[i];
                         if (!this.collideBorder) {
-                                this.collideBorder = hole.rotate(this.angleSpeed);
+                                this.collideBorder = rotate(hole, this.angleSpeed);
                         } else {
                                 break;
                         }
