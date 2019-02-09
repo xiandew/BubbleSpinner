@@ -8,6 +8,7 @@ import Ball from './ball';
 import Shooter from './shooter';
 
 let rotate = require('./utilities/rotate');
+let initDropping = require('./utilities/initDropping');
 
 let gameInfo = new GameInfo();
 let ctx = canvas.getContext('2d');
@@ -229,7 +230,7 @@ export default class Spiral {
 
                 if (this.sameBalls.length >= 3) {
                         this.sameBalls.forEach(ball => {
-                                ball.initDropping(this.shooter);
+                                initDropping(ball, this.shooter);
                         });
                 } else {
                         gameInfo.loseLive = true;
@@ -262,7 +263,7 @@ export default class Spiral {
                                 ball.visited != true &&
                                 ball.dropping == undefined
                         ) {
-                                ball.initDropping(this.shooter);
+                                initDropping(ball, this.shooter);
                         }
                 });
 
