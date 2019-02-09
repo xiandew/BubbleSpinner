@@ -3,7 +3,7 @@ import GameInfo, {
 } from '../runtime/gameInfo';
 let gameInfo = new GameInfo();
 
-module.exports = function rotate(hole, angle) {
+module.exports = function(hole, angle) {
         let toCentY = hole.y - gameInfo.canvasHeight / 2;
         let toCentX = hole.x - gameInfo.canvasWidth / 2;
 
