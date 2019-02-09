@@ -8,6 +8,7 @@ module.exports = function(target) {
                 ball = gameInfo.balls[i];
                 if (
                         ball.visible &&
+                        ball.dropping == undefined &&
                         ball.isCollideWith(target)
                 ) {
                         return true;
