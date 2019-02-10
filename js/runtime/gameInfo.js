@@ -96,7 +96,10 @@ export default class GameInfo {
                 temp.visible = false;
 
                 // clean up the removed ball
-                temp.hole ? temp.hole.filled = false : true;
+                if (temp.hole) {
+                        temp.hole.filled = false;
+                        temp.hole = null;
+                }
                 temp.dropping = undefined;
                 temp.scoreX = undefined;
                 temp.scoreY = undefined;
