@@ -4,7 +4,6 @@ let instance;
 let ctx = canvas.getContext('2d');
 
 const MAX_NUM_LIVES = 5;
-
 const LAYERS = [2, 3, 4, 5, 6];
 
 export const BALLS_SRC = [
@@ -97,6 +96,10 @@ export default class GameInfo {
                 temp.visible = false;
 
                 // clean up the removed ball
+                if (temp.hole) {
+                        temp.hole.filled = false;
+                        temp.hole = null;
+                }
                 temp.dropping = undefined;
                 temp.scoreX = undefined;
                 temp.scoreY = undefined;

@@ -58,6 +58,7 @@ export default class Shooter extends Sprite {
                         this.nextShooterSrc :
                         randomBall();
                 this.nextShooterSrc = randomBall();
+                nextShooterImg = newImage(this.nextShooterSrc);
         }
 
         addEvents() {
@@ -135,7 +136,6 @@ export default class Shooter extends Sprite {
                                 this.renderArrow();
                         }
                 } else {
-                        nextShooterImg = newImage(this.nextShooterSrc);
                         nextShooterSize = NEXT_SHOOTER_SIZE * Math.sin(this.acc);
                         ctx.drawImage(
                                 nextShooterImg,

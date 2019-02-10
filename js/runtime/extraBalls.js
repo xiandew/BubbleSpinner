@@ -52,12 +52,14 @@ export default class ExtraBalls {
                 // find optimal destinations
                 let arr = [];
                 gameInfo.balls.forEach(ball => {
-                        arr.push({
-                                k: Math.sqrt(
-                                        (ball.getX() - gameInfo.pivot.getX()) ** 2 +
-                                        (ball.getY() - gameInfo.pivot.getY()) ** 2),
-                                v: ball
-                        });
+                        if (ball.dropping == undefined) {
+                                arr.push({
+                                        k: Math.sqrt(
+                                                (ball.getX() - gameInfo.pivot.getX()) ** 2 +
+                                                (ball.getY() - gameInfo.pivot.getY()) ** 2),
+                                        v: ball
+                                });
+                        }
                 });
                 arr.sort((b1, b2) => {
                         return b2.k - b1.k;

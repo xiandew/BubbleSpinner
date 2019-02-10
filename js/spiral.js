@@ -7,9 +7,6 @@ import Hole from './hole';
 import Ball from './ball';
 import Shooter from './shooter';
 
-let rotate = require('./utilities/rotate');
-let initDropping = require('./utilities/initDropping');
-
 let gameInfo = new GameInfo();
 let ctx = canvas.getContext('2d');
 
@@ -40,7 +37,9 @@ export default class Spiral {
                 gameInfo.balls.push(gameInfo.pivot);
 
                 // all holes of the spiral
-                let maxLayers = Math.floor(Math.max(gameInfo.canvasWidth, gameInfo.canvasHeight / 2) / BALL_SIZE);
+                let maxLayers = Math.floor(
+                        Math.max(gameInfo.canvasWidth, gameInfo.canvasHeight / 2) / BALL_SIZE
+                );
                 for (let layer = 1; layer <= maxLayers; layer++) {
                         for (let diagonal = 0; diagonal < 6; diagonal++) {
                                 // draw a ball on the diagonal of the hexagon
@@ -128,9 +127,8 @@ export default class Spiral {
                 for (let i = 0, hole; i < gameInfo.holes.length; i++) {
                         hole = gameInfo.holes[i];
                         if (!this.collideBorder) {
-                                this.collideBorder = rotate(hole, this.angleSpeed);
-                        } else {
-                                break;
+                                this.collideBorder =
+                                        Hole.rotate(hole, this.angleSpeed);
                         }
                 }
         }
@@ -230,7 +228,7 @@ export default class Spiral {
 
                 if (this.sameBalls.length >= 3) {
                         this.sameBalls.forEach(ball => {
-                                initDropping(ball, this.shooter);
+                                Ball.initDropping(ball, this.shooter);
                         });
                 } else {
                         gameInfo.loseLive = true;
@@ -263,7 +261,7 @@ export default class Spiral {
                                 ball.visited != true &&
                                 ball.dropping == undefined
                         ) {
-                                initDropping(ball, this.shooter);
+                                Ball.initDropping(ball, this.shooter);
                         }
                 });
 
