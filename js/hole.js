@@ -3,6 +3,13 @@ import GameInfo, {
 } from './runtime/gameInfo';
 let gameInfo = new GameInfo();
 
+let centY = gameInfo.canvasHeight / 2;
+let centX = gameInfo.canvasWidth / 2;
+let toCentY;
+let toCentX;
+let radius;
+let rotatingAngle;
+
 export default class Hole {
         constructor(x = 0, y = 0, layer = 0) {
                 this.x = x;
@@ -12,16 +19,13 @@ export default class Hole {
         }
 
         static rotate(hole, angle) {
-                let toCentY = hole.y - gameInfo.canvasHeight / 2;
-                let toCentX = hole.x - gameInfo.canvasWidth / 2;
+                toCentY = hole.y - centY;
+                toCentX = hole.x - centX;
+                radius = Math.sqrt(toCentX ** 2 + toCentY ** 2);
+                rotatingAngle = Math.atan2(toCentY, toCentX) - angle;
 
-                let radius = Math.sqrt(toCentX ** 2 + toCentY ** 2);
-                hole.x =
-                        gameInfo.canvasWidth / 2 +
-                        Math.cos(Math.atan2(toCentY, toCentX) - angle) * radius;
-                hole.y =
-                        gameInfo.canvasHeight / 2 +
-                        Math.sin(Math.atan2(toCentY, toCentX) - angle) * radius;
+                hole.x = centX + Math.cos(rotatingAngle) * radius;
+                hole.y = centY + Math.sin(rotatingAngle) * radius;
 
                 if (
                         hole.filled &&
