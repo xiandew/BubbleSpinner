@@ -40,7 +40,9 @@ export default class Spiral {
                 gameInfo.balls.push(gameInfo.pivot);
 
                 // all holes of the spiral
-                let maxLayers = Math.floor(Math.max(gameInfo.canvasWidth, gameInfo.canvasHeight / 2) / BALL_SIZE);
+                let maxLayers = Math.floor(
+                        Math.max(gameInfo.canvasWidth, gameInfo.canvasHeight / 2) / BALL_SIZE
+                );
                 for (let layer = 1; layer <= maxLayers; layer++) {
                         for (let diagonal = 0; diagonal < 6; diagonal++) {
                                 // draw a ball on the diagonal of the hexagon
