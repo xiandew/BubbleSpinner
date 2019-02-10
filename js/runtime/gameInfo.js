@@ -4,7 +4,6 @@ let instance;
 let ctx = canvas.getContext('2d');
 
 const MAX_NUM_LIVES = 5;
-
 const LAYERS = [2, 3, 4, 5, 6];
 
 export const BALLS_SRC = [
