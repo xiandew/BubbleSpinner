@@ -7,9 +7,6 @@ import Hole from './hole';
 import Ball from './ball';
 import Shooter from './shooter';
 
-let rotate = require('./utilities/rotate');
-let initDropping = require('./utilities/initDropping');
-
 let gameInfo = new GameInfo();
 let ctx = canvas.getContext('2d');
 
@@ -130,7 +127,7 @@ export default class Spiral {
                 for (let i = 0, hole; i < gameInfo.holes.length; i++) {
                         hole = gameInfo.holes[i];
                         if (!this.collideBorder) {
-                                this.collideBorder = rotate(hole, this.angleSpeed);
+                                this.collideBorder = Hole.rotate(hole, this.angleSpeed);
                         } else {
                                 break;
                         }
@@ -232,7 +229,7 @@ export default class Spiral {
 
                 if (this.sameBalls.length >= 3) {
                         this.sameBalls.forEach(ball => {
-                                initDropping(ball, this.shooter);
+                                Ball.initDropping(ball, this.shooter);
                         });
                 } else {
                         gameInfo.loseLive = true;
@@ -265,7 +262,7 @@ export default class Spiral {
                                 ball.visited != true &&
                                 ball.dropping == undefined
                         ) {
-                                initDropping(ball, this.shooter);
+                                Ball.initDropping(ball, this.shooter);
                         }
                 });
 
