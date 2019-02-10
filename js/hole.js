@@ -23,7 +23,6 @@ export default class Hole {
                         gameInfo.canvasHeight / 2 +
                         Math.sin(Math.atan2(toCentY, toCentX) - angle) * radius;
 
-
                 if (
                         hole.filled &&
                         (

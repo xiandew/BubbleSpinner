@@ -106,6 +106,7 @@ export default class Ball extends Sprite {
 
         static initDropping(ball, shooter) {
                 ball.hole.filled = false;
+
                 let hole = ball.hole;
                 ball.hole = null;
                 ball.setX(hole.x);
