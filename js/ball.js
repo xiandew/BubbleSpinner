@@ -65,8 +65,10 @@ export default class Ball extends Sprite {
                 ) {
                         return;
                 }
-
-                if (ball.dropping && ball.getY() > gameInfo.canvasHeight + BALL_SIZE) {
+                if (
+                        ball.dropping &&
+                        ball.getY() >= gameInfo.canvasHeight + BALL_SIZE
+                ) {
                         ball.dropping = false;
                 }
 
