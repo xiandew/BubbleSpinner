@@ -66,6 +66,10 @@ export default class Ball extends Sprite {
                         return;
                 }
 
+                if (ball.dropping && ball.getY() > gameInfo.canvasHeight + BALL_SIZE) {
+                        ball.dropping = false;
+                }
+
                 if (!ball.scoreX || !ball.scoreY) {
                         ball.scoreX =
                                 ball.getX() <=
@@ -99,20 +103,19 @@ export default class Ball extends Sprite {
                         gameInfo.score += gameInfo.getEachWorth();
                 }
 
-                if (ball.dropping) {
+                if (ball.dropping != undefined) {
                         ball.acc += 0.035;
                 }
         }
 
         static initDropping(ball, shooter) {
+                ball.dropping = true;
                 ball.hole.filled = false;
 
                 let hole = ball.hole;
                 ball.hole = null;
                 ball.setX(hole.x);
                 ball.setY(hole.y);
-
-                ball.dropping = true;
 
                 // angle between the horizontal and velocity
                 let va = Math.atan2(shooter.speedY, shooter.speedX);

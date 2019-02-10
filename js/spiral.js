@@ -127,9 +127,8 @@ export default class Spiral {
                 for (let i = 0, hole; i < gameInfo.holes.length; i++) {
                         hole = gameInfo.holes[i];
                         if (!this.collideBorder) {
-                                this.collideBorder = Hole.rotate(hole, this.angleSpeed);
-                        } else {
-                                break;
+                                this.collideBorder =
+                                        Hole.rotate(hole, this.angleSpeed);
                         }
                 }
         }
