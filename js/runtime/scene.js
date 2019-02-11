@@ -55,14 +55,11 @@ RANK_LIST_ICON.area = btnArea(RANK_LIST_ICON, true);
 
 /*----------------------------------------------------------------------------*/
 
-let ctx = canvas.getContext('2d');
-ctx.imageSmoothingEnabled = false;
-
-let animeAngle = 0;
-let spiralFullSize = false;
-
 // an accumulator for show-up animation
 let acc = 0;
+let animeAngle = 0;
+let spiralFullSize = false;
+let ctx = canvas.getContext('2d');
 
 /*----------------------------------------------------------------------------*/
 

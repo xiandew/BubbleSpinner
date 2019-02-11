@@ -2,7 +2,6 @@ import Pool from './pool'
 
 let instance;
 let ctx = canvas.getContext('2d');
-ctx.imageSmoothingEnabled = false;
 
 /*----------------------------------------------------------------------------*/
 

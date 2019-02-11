@@ -2,10 +2,8 @@ import Ball from './ball';
 
 const PIVOT_SRC = 'images/pivot.png';
 
-let ctx = canvas.getContext('2d');
-ctx.imageSmoothingEnabled = false;
-
 let newImage = require('./utilities/newImage');
+let ctx = canvas.getContext('2d');
 
 export default class Pivot extends Ball {
         constructor(hole = {}) {

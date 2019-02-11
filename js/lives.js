@@ -4,7 +4,6 @@ import GameInfo, {
 let gameInfo = new GameInfo();
 let newImage = require("./utilities/newImage");
 let ctx = canvas.getContext('2d');
-ctx.imageSmoothingEnabled = false;
 
 const LIVES_IMG = newImage("images/b_gray.png");
 

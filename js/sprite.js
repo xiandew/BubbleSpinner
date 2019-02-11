@@ -3,9 +3,7 @@ import {
 } from './runtime/gameInfo';
 
 let newImage = require('./utilities/newImage');
-
 let ctx = canvas.getContext('2d');
-ctx.imageSmoothingEnabled = false;
 
 // Abstract class for the ball and the shooter
 export default class Sprite {
