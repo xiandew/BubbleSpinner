@@ -17,7 +17,7 @@ export const BALLS_SRC = [
 export const BALL_SIZE = 0.055 * canvas.width;
 
 // SHOOTER_SPEED = 12.8 when screenWidth = 320 and pixelRatio = 2;
-export const SHOOTER_SPEED = canvas.width * wx.getSystemInfoSync().pixelRatio * (3 / 150);
+export const SHOOTER_SPEED = canvas.width * wx.getSystemInfoSync().pixelRatio * 0.02;
 
 /*----------------------------------------------------------------------------*/
 
