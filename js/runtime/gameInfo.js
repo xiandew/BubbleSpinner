@@ -56,7 +56,7 @@ export default class GameInfo {
 
                 this.pool = new Pool();
 
-                this.outerLayer = 3;
+                this.outerLayer = LAYERS[1];
                 this.ballsSrc = shuffle(BALLS_SRC);
                 this.holes = [];
                 this.balls = [];
