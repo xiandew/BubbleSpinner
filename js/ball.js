@@ -39,7 +39,7 @@ export default class Ball extends Sprite {
         }
 
         init(hole = {}, ballSrc = false) {
-                this.img.src = !ballSrc ? optimalBall() : ballSrc;
+                this.imgSrc = !ballSrc ? optimalBall() : ballSrc;
                 this.hole = hole;
                 this.acc = 0;
                 this.visited = false;
@@ -61,7 +61,7 @@ export default class Ball extends Sprite {
         static renderPlusScore(ball) {
                 if (
                         ball.dropping == undefined ||
-                        ball.getY() <= gameInfo.canvasHeight - 5 * ball.size
+                        ball.getY() <= gameInfo.canvasHeight - 5 * BALL_SIZE
                 ) {
                         return;
                 }

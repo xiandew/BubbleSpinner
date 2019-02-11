@@ -11,6 +11,7 @@ let click = require('./utilities/click');
 
 let gameInfo = new GameInfo();
 let ctx = canvas.getContext('2d');
+ctx.fillStyle = "#ffffff";
 
 /*----------------------------------------------------------------------------*/
 
@@ -54,12 +55,14 @@ export default class Main {
                         }
                 }
 
-                gameInfo.levelup ? (this.restart(), gameInfo.levelup = false) : true;
+                if (gameInfo.levelup) {
+                        this.restart();
+                        gameInfo.levelup = false;
+                }
         }
 
         render() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = "#ffffff";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
                 if (!gameInfo.start) {
@@ -67,7 +70,6 @@ export default class Main {
                 }
 
                 if (gameInfo.start) {
-
                         Scene.renderGameScore();
 
                         this.shooter.render();

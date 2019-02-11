@@ -3,9 +3,14 @@ import Pool from './pool'
 let instance;
 let ctx = canvas.getContext('2d');
 
+/*----------------------------------------------------------------------------*/
+
 const MAX_NUM_LIVES = 5;
 const LAYERS = [2, 3, 4, 5, 6];
 
+/*----------------------------------------------------------------------------*/
+
+export const BALLS_CVS = {};
 export const BALLS_SRC = [
         'images/b_blue.png',
         'images/b_cyan.png',
@@ -14,10 +19,18 @@ export const BALLS_SRC = [
         'images/b_red.png',
         'images/b_yellow.png'
 ];
-export const BALL_SIZE = 0.055 * canvas.width;
+
+/*----------------------------------------------------------------------------*/
+
+export const PIXEL_RATIO = wx.getSystemInfoSync().pixelRatio;
+
+let newImage = require('../utilities/newImage');
+let scaledCanvasWidth = canvas.width * PIXEL_RATIO;
+let scaledCanvasHeight = canvas.height * PIXEL_RATIO;
 
 // SHOOTER_SPEED = 12.8 when screenWidth = 320 and pixelRatio = 2;
-export const SHOOTER_SPEED = canvas.width * wx.getSystemInfoSync().pixelRatio * (3 / 150);
+export const SHOOTER_SPEED = scaledCanvasWidth * 0.02;
+export const BALL_SIZE = Math.ceil(0.055 * canvas.width);
 
 /*----------------------------------------------------------------------------*/
 
@@ -28,26 +41,25 @@ export default class GameInfo {
                 }
                 instance = this;
 
-                this.pixelRatio = wx.getSystemInfoSync().pixelRatio;
+                this.pixelRatio = PIXEL_RATIO;
 
                 // onscreen canvas
                 this.canvasWidth = canvas.width;
                 this.canvasHeight = canvas.height;
-                canvas.width *= this.pixelRatio;
-                canvas.height *= this.pixelRatio;
-                ctx.scale(this.pixelRatio, this.pixelRatio);
+                canvas.width = scaledCanvasWidth;
+                canvas.height = scaledCanvasHeight;
+                ctx.scale(PIXEL_RATIO, PIXEL_RATIO);
 
                 // shared canvas
                 this.openDataContext = wx.getOpenDataContext();
                 this.sharedCanvas = this.openDataContext.canvas;
                 // resize the sharedCanvas for better display of text.
-                this.sharedCanvas.width = canvas.width * this.pixelRatio;
-                this.sharedCanvas.height = canvas.height * this.pixelRatio;
+                this.sharedCanvas.width = scaledCanvasWidth;
+                this.sharedCanvas.height = scaledCanvasHeight;
 
                 this.pool = new Pool();
 
-                this.outerLayer = 3;
-
+                this.outerLayer = LAYERS[1];
                 this.ballsSrc = shuffle(BALLS_SRC);
                 this.holes = [];
                 this.balls = [];
@@ -91,8 +103,7 @@ export default class GameInfo {
         removeBall(ball) {
                 // remove the ball
                 let i = this.balls.indexOf(ball);
-                [this.balls[0], this.balls[i]] = [this.balls[i], this.balls[0]];
-                let temp = this.balls.shift();
+                let temp = this.balls.splice(i, 1)[0];
                 temp.visible = false;
 
                 // clean up the removed ball

@@ -15,8 +15,7 @@ module.exports = function() {
 
         gameInfo.balls.forEach(ball => {
                 if (ball != gameInfo.pivot) {
-                        let ballSrc = ball.img.src;
-                        dict[ballSrc.substring(ballSrc.lastIndexOf("images/"))]++;
+                        dict[ball.imgSrc]++;
                 }
         });
 
@@ -27,7 +26,6 @@ module.exports = function() {
                         count: dict[key]
                 });
         }
-
         arr.sort((b1, b2) => {
                 return b1.count - b2.count;
         });
