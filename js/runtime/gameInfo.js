@@ -2,6 +2,7 @@ import Pool from './pool'
 
 let instance;
 let ctx = canvas.getContext('2d');
+ctx.imageSmoothingEnabled = false;
 
 /*----------------------------------------------------------------------------*/
 
@@ -10,24 +11,25 @@ const LAYERS = [2, 3, 4, 5, 6];
 
 /*----------------------------------------------------------------------------*/
 
+let newImage = require('../utilities/newImage');
 let pixelRatio = wx.getSystemInfoSync().pixelRatio;
 let scaledCanvasWidth = canvas.width * pixelRatio;
 let scaledCanvasHeight = canvas.height * pixelRatio;
 
 /*----------------------------------------------------------------------------*/
 
-export const BALLS_SRC = [
-        'images/b_blue.png',
-        'images/b_cyan.png',
-        'images/b_green.png',
-        'images/b_pink.png',
-        'images/b_red.png',
-        'images/b_yellow.png'
+export const BALLS_IMG = [
+        newImage('images/b_blue.png'),
+        newImage('images/b_cyan.png'),
+        newImage('images/b_green.png'),
+        newImage('images/b_pink.png'),
+        newImage('images/b_red.png'),
+        newImage('images/b_yellow.png')
 ];
 
 // SHOOTER_SPEED = 12.8 when screenWidth = 320 and pixelRatio = 2;
 export const SHOOTER_SPEED = scaledCanvasWidth * 0.02;
-export const BALL_SIZE = 0.055 * canvas.width;
+export const BALL_SIZE = Math.ceil(0.055 * canvas.width);
 
 /*----------------------------------------------------------------------------*/
 
@@ -57,7 +59,7 @@ export default class GameInfo {
                 this.pool = new Pool();
 
                 this.outerLayer = LAYERS[1];
-                this.ballsSrc = shuffle(BALLS_SRC);
+                this.ballsImg = shuffle(BALLS_IMG);
                 this.holes = [];
                 this.balls = [];
 
@@ -84,8 +86,8 @@ export default class GameInfo {
                 return this.level < LAYERS.length ? LAYERS[this.level] : LAYERS[LAYERS.length - 1];
         }
 
-        getBallsSrc() {
-                return this.ballsSrc.slice(0, this.getLayers() + 1);
+        getBallsImg() {
+                return this.ballsImg.slice(0, this.getLayers() + 1);
         }
 
         renewLives() {

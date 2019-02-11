@@ -2,8 +2,10 @@ import {
         BALL_SIZE
 } from './runtime/gameInfo';
 
-let ctx = canvas.getContext('2d');
 let newImage = require('./utilities/newImage');
+
+let ctx = canvas.getContext('2d');
+ctx.imageSmoothingEnabled = false;
 
 // Abstract class for the ball and the shooter
 export default class Sprite {

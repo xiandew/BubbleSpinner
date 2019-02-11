@@ -9,6 +9,7 @@ import Shooter from './shooter';
 
 let gameInfo = new GameInfo();
 let ctx = canvas.getContext('2d');
+ctx.imageSmoothingEnabled = false;
 
 /*----------------------------------------------------------------------------*/
 
@@ -218,7 +219,7 @@ export default class Spiral {
                 if ((closest.layer + 1) > gameInfo.outerLayer) {
                         gameInfo.outerLayer = closest.layer + 1;
                 }
-                this.target = newBall(closest, target.img.src);
+                this.target = newBall(closest, target.img);
                 gameInfo.balls.push(this.target);
         }
 
@@ -327,11 +328,11 @@ function countDroppingBalls() {
         return nballs;
 }
 
-function newBall(hole = {}, ballSrc = false) {
+function newBall(hole = {}, ballImg = false) {
         hole.filled = true;
 
         let ball = gameInfo.pool.getItemByClass('ball', Ball);
-        ball.init(hole, ballSrc);
+        ball.init(hole, ballImg);
 
         return ball;
 }

@@ -6,35 +6,33 @@ let thisBall, prevBall;
 
 // return a ball with the colour which is of the minimum number on the spiral
 module.exports = function() {
-        let balls = gameInfo.getBallsSrc();
+        let balls = gameInfo.getBallsImg();
 
         let dict = {};
-        balls.forEach(ballSrc => {
-                dict[ballSrc] = 0;
+        balls.forEach((ballImg, i) => {
+                dict[i] = 0;
         });
 
         gameInfo.balls.forEach(ball => {
                 if (ball != gameInfo.pivot) {
-                        let ballSrc = ball.img.src;
-                        dict[ballSrc.substring(ballSrc.lastIndexOf("images/"))]++;
+                        dict[balls.indexOf(ball.img)]++;
                 }
         });
 
         let arr = [];
         for (let key in dict) {
                 arr.push({
-                        src: key,
+                        i: key,
                         count: dict[key]
                 });
         }
-
         arr.sort((b1, b2) => {
                 return b1.count - b2.count;
         });
 
-        arr.length > 1 && prevBall ? arr.filter(ball => ball.src != prevBall) : true;
+        arr.length > 1 && prevBall ? arr.filter(ball => ball.i != prevBall) : true;
         arr = arr.filter(ball => ball.count == arr[0].count);
 
-        thisBall = prevBall = arr[Math.floor(Math.random() * arr.length)].src;
+        thisBall = prevBall = balls[arr[Math.floor(Math.random() * arr.length)].i];
         return thisBall;
 }

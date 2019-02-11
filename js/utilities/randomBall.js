@@ -3,7 +3,7 @@ let gameInfo = new GameInfo();
 
 let thisBall, prevBall;
 module.exports = function() {
-        let balls = gameInfo.getBallsSrc();
+        let balls = gameInfo.getBallsImg();
 
         prevBall ? balls.splice(balls.indexOf(prevBall), 1) : true;
         thisBall = prevBall = balls[Math.floor(Math.random() * balls.length)];

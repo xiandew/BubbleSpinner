@@ -7,6 +7,7 @@ import Hole from './hole';
 
 let gameInfo = new GameInfo();
 let ctx = canvas.getContext('2d');
+ctx.imageSmoothingEnabled = false;
 
 /*----------------------------------------------------------------------------*/
 
@@ -53,12 +54,11 @@ export default class Shooter extends Sprite {
                 this.x = gameInfo.canvasWidth / 2;
                 this.y = NEXT_SHOOTER_Y;
 
-                this.img.src =
-                        gameInfo.getBallsSrc().includes(this.nextShooterSrc) ?
-                        this.nextShooterSrc :
+                this.img =
+                        gameInfo.getBallsImg().includes(nextShooterImg) ?
+                        nextShooterImg :
                         randomBall();
-                this.nextShooterSrc = randomBall();
-                nextShooterImg = newImage(this.nextShooterSrc);
+                nextShooterImg = randomBall();
         }
 
         addEvents() {

@@ -56,6 +56,8 @@ RANK_LIST_ICON.area = btnArea(RANK_LIST_ICON, true);
 /*----------------------------------------------------------------------------*/
 
 let ctx = canvas.getContext('2d');
+ctx.imageSmoothingEnabled = false;
+
 let animeAngle = 0;
 let spiralFullSize = false;
 

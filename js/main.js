@@ -11,6 +11,7 @@ let click = require('./utilities/click');
 
 let gameInfo = new GameInfo();
 let ctx = canvas.getContext('2d');
+ctx.imageSmoothingEnabled = false;
 
 /*----------------------------------------------------------------------------*/
 

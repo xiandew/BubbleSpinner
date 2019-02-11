@@ -27,6 +27,7 @@ let newImage = require('./utilities/newImage');
 
 let gameInfo = new GameInfo();
 let ctx = canvas.getContext('2d');
+ctx.imageSmoothingEnabled = false;
 
 /*----------------------------------------------------------------------------*/
 
@@ -38,8 +39,8 @@ export default class Ball extends Sprite {
                 super();
         }
 
-        init(hole = {}, ballSrc = false) {
-                this.img.src = !ballSrc ? optimalBall() : ballSrc;
+        init(hole = {}, ballImg = false) {
+                this.img = !ballImg ? optimalBall() : ballImg;
                 this.hole = hole;
                 this.acc = 0;
                 this.visited = false;

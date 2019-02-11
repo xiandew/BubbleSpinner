@@ -3,11 +3,14 @@ import Ball from './ball';
 const PIVOT_SRC = 'images/pivot.png';
 
 let ctx = canvas.getContext('2d');
+ctx.imageSmoothingEnabled = false;
+
+let newImage = require('./utilities/newImage');
 
 export default class Pivot extends Ball {
         constructor(hole = {}) {
                 super();
-                this.init(hole, PIVOT_SRC);
+                this.init(hole, newImage(PIVOT_SRC));
 
                 this.width = this.size;
                 this.height = Math.sqrt((this.size / 2) ** 2 - (this.size / 4) ** 2) * 2;
