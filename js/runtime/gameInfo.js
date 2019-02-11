@@ -3,8 +3,18 @@ import Pool from './pool'
 let instance;
 let ctx = canvas.getContext('2d');
 
+/*----------------------------------------------------------------------------*/
+
 const MAX_NUM_LIVES = 5;
 const LAYERS = [2, 3, 4, 5, 6];
+
+/*----------------------------------------------------------------------------*/
+
+let pixelRatio = wx.getSystemInfoSync().pixelRatio;
+let scaledCanvasWidth = canvas.width * pixelRatio;
+let scaledCanvasHeight = canvas.height * pixelRatio;
+
+/*----------------------------------------------------------------------------*/
 
 export const BALLS_SRC = [
         'images/b_blue.png',
@@ -14,10 +24,10 @@ export const BALLS_SRC = [
         'images/b_red.png',
         'images/b_yellow.png'
 ];
-export const BALL_SIZE = 0.055 * canvas.width;
 
 // SHOOTER_SPEED = 12.8 when screenWidth = 320 and pixelRatio = 2;
-export const SHOOTER_SPEED = canvas.width * wx.getSystemInfoSync().pixelRatio * 0.02;
+export const SHOOTER_SPEED = scaledCanvasWidth * 0.02;
+export const BALL_SIZE = 0.055 * canvas.width;
 
 /*----------------------------------------------------------------------------*/
 
@@ -28,26 +38,25 @@ export default class GameInfo {
                 }
                 instance = this;
 
-                this.pixelRatio = wx.getSystemInfoSync().pixelRatio;
+                this.pixelRatio = pixelRatio;
 
                 // onscreen canvas
                 this.canvasWidth = canvas.width;
                 this.canvasHeight = canvas.height;
-                canvas.width *= this.pixelRatio;
-                canvas.height *= this.pixelRatio;
+                canvas.width = scaledCanvasWidth;
+                canvas.height = scaledCanvasHeight;
                 ctx.scale(this.pixelRatio, this.pixelRatio);
 
                 // shared canvas
                 this.openDataContext = wx.getOpenDataContext();
                 this.sharedCanvas = this.openDataContext.canvas;
                 // resize the sharedCanvas for better display of text.
-                this.sharedCanvas.width = canvas.width * this.pixelRatio;
-                this.sharedCanvas.height = canvas.height * this.pixelRatio;
+                this.sharedCanvas.width = scaledCanvasWidth;
+                this.sharedCanvas.height = scaledCanvasHeight;
 
                 this.pool = new Pool();
 
                 this.outerLayer = 3;
-
                 this.ballsSrc = shuffle(BALLS_SRC);
                 this.holes = [];
                 this.balls = [];
