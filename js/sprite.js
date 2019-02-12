@@ -1,5 +1,4 @@
 import {
-        BALLS_IMG,
         BALLS_CVS,
         BALL_SIZE
 } from './runtime/gameInfo';
@@ -10,7 +9,7 @@ let ctx = canvas.getContext('2d');
 // Abstract class for the ball and the shooter
 export default class Sprite {
         constructor(x = 0, y = 0) {
-                this.img = newImage("");
+                this.imgSrc = "";
                 this.x = x;
                 this.y = y;
                 this.size = BALL_SIZE;
@@ -25,12 +24,11 @@ export default class Sprite {
 
                 // draw the image from the center at (x, y)
                 ctx.drawImage(
-                        //this.img,
-                        BALLS_CVS[this.img.src],
+                        BALLS_CVS[this.imgSrc],
                         this.getX() - this.size / 2,
                         this.getY() - this.size / 2,
-                        //this.size,
-                        //this.size
+                        this.size,
+                        this.size
                 );
         }
 

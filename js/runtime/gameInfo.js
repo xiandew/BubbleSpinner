@@ -10,22 +10,24 @@ const LAYERS = [2, 3, 4, 5, 6];
 
 /*----------------------------------------------------------------------------*/
 
-let newImage = require('../utilities/newImage');
-let pixelRatio = wx.getSystemInfoSync().pixelRatio;
-let scaledCanvasWidth = canvas.width * pixelRatio;
-let scaledCanvasHeight = canvas.height * pixelRatio;
+export const BALLS_CVS = {};
+export const BALLS_SRC = [
+        'images/b_blue.png',
+        'images/b_cyan.png',
+        'images/b_green.png',
+        'images/b_pink.png',
+        'images/b_red.png',
+        'images/b_yellow.png'
+];
+
 
 /*----------------------------------------------------------------------------*/
 
-export const BALLS_CVS = {};
-export const BALLS_IMG = [
-        newImage('images/b_blue.png'),
-        newImage('images/b_cyan.png'),
-        newImage('images/b_green.png'),
-        newImage('images/b_pink.png'),
-        newImage('images/b_red.png'),
-        newImage('images/b_yellow.png')
-];
+export const PIXEL_RATIO = wx.getSystemInfoSync().pixelRatio;
+
+let newImage = require('../utilities/newImage');
+let scaledCanvasWidth = canvas.width * PIXEL_RATIO;
+let scaledCanvasHeight = canvas.height * PIXEL_RATIO;
 
 // SHOOTER_SPEED = 12.8 when screenWidth = 320 and pixelRatio = 2;
 export const SHOOTER_SPEED = scaledCanvasWidth * 0.02;
@@ -40,17 +42,14 @@ export default class GameInfo {
                 }
                 instance = this;
 
-                this.pixelRatio = pixelRatio;
+                this.pixelRatio = PIXEL_RATIO;
 
                 // onscreen canvas
                 this.canvasWidth = canvas.width;
                 this.canvasHeight = canvas.height;
                 canvas.width = scaledCanvasWidth;
                 canvas.height = scaledCanvasHeight;
-                ctx.scale(this.pixelRatio, this.pixelRatio);
-
-                // offscreen canvas
-
+                ctx.scale(PIXEL_RATIO, PIXEL_RATIO);
 
                 // shared canvas
                 this.openDataContext = wx.getOpenDataContext();
@@ -62,7 +61,7 @@ export default class GameInfo {
                 this.pool = new Pool();
 
                 this.outerLayer = LAYERS[1];
-                this.ballsImg = shuffle(BALLS_IMG);
+                this.ballsSrc = shuffle(BALLS_SRC);
                 this.holes = [];
                 this.balls = [];
 
@@ -89,8 +88,8 @@ export default class GameInfo {
                 return this.level < LAYERS.length ? LAYERS[this.level] : LAYERS[LAYERS.length - 1];
         }
 
-        getBallsImg() {
-                return this.ballsImg.slice(0, this.getLayers() + 1);
+        getBallsSrc() {
+                return this.ballsSrc.slice(0, this.getLayers() + 1);
         }
 
         renewLives() {

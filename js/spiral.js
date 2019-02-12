@@ -218,7 +218,7 @@ export default class Spiral {
                 if ((closest.layer + 1) > gameInfo.outerLayer) {
                         gameInfo.outerLayer = closest.layer + 1;
                 }
-                this.target = newBall(closest, target.img);
+                this.target = newBall(closest, target.imgSrc);
                 gameInfo.balls.push(this.target);
         }
 
@@ -238,7 +238,7 @@ export default class Spiral {
         findSameBalls(target) {
                 findAround(target).forEach(ball => {
                         if (
-                                ball.img.src == target.img.src &&
+                                ball.imgSrc == target.imgSrc &&
                                 !this.sameBalls.includes(ball)
                         ) {
                                 ball.visited = true;

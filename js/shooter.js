@@ -27,10 +27,13 @@ const BOTTOM_BOUND = gameInfo.canvasHeight - 1.5 * BALL_SIZE;
 let headAngle;
 let headLength;
 
+let nextShooterSrc;
 let nextShooterImg;
 let nextShooterSize;
 
 let delta;
+
+/*----------------------------------------------------------------------------*/
 
 export default class Shooter extends Sprite {
         constructor() {
@@ -53,11 +56,12 @@ export default class Shooter extends Sprite {
                 this.x = gameInfo.canvasWidth / 2;
                 this.y = NEXT_SHOOTER_Y;
 
-                this.img =
-                        gameInfo.getBallsImg().includes(nextShooterImg) ?
-                        nextShooterImg :
+                this.imgSrc =
+                        gameInfo.getBallsSrc().includes(nextShooterSrc) ?
+                        nextShooterSrc :
                         randomBall();
-                nextShooterImg = randomBall();
+                nextShooterSrc = randomBall();
+                nextShooterImg = newImage(nextShooterSrc);
         }
 
         addEvents() {
@@ -122,7 +126,6 @@ export default class Shooter extends Sprite {
         }
 
         display() {
-
                 if (this.shown) {
                         ctx.drawImage(
                                 nextShooterImg,
@@ -171,7 +174,6 @@ export default class Shooter extends Sprite {
 
                         this.dropping ? this.speedY *= 0.7 : true;
                 }
-
 
                 this.dropping ? (this.speedX *= 0.998, this.speedY += 1) : true;
 

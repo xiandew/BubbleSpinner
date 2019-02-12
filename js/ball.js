@@ -38,8 +38,8 @@ export default class Ball extends Sprite {
                 super();
         }
 
-        init(hole = {}, ballImg = false) {
-                this.img = !ballImg ? optimalBall() : ballImg;
+        init(hole = {}, ballSrc = false) {
+                this.imgSrc = !ballSrc ? optimalBall() : ballSrc;
                 this.hole = hole;
                 this.acc = 0;
                 this.visited = false;

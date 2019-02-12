@@ -67,7 +67,6 @@ export default class Main {
                 }
 
                 if (gameInfo.start) {
-
                         Scene.renderGameScore();
 
                         this.shooter.render();
