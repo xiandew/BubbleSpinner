@@ -1,4 +1,6 @@
 import {
+        BALLS_IMG,
+        BALLS_CVS,
         BALL_SIZE
 } from './runtime/gameInfo';
 
@@ -23,11 +25,12 @@ export default class Sprite {
 
                 // draw the image from the center at (x, y)
                 ctx.drawImage(
-                        this.img,
+                        //this.img,
+                        BALLS_CVS[this.img.src],
                         this.getX() - this.size / 2,
                         this.getY() - this.size / 2,
-                        this.size,
-                        this.size
+                        //this.size,
+                        //this.size
                 );
         }
 

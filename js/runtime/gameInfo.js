@@ -17,6 +17,7 @@ let scaledCanvasHeight = canvas.height * pixelRatio;
 
 /*----------------------------------------------------------------------------*/
 
+export const BALLS_CVS = {};
 export const BALLS_IMG = [
         newImage('images/b_blue.png'),
         newImage('images/b_cyan.png'),
@@ -47,6 +48,9 @@ export default class GameInfo {
                 canvas.width = scaledCanvasWidth;
                 canvas.height = scaledCanvasHeight;
                 ctx.scale(this.pixelRatio, this.pixelRatio);
+
+                // offscreen canvas
+
 
                 // shared canvas
                 this.openDataContext = wx.getOpenDataContext();
