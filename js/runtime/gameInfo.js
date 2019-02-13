@@ -103,8 +103,7 @@ export default class GameInfo {
         removeBall(ball) {
                 // remove the ball
                 let i = this.balls.indexOf(ball);
-                [this.balls[0], this.balls[i]] = [this.balls[i], this.balls[0]];
-                let temp = this.balls.shift();
+                let temp = this.balls.splice(i, 1)[0];
                 temp.visible = false;
 
                 // clean up the removed ball
