@@ -55,7 +55,10 @@ export default class Main {
                         }
                 }
 
-                gameInfo.levelup ? (this.restart(), gameInfo.levelup = false) : true;
+                if (gameInfo.levelup) {
+                        this.restart();
+                        gameInfo.levelup = false;
+                }
         }
 
         render() {
