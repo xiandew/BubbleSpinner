@@ -61,7 +61,7 @@ export default class Ball extends Sprite {
         static renderPlusScore(ball) {
                 if (
                         ball.dropping == undefined ||
-                        ball.getY() <= gameInfo.canvasHeight - 5 * ball.size
+                        ball.getY() <= gameInfo.canvasHeight - 5 * BALL_SIZE
                 ) {
                         return;
                 }
