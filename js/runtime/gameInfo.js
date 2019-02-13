@@ -20,7 +20,6 @@ export const BALLS_SRC = [
         'images/b_yellow.png'
 ];
 
-
 /*----------------------------------------------------------------------------*/
 
 export const PIXEL_RATIO = wx.getSystemInfoSync().pixelRatio;
