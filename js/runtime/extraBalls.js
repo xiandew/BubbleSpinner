@@ -42,7 +42,7 @@ export default class ExtraBalls {
                 this.balls = [];
                 starts.forEach(coord => {
                         let ball = gameInfo.pool.getItemByClass('ball', Ball);
-                        ball.img = randomBall();
+                        ball.imgSrc = randomBall();
                         ball.setX(coord[0]);
                         ball.setY(coord[1]);
                         ball.visible = true;
