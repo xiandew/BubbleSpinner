@@ -1,5 +1,12 @@
+let instance;
+
 export default class BitmapFont {
-        constructor() {}
+        constructor() {
+                if (instance) {
+                        return instance;
+                }
+                instance = this;
+        }
 
         loadFont(jsonData, onloaded) {
 
