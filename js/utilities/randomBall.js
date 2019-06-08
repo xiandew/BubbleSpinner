@@ -1,5 +1,5 @@
 import GameInfo from '../runtime/gameInfo';
-let gameInfo = new GameInfo();
+let gameInfo = GameInfo.getInstance();
 
 let thisBall, prevBall;
 module.exports = function() {

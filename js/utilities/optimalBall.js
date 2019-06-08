@@ -1,7 +1,7 @@
 import GameInfo from '../runtime/gameInfo';
 import Ball from '../ball';
 
-let gameInfo = new GameInfo();
+let gameInfo = GameInfo.getInstance();
 let thisBall, prevBall;
 
 // return a ball with the colour which is of the minimum number on the spiral
@@ -13,8 +13,8 @@ module.exports = function() {
                 dict[ballSrc] = 0;
         });
 
-        gameInfo.balls.forEach(ball => {
-                if (ball != gameInfo.pivot) {
+        gameInfo.holes.forEach(ball => {
+                if (ball != gameInfo.pivot && ball instanceof Ball) {
                         dict[ball.imgSrc]++;
                 }
         });

@@ -1,6 +1,4 @@
-import GameInfo, {
-        SHARE_IMG
-} from './runtime/gameInfo';
+import GameInfo from './runtime/gameInfo';
 import Scene from './runtime/scene';
 import ExtraBalls from "./runtime/extraBalls";
 
@@ -9,7 +7,7 @@ import Spiral from './spiral';
 import Shooter from './shooter';
 let click = require('./utilities/click');
 
-let gameInfo = new GameInfo();
+let gameInfo = GameInfo.getInstance();
 let ctx = canvas.getContext('2d');
 ctx.fillStyle = "#ffffff";
 
@@ -176,6 +174,15 @@ export default class Main {
                 }
         }
 }
+
+const SHARE_IMG = [
+	'images/share/b_blue.png',
+	'images/share/b_cyan.png',
+	'images/share/b_green.png',
+	'images/share/b_pink.png',
+	'images/share/b_red.png',
+	'images/share/b_yellow.png'
+];
 
 wx.showShareMenu({
         withShareTicket: true,

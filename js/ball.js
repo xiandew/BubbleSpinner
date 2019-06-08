@@ -1,7 +1,4 @@
-import GameInfo, {
-        BALL_SIZE,
-        SHOOTER_SPEED
-} from './runtime/gameInfo';
+import GameInfo from './runtime/gameInfo';
 import Sprite from './sprite';
 import Hole from './hole';
 
@@ -25,25 +22,24 @@ let newImage = require('./utilities/newImage');
 
 /*----------------------------------------------------------------------------*/
 
-let gameInfo = new GameInfo();
+let gameInfo = GameInfo.getInstance();
 let ctx = canvas.getContext('2d');
+
+let ballSize = gameInfo.getBallSize();
+let shooterSpeed = gameInfo.getShooterSpeed();
 
 /*----------------------------------------------------------------------------*/
 
 /**
- * Concrete Ball class. Extends Sprite. Repsents one ball on the spiral.
+ * Concrete Ball class. Extends Hole. Repsents one ball on the spiral.
  */
-export default class Ball extends Sprite {
-        constructor() {
-                super();
-        }
-
-        init(hole = {}, ballSrc = false) {
-                this.imgSrc = !ballSrc ? optimalBall() : ballSrc;
-                this.hole = hole;
-                this.acc = 0;
-                this.visited = false;
-                this.visible = true;
+export default class Ball extends Hole {
+	constructor(hole = {}, ballSrc = false) {
+                super(hole.x, hole.y, hole.layer);
+		this.imgSrc = !ballSrc ? optimalBall() : ballSrc;
+		this.acc = 0;
+		this.visited = false;
+		this.visible = true;
         }
 
         render() {
@@ -61,13 +57,13 @@ export default class Ball extends Sprite {
         static renderPlusScore(ball) {
                 if (
                         ball.dropping == undefined ||
-                        ball.getY() <= gameInfo.canvasHeight - 5 * BALL_SIZE
+                        ball.getY() <= gameInfo.canvasHeight - 5 * ballSize
                 ) {
                         return;
                 }
                 if (
                         ball.dropping &&
-                        ball.getY() >= gameInfo.canvasHeight + BALL_SIZE
+                        ball.getY() >= gameInfo.canvasHeight + ballSize
                 ) {
                         ball.dropping = false;
                 }
@@ -75,11 +71,11 @@ export default class Ball extends Sprite {
                 if (!ball.scoreX || !ball.scoreY) {
                         ball.scoreX =
                                 ball.getX() <=
-                                BALL_SIZE ?
-                                BALL_SIZE :
+                                ballSize ?
+                                ballSize :
                                 ball.getX() >=
-                                gameInfo.canvasWidth - BALL_SIZE ?
-                                gameInfo.canvasWidth - BALL_SIZE :
+                                gameInfo.canvasWidth - ballSize ?
+                                gameInfo.canvasWidth - ballSize :
                                 ball.getX();
                         ball.scoreY = ball.getY();
                 }
@@ -101,7 +97,7 @@ export default class Ball extends Sprite {
                 if (ball.acc >= Math.PI / 2) {
                         ball.acc = Math.PI / 2;
 
-                        gameInfo.removeBall(ball);
+			gameInfo.balls.splice(gameInfo.balls.indexOf(ball), 1);
                         gameInfo.score += gameInfo.getEachWorth();
                 }
 
@@ -126,7 +122,7 @@ export default class Ball extends Sprite {
                 // difference between two angles
                 let da = va - ha;
 
-                let theSpeed = SHOOTER_SPEED * Math.cos(da) / 2;
+                let theSpeed = shooterSpeed * Math.cos(da) / 2;
 
                 ball.speedX = theSpeed * Math.cos(ha);
                 ball.speedY = theSpeed * Math.sin(ha);

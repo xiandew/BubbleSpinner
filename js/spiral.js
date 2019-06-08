@@ -1,13 +1,10 @@
-import GameInfo, {
-        BALL_SIZE,
-        SHOOTER_SPEED
-} from './runtime/gameInfo';
+import GameInfo from './runtime/gameInfo';
 import Pivot from './pivot';
 import Hole from './hole';
 import Ball from './ball';
 import Shooter from './shooter';
 
-let gameInfo = new GameInfo();
+let gameInfo = GameInfo.getInstance();
 let ctx = canvas.getContext('2d');
 
 /*----------------------------------------------------------------------------*/
@@ -17,10 +14,13 @@ const FRICTION = -canvas.width / 640000;
 const PIVOT_X = 0.5 * gameInfo.canvasWidth;
 const PIVOT_Y = 0.5 * gameInfo.canvasHeight;
 
+let ballSize = gameInfo.getBallSize();
+let shooterSpeed = gameInfo.getShooterSpeed();
+
 /*----------------------------------------------------------------------------*/
 
-// Make sure the distance between the centers of two adjacent rows equals to BALL_SIZE
-let separation = BALL_SIZE / Math.sqrt(3) * 2;
+// Make sure the distance between the centers of two adjacent rows equals to ballSize
+let separation = ballSize / Math.sqrt(3) * 2;
 
 // Contains logic for performing actions on the spiral.
 export default class Spiral {
@@ -33,12 +33,12 @@ export default class Spiral {
                 this.toChange = true;
                 gameInfo.pivot = new Pivot(new Hole(PIVOT_X, PIVOT_Y));
 
-                // all balls on the spiral
-                gameInfo.balls.push(gameInfo.pivot);
+                // all holes on the spiral including pivot, visible balls and invisible holes
+                gameInfo.holes.push(gameInfo.pivot);
 
                 // all holes of the spiral
                 let maxLayers = Math.floor(
-                        Math.max(gameInfo.canvasWidth, gameInfo.canvasHeight / 2) / BALL_SIZE
+                        Math.max(gameInfo.canvasWidth, gameInfo.canvasHeight / 2) / ballSize
                 );
                 for (let layer = 1; layer <= maxLayers; layer++) {
                         for (let diagonal = 0; diagonal < 6; diagonal++) {
@@ -67,21 +67,20 @@ export default class Spiral {
                 this.rotating = false;
                 this.collideBorder = false;
 
-                for (let i = gameInfo.balls.length - 1, ball; i >= 0; i--) {
-                        if (gameInfo.balls[i]) {
-                                ball = gameInfo.balls[i];
-                                if (ball != gameInfo.pivot) {
-                                        gameInfo.removeBall(ball);
-                                }
+		for (let i = 0; i < gameInfo.holes.length; i++) {
+			let ball = gameInfo.holes[i];
+                        if (ball != gameInfo.pivot && ball instanceof Ball) {
+				gameInfo.holes[i] = new Hole(ball.x, ball.y);
                         }
                 }
 
                 let layers = gameInfo.getLayers();
-                gameInfo.holes.forEach(hole => {
+                for (let i = 0; i < gameInfo.holes.length; i++) {
+			let hole = gameInfo.holes[i];
                         if (hole != gameInfo.pivot && hole.layer <= layers) {
-                                gameInfo.balls.push(newBall(hole));
+                                gameInfo.holes[i] = new Ball(hole);
                         }
-                });
+                }
         }
 
         update() {
@@ -108,8 +107,10 @@ export default class Spiral {
         }
 
         render() {
-                gameInfo.balls.forEach(ball => {
-                        ball ? ball.render() : true;
+                gameInfo.holes.forEach(ball => {
+                        if (ball instanceof Ball) {
+				ball.render();
+			}
                 });
         }
 
@@ -160,7 +161,7 @@ export default class Spiral {
                 let d = Math.abs((px - PIVOT_X) * (py - PIVOT_Y)) /
                         Math.sqrt((py - PIVOT_Y) ** 2 + (px - PIVOT_X) ** 2);
                 let ratio = d / gameInfo.canvasWidth;
-                let tangentSpeed = SHOOTER_SPEED * ratio;
+                let tangentSpeed = shooterSpeed * ratio;
                 this.friction = FRICTION;
 
                 if (
@@ -218,7 +219,7 @@ export default class Spiral {
                 if ((closest.layer + 1) > gameInfo.outerLayer) {
                         gameInfo.outerLayer = closest.layer + 1;
                 }
-                this.target = newBall(closest, target.imgSrc);
+                this.target = new Ball(closest, target.imgSrc);
                 gameInfo.balls.push(this.target);
         }
 
@@ -319,19 +320,10 @@ function countOnScreenBalls() {
 function countDroppingBalls() {
         let nballs = 0;
         gameInfo.holes.forEach(ball => {
-                if (ball.dropping != undefined) {
+                if (ball instanceof Ball && ball.dropping != undefined) {
                         nballs++;
                 }
         });
 
         return nballs;
-}
-
-function newBall(hole = {}, ballImg = false) {
-        hole.filled = true;
-
-        let ball = gameInfo.pool.getItemByClass('ball', Ball);
-        ball.init(hole, ballImg);
-
-        return ball;
 }

@@ -1,10 +1,11 @@
-import {
-        BALLS_CVS,
-        BALL_SIZE
+import GameInfo, {
+        BALLS_CVS
 } from './runtime/gameInfo';
 
 let newImage = require('./utilities/newImage');
 let ctx = canvas.getContext('2d');
+
+let ballSize = GameInfo.getInstance().getBallSize();
 
 // Abstract class for the ball and the shooter
 export default class Sprite {
@@ -12,7 +13,7 @@ export default class Sprite {
                 this.imgSrc = "";
                 this.x = x;
                 this.y = y;
-                this.size = BALL_SIZE;
+                this.size = ballSize;
                 this.visible = true;
         }
 
@@ -33,24 +34,20 @@ export default class Sprite {
         }
 
         getX() {
-                return this.hole ? this.hole.x : this.x;
+                return this.x;
         }
 
         getY() {
-                return this.hole ? this.hole.y : this.y;
+                return this.y;
         }
 
         setX(x) {
-                this.hole ? this.hole.x = x : this.x = x;
+                this.x = x;
         }
 
         setY(y) {
-                this.hole ? this.hole.y = y : this.y = y;
-        }
-
-        getLayer() {
-                return this.hole.layer;
-        }
+                this.y = y;
+	}
 
         isCollideWith(other) {
                 let otherLeft = other.getX() - other.size / 2;

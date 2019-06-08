@@ -5,7 +5,8 @@ import {
         RANK_LIST_ICON
 } from '../runtime/scene';
 import GameInfo from '../runtime/gameInfo';
-let gameInfo = new GameInfo();
+let gameInfo = GameInfo.getInstance();
+
 /*----------------------------------------------------------------------------*/
 
 const btnAreas = {

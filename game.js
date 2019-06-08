@@ -1,25 +1,26 @@
 import './js/libs/weapp-adapter';
-import './js/libs/symbol';
 
 import Main from './js/main';
-import {
+import GameInfo, {
         BALLS_SRC,
-        BALLS_CVS,
-        BALL_SIZE,
-        PIXEL_RATIO
+        BALLS_CVS
 } from './js/runtime/gameInfo';
 
+let gameInfo = GameInfo.getInstance();
 let newImage = require('./js/utilities/newImage');
+
+let pixelRatio = gameInfo.pixelRatio;
+let ballSize = gameInfo.getBallSize();
 
 BALLS_SRC.forEach(ballSrc => {
         let ballImg = newImage(ballSrc);
         ballImg.onload = function() {
                 let ballCvs = wx.createCanvas();
                 let ballCtx = ballCvs.getContext('2d');
-                ballCvs.width = ballCvs.height = BALL_SIZE * PIXEL_RATIO;
+                ballCvs.width = ballCvs.height = ballSize * pixelRatio;
                 ballCtx.fillStyle = 'rgba(255, 255, 255, 0)';
-                ballCtx.scale(PIXEL_RATIO, PIXEL_RATIO);
-                ballCtx.drawImage(ballImg, 0, 0, BALL_SIZE, BALL_SIZE);
+                ballCtx.scale(pixelRatio, pixelRatio);
+                ballCtx.drawImage(ballImg, 0, 0, ballSize, ballSize);
 
                 BALLS_CVS[ballSrc] = ballCvs;
                 if (Object.keys(BALLS_CVS).length == BALLS_SRC.length) {
