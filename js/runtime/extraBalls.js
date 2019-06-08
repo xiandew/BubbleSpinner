@@ -1,9 +1,7 @@
-import GameInfo, {
-        BALL_SIZE
-} from "./gameInfo";
+import GameInfo from "./gameInfo";
 import Ball from "../ball";
 
-let gameInfo = new GameInfo();
+let gameInfo = GameInfo.getInstance();
 let randomBall = require("../utilities/randomBall");
 let isCollideSpiral = require("../utilities/isCollideSpiral");
 
@@ -11,6 +9,7 @@ let isCollideSpiral = require("../utilities/isCollideSpiral");
 
 // LINEAR_SPEED = 10 when gameInfo.canvasWidth = 320
 const LINEAR_SPEED = gameInfo.canvasWidth / 32;
+let ballSize = gameInfo.getBallSize();
 
 export default class ExtraBalls {
         constructor() {
@@ -27,21 +26,21 @@ export default class ExtraBalls {
                         x = Math.cos(angle) * gameInfo.canvasHeight;
                         y = Math.sin(angle) * gameInfo.canvasHeight;
 
-                        x = x < -BALL_SIZE ?
-                                -BALL_SIZE : x >
-                                gameInfo.canvasWidth + BALL_SIZE ?
-                                gameInfo.canvasWidth + BALL_SIZE : x;
-                        y = y < -BALL_SIZE ?
-                                -BALL_SIZE : y >
-                                gameInfo.canvasHeight + BALL_SIZE ?
-                                gameInfo.canvasHeight + BALL_SIZE : y;
+                        x = x < -ballSize ?
+                                -ballSize : x >
+                                gameInfo.canvasWidth + ballSize ?
+                                gameInfo.canvasWidth + ballSize : x;
+                        y = y < -ballSize ?
+                                -ballSize : y >
+                                gameInfo.canvasHeight + ballSize ?
+                                gameInfo.canvasHeight + ballSize : y;
 
                         starts.push([x, y]);
                 }
 
                 this.balls = [];
                 starts.forEach(coord => {
-                        let ball = gameInfo.pool.getItemByClass('ball', Ball);
+                        let ball = new Ball();
                         ball.imgSrc = randomBall();
                         ball.setX(coord[0]);
                         ball.setY(coord[1]);
@@ -103,8 +102,8 @@ export default class ExtraBalls {
                         }
 
                         if (
-                                ball.x < -BALL_SIZE || ball.x >= gameInfo.canvasWidth + BALL_SIZE ||
-                                ball.y < -BALL_SIZE || ball.y >= gameInfo.canvasHeight + BALL_SIZE
+                                ball.x < -ballSize || ball.x >= gameInfo.canvasWidth + ballSize ||
+                                ball.y < -ballSize || ball.y >= gameInfo.canvasHeight + ballSize
                         ) {
                                 this.balls.splice(i, 1);
                         }

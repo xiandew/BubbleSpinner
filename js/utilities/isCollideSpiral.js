@@ -1,6 +1,6 @@
 import GameInfo from "../runtime/gameInfo";
 import Hole from "../hole";
-let gameInfo = new GameInfo();
+let gameInfo = GameInfo.getInstance();
 
 module.exports = function(target) {
 

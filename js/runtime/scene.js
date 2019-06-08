@@ -8,7 +8,7 @@ import BitmapText from "../utilities/bitmapText";
 
 let btnArea = require('../utilities/buttonArea');
 let newImage = require('../utilities/newImage');
-let gameInfo = new GameInfo();
+let gameInfo = GameInfo.getInstance();
 /*----------------------------------------------------------------------------*/
 
 let impact_black = new BitmapFont();

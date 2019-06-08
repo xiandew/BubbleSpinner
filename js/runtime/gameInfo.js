@@ -1,5 +1,3 @@
-import Pool from './pool'
-
 let instance;
 let ctx = canvas.getContext('2d');
 
@@ -29,18 +27,13 @@ let scaledCanvasWidth = canvas.width * PIXEL_RATIO;
 let scaledCanvasHeight = canvas.height * PIXEL_RATIO;
 
 // SHOOTER_SPEED = 12.8 when screenWidth = 320 and pixelRatio = 2;
-export const SHOOTER_SPEED = scaledCanvasWidth * 0.02;
-export const BALL_SIZE = Math.ceil(0.055 * canvas.width);
+const SHOOTER_SPEED = scaledCanvasWidth * 0.02;
+const BALL_SIZE = Math.ceil(0.055 * canvas.width);
 
 /*----------------------------------------------------------------------------*/
 
 export default class GameInfo {
         constructor() {
-                if (instance) {
-                        return instance;
-                }
-                instance = this;
-
                 this.pixelRatio = PIXEL_RATIO;
 
                 // onscreen canvas
@@ -56,17 +49,20 @@ export default class GameInfo {
                 // resize the sharedCanvas for better display of text.
                 this.sharedCanvas.width = scaledCanvasWidth;
                 this.sharedCanvas.height = scaledCanvasHeight;
-
-                this.pool = new Pool();
-
-                this.outerLayer = LAYERS[1];
+		
                 this.ballsSrc = shuffle(BALLS_SRC);
                 this.holes = [];
-                this.balls = [];
 
                 this.reset();
                 this.start = false;
         }
+
+	static getInstance() {
+		if (!instance) {
+			instance = new GameInfo();
+		}
+		return instance;
+	}
 
         reset() {
                 this.start = true;
@@ -91,36 +87,17 @@ export default class GameInfo {
                 return this.ballsSrc.slice(0, this.getLayers() + 1);
         }
 
+	getBallSize() {
+		return BALL_SIZE;
+	}
+
+	getShooterSpeed() {
+		return SHOOTER_SPEED;
+	}
+
         renewLives() {
                 this.lives = Math.ceil(Math.random() * MAX_NUM_LIVES);
                 this.loseLive = false;
-        }
-
-        /**
-         * 回收小球，进入对象池
-         * 此后不进入帧循环
-         */
-        removeBall(ball) {
-                // remove the ball
-                let i = this.balls.indexOf(ball);
-                let temp = this.balls.splice(i, 1)[0];
-                temp.visible = false;
-
-                // clean up the removed ball
-                if (temp.hole) {
-                        temp.hole.filled = false;
-                        temp.hole = null;
-                }
-                temp.dropping = undefined;
-                temp.scoreX = undefined;
-                temp.scoreY = undefined;
-                temp.speedX = undefined;
-                temp.speedY = undefined;
-                temp.visited = false;
-                temp.acc = 0;
-
-                // recycle the ball
-                this.pool.recover('ball', ball);
         }
 }
 
@@ -131,12 +108,3 @@ function shuffle(a) {
         }
         return a;
 }
-
-export const SHARE_IMG = [
-        'images/share/b_blue.png',
-        'images/share/b_cyan.png',
-        'images/share/b_green.png',
-        'images/share/b_pink.png',
-        'images/share/b_red.png',
-        'images/share/b_yellow.png'
-];

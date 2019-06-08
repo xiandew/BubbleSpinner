@@ -1,11 +1,8 @@
-import GameInfo, {
-        BALL_SIZE,
-        SHOOTER_SPEED
-} from './runtime/gameInfo';
+import GameInfo from './runtime/gameInfo';
 import Sprite from './sprite';
 import Hole from './hole';
 
-let gameInfo = new GameInfo();
+let gameInfo = GameInfo.getInstance();
 let ctx = canvas.getContext('2d');
 
 /*----------------------------------------------------------------------------*/
@@ -16,10 +13,13 @@ let isCollideSpiral = require("./utilities/isCollideSpiral");
 
 /*----------------------------------------------------------------------------*/
 
-const NEXT_SHOOTER_SIZE = 0.5 * BALL_SIZE;
+let ballSize = gameInfo.getBallSize();
+let shooterSpeed = gameInfo.getShooterSpeed();
+
+const NEXT_SHOOTER_SIZE = 0.5 * ballSize;
 const NEXT_SHOOTER_X = 0.5 * gameInfo.canvasWidth - 0.5 * NEXT_SHOOTER_SIZE;
-const NEXT_SHOOTER_Y = gameInfo.canvasHeight - BALL_SIZE;
-const BOTTOM_BOUND = gameInfo.canvasHeight - 1.5 * BALL_SIZE;
+const NEXT_SHOOTER_Y = gameInfo.canvasHeight - ballSize;
+const BOTTOM_BOUND = gameInfo.canvasHeight - 1.5 * ballSize;
 
 /*----------------------------------------------------------------------------*/
 
@@ -117,7 +117,7 @@ export default class Shooter extends Sprite {
                         this.shown = true;
                 }
 
-                delta = Math.sin(this.acc) * BALL_SIZE * 0.5;
+                delta = Math.sin(this.acc) * ballSize * 0.5;
                 this.y = NEXT_SHOOTER_Y - delta;
                 this.size = NEXT_SHOOTER_SIZE + delta;
                 this.display();
@@ -142,7 +142,7 @@ export default class Shooter extends Sprite {
                         ctx.drawImage(
                                 nextShooterImg,
                                 gameInfo.canvasWidth * 0.5 - nextShooterSize * 0.5,
-                                gameInfo.canvasHeight - Math.sin(this.acc) * BALL_SIZE,
+                                gameInfo.canvasHeight - Math.sin(this.acc) * ballSize,
                                 nextShooterSize,
                                 nextShooterSize
                         );
@@ -213,8 +213,8 @@ export default class Shooter extends Sprite {
 
         initSpeed() {
                 let angle = Math.atan2(this.touchY - this.y, this.touchX - this.x);
-                this.speedX = SHOOTER_SPEED * Math.cos(angle);
-                this.speedY = SHOOTER_SPEED * Math.sin(angle);
+                this.speedX = shooterSpeed * Math.cos(angle);
+                this.speedY = shooterSpeed * Math.sin(angle);
         }
 
         renderArrow() {
