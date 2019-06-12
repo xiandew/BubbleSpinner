@@ -38,8 +38,7 @@ export default class Spiral {
                 gameInfo.holes.push(gameInfo.pivot);
 
                 // all holes of the spiral
-                let maxLayers =
-                        Math.floor(Math.max(gameInfo.canvasWidth, gameInfo.canvasHeight / 2) / ballSize);
+                let maxLayers = Math.ceil(gameInfo.canvasWidth / ballSize);
 
                 for (let layer = 1; layer <= maxLayers; layer++) {
                         for (let diagonal = 0; diagonal < 6; diagonal++) {
