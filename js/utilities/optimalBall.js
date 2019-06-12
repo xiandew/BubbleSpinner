@@ -13,10 +13,8 @@ module.exports = function() {
                 dict[ballSrc] = 0;
         });
 
-        gameInfo.holes.forEach(ball => {
-                if (ball != gameInfo.pivot && ball instanceof Ball) {
-                        dict[ball.imgSrc]++;
-                }
+        gameInfo.balls.forEach(ball => {
+                dict[ball.imgSrc]++;
         });
 
         let arr = [];

@@ -5,6 +5,7 @@ import Ball from './ball';
 import Shooter from './shooter';
 
 let gameInfo = GameInfo.getInstance();
+let shooter = Shooter.getInstance();
 let ctx = canvas.getContext('2d');
 
 /*----------------------------------------------------------------------------*/
@@ -37,9 +38,9 @@ export default class Spiral {
                 gameInfo.holes.push(gameInfo.pivot);
 
                 // all holes of the spiral
-                let maxLayers = Math.floor(
-                        Math.max(gameInfo.canvasWidth, gameInfo.canvasHeight / 2) / ballSize
-                );
+                let maxLayers =
+                        Math.floor(Math.max(gameInfo.canvasWidth, gameInfo.canvasHeight / 2) / ballSize);
+
                 for (let layer = 1; layer <= maxLayers; layer++) {
                         for (let diagonal = 0; diagonal < 6; diagonal++) {
                                 // draw a ball on the diagonal of the hexagon
@@ -51,13 +52,9 @@ export default class Spiral {
 
                                 // balls in between the diagonal
                                 for (let n = 1; n < layer; n++) {
-                                        gameInfo.holes.push(
-                                                new Hole(
-                                                        x + Math.cos(angle + Math.PI / 3) * n * separation,
-                                                        y + Math.sin(angle + Math.PI / 3) * n * separation,
-                                                        layer
-                                                )
-                                        );
+                                        let dx = x + Math.cos(angle + Math.PI / 3) * n * separation;
+                                        let dy = y + Math.sin(angle + Math.PI / 3) * n * separation;
+                                        gameInfo.holes.push(new Hole(dx, dy, layer));
                                 }
                         }
                 }
@@ -67,18 +64,22 @@ export default class Spiral {
                 this.rotating = false;
                 this.collideBorder = false;
 
-		for (let i = 0; i < gameInfo.holes.length; i++) {
+		// delete balls from last round
+                for (let i = 0; i < gameInfo.holes.length; i++) {
 			let ball = gameInfo.holes[i];
-                        if (ball != gameInfo.pivot && ball instanceof Ball) {
-				gameInfo.holes[i] = new Hole(ball.x, ball.y);
+                        if (gameInfo.balls.has(ball)) {
+                                gameInfo.holes[i] = new Hole(ball.x, ball.y, ball.layer);
+				gameInfo.balls.delete(ball);
                         }
                 }
 
                 let layers = gameInfo.getLayers();
                 for (let i = 0; i < gameInfo.holes.length; i++) {
-			let hole = gameInfo.holes[i];
+                        let hole = gameInfo.holes[i];
                         if (hole != gameInfo.pivot && hole.layer <= layers) {
-                                gameInfo.holes[i] = new Ball(hole);
+				let ball = new Ball(hole);
+                                gameInfo.holes[i] = ball;
+                                gameInfo.balls.add(ball);
                         }
                 }
         }
@@ -107,42 +108,36 @@ export default class Spiral {
         }
 
         render() {
-                gameInfo.holes.forEach(ball => {
-                        if (ball instanceof Ball) {
-				ball.render();
-			}
-                });
+		gameInfo.pivot.render();
+		gameInfo.balls.forEach(ball => {
+			ball.render();
+		});
         }
 
         rotate() {
                 // add friction
                 this.angleSpeed += this.friction;
 
-                if (
-                        this.angleSpeed < 0 && this.friction < 0 ||
-                        this.angleSpeed > 0 && this.friction > 0
-                ) {
+                if (this.angleSpeed < 0 && this.friction < 0 ||
+                        this.angleSpeed > 0 && this.friction > 0) {
                         this.rotating = false;
                 }
 
                 for (let i = 0, hole; i < gameInfo.holes.length; i++) {
                         hole = gameInfo.holes[i];
                         if (!this.collideBorder) {
-                                this.collideBorder =
-                                        Hole.rotate(hole, this.angleSpeed);
+                                this.collideBorder = hole.rotate(this.angleSpeed);
                         }
                 }
         }
 
-        onCollision(other) {
+        onCollision(other = null) {
                 // adjust the other ball's position to align with the hexagon properly
                 this.fillClosestHole(other);
 
-                if (!(other instanceof Shooter)) {
+                if (other) {
                         return;
                 }
-
-                this.shooter = other;
 
                 this.removeSameBalls();
                 this.romoveFloatBalls();
@@ -150,7 +145,7 @@ export default class Spiral {
                 this.rotating = true;
 
                 // y = kx + m, x = (y - m) / k
-                let k = other.speedY / other.speedX;
+                let k = shooter.speedY / shooter.speedX;
                 let m = this.target.getY() - k * this.target.getX();
 
                 // the tangent speed is proportional to the distance between
@@ -164,10 +159,8 @@ export default class Spiral {
                 let tangentSpeed = shooterSpeed * ratio;
                 this.friction = FRICTION;
 
-                if (
-                        other.speedX < 0 && (k * PIVOT_X + m) > PIVOT_Y ||
-                        other.speedX > 0 && (k * PIVOT_X + m) < PIVOT_Y
-                ) {
+                if (shooter.speedX < 0 && (k * PIVOT_X + m) > PIVOT_Y ||
+                        shooter.speedX > 0 && (k * PIVOT_X + m) < PIVOT_Y) {
                         tangentSpeed *= (-1);
                         this.friction *= (-1);
                 }
@@ -175,10 +168,7 @@ export default class Spiral {
                 // count attached balls, not on screen balls
                 let nballs = 0;
                 gameInfo.balls.forEach(ball => {
-                        if (
-                                ball != gameInfo.pivot &&
-                                ball.dropping == undefined
-                        ) {
+                        if (ball.dropping == undefined) {
                                 nballs++;
                         }
                 });
@@ -193,19 +183,20 @@ export default class Spiral {
                         this.rotating = false;
                 }
 
-                other.initShooter();
+                shooter.initShooter();
         }
 
-        fillClosestHole(target) {
+        fillClosestHole(target = null) {
+		if (!target) {
+			target = shooter;
+		}
                 let minSquare = gameInfo.canvasWidth ** 2;
                 let closest;
                 gameInfo.holes.forEach(hole => {
-                        if (
-                                hole.filled == false &&
+                        if (!gameInfo.balls.has(hole) &&
                                 hole.layer <= gameInfo.outerLayer &&
                                 Math.abs(target.getX() - hole.x) < separation * 2 &&
-                                Math.abs(target.getY() - hole.y) < separation * 2
-                        ) {
+                                Math.abs(target.getY() - hole.y) < separation * 2) {
                                 // square of the distance
                                 let square =
                                         (target.getX() - hole.x) ** 2 +
@@ -220,7 +211,8 @@ export default class Spiral {
                         gameInfo.outerLayer = closest.layer + 1;
                 }
                 this.target = new Ball(closest, target.imgSrc);
-                gameInfo.balls.push(this.target);
+		gameInfo.holes[gameInfo.holes.indexOf(closest)] = this.target;
+		gameInfo.balls.add(this.target);
         }
 
         removeSameBalls() {
@@ -229,7 +221,7 @@ export default class Spiral {
 
                 if (this.sameBalls.length >= 3) {
                         this.sameBalls.forEach(ball => {
-                                Ball.initDropping(ball, this.shooter);
+				ball.initDropping();
                         });
                 } else {
                         gameInfo.loseLive = true;
@@ -238,10 +230,8 @@ export default class Spiral {
 
         findSameBalls(target) {
                 findAround(target).forEach(ball => {
-                        if (
-                                ball.imgSrc == target.imgSrc &&
-                                !this.sameBalls.includes(ball)
-                        ) {
+                        if (ball.imgSrc == target.imgSrc &&
+                                !this.sameBalls.includes(ball)) {
                                 ball.visited = true;
                                 this.sameBalls.push(ball);
                                 this.findSameBalls(ball);
@@ -257,12 +247,8 @@ export default class Spiral {
 
                 // find balls not attached to the pivot
                 gameInfo.balls.forEach(ball => {
-                        if (
-                                ball != gameInfo.pivot &&
-                                ball.visited != true &&
-                                ball.dropping == undefined
-                        ) {
-                                Ball.initDropping(ball, this.shooter);
+                        if (ball.visited != true && ball.dropping == undefined) {
+                                ball.initDropping();
                         }
                 });
 
@@ -271,19 +257,15 @@ export default class Spiral {
 }
 
 function findAround(target) {
-        // balls next to the target
+        // target's neighbouring balls
         let around = [];
 
-        gameInfo.balls.forEach(ball => {
-                let dSquare = Math.floor(
-                        (ball.getX() - target.getX()) ** 2 +
-                        (ball.getY() - target.getY()) ** 2
-                );
-                if (
-                        ball.visited != true &&
+        Array.from(gameInfo.balls).concat(gameInfo.pivot).forEach(ball => {
+                let dSquare = Math.floor((ball.getX() - target.getX()) ** 2 +
+				(ball.getY() - target.getY()) ** 2);
+                if (!ball.visited &&
                         ball !== target &&
-                        dSquare <= separation ** 2
-                ) {
+                        dSquare <= separation ** 2) {
                         around.push(ball);
                 }
         });
@@ -310,7 +292,7 @@ function revertVisited() {
 function countOnScreenBalls() {
         let nballs = 0;
         gameInfo.balls.forEach(ball => {
-                if (ball != gameInfo.pivot && ball.visible) {
+                if (ball.visible) {
                         nballs++;
                 }
         });
@@ -319,8 +301,8 @@ function countOnScreenBalls() {
 
 function countDroppingBalls() {
         let nballs = 0;
-        gameInfo.holes.forEach(ball => {
-                if (ball instanceof Ball && ball.dropping != undefined) {
+        gameInfo.balls.forEach(ball => {
+                if (ball.dropping != undefined) {
                         nballs++;
                 }
         });

@@ -5,6 +5,9 @@ import Hole from './hole';
 let gameInfo = GameInfo.getInstance();
 let ctx = canvas.getContext('2d');
 
+// Make the shooter singleton
+let instance;
+
 /*----------------------------------------------------------------------------*/
 
 let newImage = require("./utilities/newImage");
@@ -39,6 +42,13 @@ export default class Shooter extends Sprite {
         constructor() {
                 super();
                 this.initShooter();
+        }
+
+        static getInstance() {
+                if (!instance) {
+                        instance = new Shooter();
+                }
+                return instance;
         }
 
         initShooter() {
@@ -158,23 +168,21 @@ export default class Shooter extends Sprite {
                 // when changing both speedX and speedY.
                 let bounced = false;
 
-                if (
-                        this.speedX > 0 && (this.x + this.size / 2) >= gameInfo.canvasWidth ||
-                        this.speedX < 0 && (this.x - this.size / 2) <= 0
-                ) {
+                if (this.speedX > 0 && (this.x + this.size / 2) >= gameInfo.canvasWidth ||
+                        this.speedX < 0 && (this.x - this.size / 2) <= 0) {
                         !bounced ? (this.bounces++, bounced = true) : true;
                         this.speedX *= (-1);
                 }
-                if (
-                        this.speedY > 0 && this.y >= BOTTOM_BOUND ||
-                        this.speedY < 0 && (this.y - this.size / 2) <= 0
-                ) {
+                if (this.speedY > 0 && this.y >= BOTTOM_BOUND ||
+                        this.speedY < 0 && (this.y - this.size / 2) <= 0) {
                         !bounced ? (this.bounces++, bounced = true) : true;
                         this.speedY *= (-1);
 
+                        // gravity effects
                         this.dropping ? this.speedY *= 0.7 : true;
                 }
 
+                // gravity effects
                 this.dropping ? (this.speedX *= 0.998, this.speedY += 1) : true;
 
                 this.x += this.speedX;
@@ -184,7 +192,7 @@ export default class Shooter extends Sprite {
 
                 // for finding a closest hole
                 if (isCollideSpiral(this)) {
-                        spiral.onCollision(this);
+                        spiral.onCollision();
                         this.shooting = false;
                         return;
                 }
@@ -197,10 +205,8 @@ export default class Shooter extends Sprite {
 
                 if (this.dropping) {
                         // 0.588235.. is the asymptotic value of the y speed by experimenting
-                        if (
-                                Math.abs(this.x - gameInfo.canvasWidth / 2) < 1 &&
-                                Math.abs(0.5883 - this.speedY) < 0.0001
-                        ) {
+                        if (Math.abs(this.x - gameInfo.canvasWidth / 2) < 1 &&
+                                Math.abs(0.5883 - this.speedY) < 0.0001) {
                                 this.x = gameInfo.canvasWidth / 2;
                                 this.y = BOTTOM_BOUND;
 
@@ -232,15 +238,11 @@ export default class Shooter extends Sprite {
 
                 // form a little triangle for the arrow head
                 // from touch point to right side of the head
-                ctx.lineTo(
-                        this.touchX - headLength * Math.cos(headAngle - Math.PI / 6),
-                        this.touchY - headLength * Math.sin(headAngle - Math.PI / 6)
-                );
+                ctx.lineTo(this.touchX - headLength * Math.cos(headAngle - Math.PI / 6),
+                        this.touchY - headLength * Math.sin(headAngle - Math.PI / 6));
                 // to bottom side of the head
-                ctx.lineTo(
-                        this.touchX - headLength * Math.cos(headAngle + Math.PI / 6),
-                        this.touchY - headLength * Math.sin(headAngle + Math.PI / 6)
-                );
+                ctx.lineTo(this.touchX - headLength * Math.cos(headAngle + Math.PI / 6),
+                        this.touchY - headLength * Math.sin(headAngle + Math.PI / 6));
                 // back to the touch point
                 ctx.lineTo(this.touchX, this.touchY);
 

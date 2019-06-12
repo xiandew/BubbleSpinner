@@ -1,6 +1,7 @@
 import GameInfo from './runtime/gameInfo';
 import Sprite from './sprite';
 import Hole from './hole';
+import Shooter from './shooter';
 
 /*----------------------------------------------------------------------------*/
 
@@ -22,8 +23,9 @@ let newImage = require('./utilities/newImage');
 
 /*----------------------------------------------------------------------------*/
 
-let gameInfo = GameInfo.getInstance();
 let ctx = canvas.getContext('2d');
+let gameInfo = GameInfo.getInstance();
+let shooter = Shooter.getInstance();
 
 let ballSize = gameInfo.getBallSize();
 let shooterSpeed = gameInfo.getShooterSpeed();
@@ -50,81 +52,83 @@ export default class Ball extends Hole {
                         this.setY(this.getY() + this.speedY);
                         this.setX(this.getX() + this.speedX);
                 }
-                Ball.renderPlusScore(this);
+                this.renderPlusScore();
                 super.render();
         }
 
-        static renderPlusScore(ball) {
-                if (
-                        ball.dropping == undefined ||
-                        ball.getY() <= gameInfo.canvasHeight - 5 * ballSize
-                ) {
+        renderPlusScore() {
+                if (this.dropping == undefined ||
+                        this.getY() <= gameInfo.canvasHeight - 5 * ballSize) {
                         return;
                 }
-                if (
-                        ball.dropping &&
-                        ball.getY() >= gameInfo.canvasHeight + ballSize
-                ) {
-                        ball.dropping = false;
+                if (this.dropping &&
+                        this.getY() >= gameInfo.canvasHeight + ballSize) {
+                        this.dropping = false;
                 }
 
-                if (!ball.scoreX || !ball.scoreY) {
-                        ball.scoreX =
-                                ball.getX() <=
+                if (!this.scoreX || !this.scoreY) {
+                        this.scoreX =
+                                this.getX() <=
                                 ballSize ?
                                 ballSize :
-                                ball.getX() >=
+                                this.getX() >=
                                 gameInfo.canvasWidth - ballSize ?
                                 gameInfo.canvasWidth - ballSize :
-                                ball.getX();
-                        ball.scoreY = ball.getY();
+                                this.getX();
+                        this.scoreY = this.getY();
                 }
 
                 ctx.save();
-                ctx.globalAlpha = 1 - Math.sin(ball.acc);
+                ctx.globalAlpha = 1 - Math.sin(this.acc);
                 if (fontLoaded) {
                         txt.fontSize = 0.065 * gameInfo.canvasWidth;
                         txt.textAlign = "center";
                         txt.draw(
                                 ctx,
                                 `+${gameInfo.getEachWorth()}`,
-                                ball.scoreX,
-                                ball.scoreY - Math.sin(ball.acc) * 30
+                                this.scoreX,
+                                this.scoreY - Math.sin(this.acc) * 30
                         );
                 }
                 ctx.restore();
 
-                if (ball.acc >= Math.PI / 2) {
-                        ball.acc = Math.PI / 2;
+		// delete this instance
+                if (this.acc >= Math.PI / 2) {
+                        this.acc = Math.PI / 2;
 
-			gameInfo.balls.splice(gameInfo.balls.indexOf(ball), 1);
+			gameInfo.balls.delete(this);
                         gameInfo.score += gameInfo.getEachWorth();
                 }
 
-                if (ball.dropping != undefined) {
-                        ball.acc += 0.035;
+                if (this.dropping != undefined) {
+                        this.acc += 0.035;
                 }
         }
 
-        static initDropping(ball, shooter) {
-                ball.dropping = true;
-                ball.hole.filled = false;
-
-                let hole = ball.hole;
-                ball.hole = null;
-                ball.setX(hole.x);
-                ball.setY(hole.y);
+        initDropping() {
+		gameInfo.holes[gameInfo.holes.indexOf(this)] = new Hole(this.x, this.y, this.layer);
+                this.dropping = true;
 
                 // angle between the horizontal and velocity
                 let va = Math.atan2(shooter.speedY, shooter.speedX);
                 // angle between the horizontal and the joint line from the ball to shooter
-                let ha = Math.atan2(ball.getY() - shooter.y, ball.getX() - shooter.x);
+                let ha = Math.atan2(this.getY() - shooter.y, this.getX() - shooter.x);
                 // difference between two angles
                 let da = va - ha;
 
                 let theSpeed = shooterSpeed * Math.cos(da) / 2;
 
-                ball.speedX = theSpeed * Math.cos(ha);
-                ball.speedY = theSpeed * Math.sin(ha);
+                this.speedX = theSpeed * Math.cos(ha);
+                this.speedY = theSpeed * Math.sin(ha);
         }
+
+	rotate(angle) {
+		super.rotate(angle);
+		if (((this.x + ballSize / 2) >= gameInfo.canvasWidth ||
+				(this.y + ballSize / 2) >= gameInfo.canvasHeight ||
+				(this.x - ballSize / 2) <= 0 ||
+				(this.y - ballSize / 2) <= 0)) {
+			return true;
+		}
+	}
 }

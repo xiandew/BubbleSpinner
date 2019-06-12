@@ -17,7 +17,7 @@ ctx.fillStyle = "#ffffff";
 export default class Main {
         constructor() {
                 this.spiral = new Spiral();
-                this.shooter = new Shooter();
+                this.shooter = Shooter.getInstance();
                 this.lives = new Lives();
                 this.extra = new ExtraBalls();
 
