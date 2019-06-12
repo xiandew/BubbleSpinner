@@ -11,7 +11,7 @@ let isCollideSpiral = require("../utilities/isCollideSpiral");
 const LINEAR_SPEED = gameInfo.canvasWidth / 32;
 let ballSize = gameInfo.getBallSize();
 
-export default class ExtraBalls {
+export default class NoiseBalls {
         constructor() {
                 this.balls = [];
                 this.generated = false;
