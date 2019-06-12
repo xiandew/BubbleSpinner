@@ -1,6 +1,6 @@
 import GameInfo from './runtime/gameInfo';
 import Scene from './runtime/scene';
-import ExtraBalls from "./runtime/extraBalls";
+import NoiseBalls from "./runtime/noiseBalls";
 
 import Lives from "./lives";
 import Spiral from './spiral';
@@ -19,7 +19,7 @@ export default class Main {
                 this.spiral = new Spiral();
                 this.shooter = Shooter.getInstance();
                 this.lives = new Lives();
-                this.extra = new ExtraBalls();
+                this.noise = new NoiseBalls();
 
                 // make sure only add event listener once in 'update'
                 this.hasEventBind = true;
@@ -43,7 +43,7 @@ export default class Main {
                 }
 
                 this.spiral.update();
-                this.extra.update(this.spiral);
+                this.noise.update(this.spiral);
 
                 if (!this.spiral.toChange && gameInfo.start) {
                         if (!this.shooter.hasEventBind) {
@@ -72,7 +72,7 @@ export default class Main {
 
                         this.shooter.render();
                         this.lives.render();
-                        this.extra.render();
+                        this.noise.render();
 
                         if (this.spiral.toChange) {
                                 Scene.changeSpiralAnime(this.spiral);
@@ -176,12 +176,12 @@ export default class Main {
 }
 
 const SHARE_IMG = [
-	'images/share/b_blue.png',
-	'images/share/b_cyan.png',
-	'images/share/b_green.png',
-	'images/share/b_pink.png',
-	'images/share/b_red.png',
-	'images/share/b_yellow.png'
+        'images/share/b_blue.png',
+        'images/share/b_cyan.png',
+        'images/share/b_green.png',
+        'images/share/b_pink.png',
+        'images/share/b_red.png',
+        'images/share/b_yellow.png'
 ];
 
 wx.showShareMenu({
