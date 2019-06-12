@@ -192,7 +192,7 @@ export default class Spiral {
                 let minSquare = gameInfo.canvasWidth ** 2;
                 let closest;
                 gameInfo.holes.forEach(hole => {
-                        if (!gameInfo.balls.has(hole) &&
+                        if (!(ball instanceof Ball) &&
                                 hole.layer <= gameInfo.outerLayer &&
                                 Math.abs(target.getX() - hole.x) < separation * 2 &&
                                 Math.abs(target.getY() - hole.y) < separation * 2) {
