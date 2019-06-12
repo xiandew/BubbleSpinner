@@ -259,7 +259,7 @@ function findAround(target) {
         // target's neighbouring balls
         let around = [];
 
-        Array.from(gameInfo.balls).concat(gameInfo.pivot).forEach(ball => {
+        gameInfo.balls.forEach(ball => {
                 let dSquare = Math.floor((ball.getX() - target.getX()) ** 2 +
 				(ball.getY() - target.getY()) ** 2);
                 if (!ball.visited &&
