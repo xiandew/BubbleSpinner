@@ -49,20 +49,24 @@ export default class GameInfo {
                 // resize the sharedCanvas for better display of text.
                 this.sharedCanvas.width = scaledCanvasWidth;
                 this.sharedCanvas.height = scaledCanvasHeight;
-		
+
+                this.outerLayer = LAYERS[1];
                 this.ballsSrc = shuffle(BALLS_SRC);
                 this.holes = [];
+
+                // balls in this.holes
+                this.balls = new Set([]);
 
                 this.reset();
                 this.start = false;
         }
 
-	static getInstance() {
-		if (!instance) {
-			instance = new GameInfo();
-		}
-		return instance;
-	}
+        static getInstance() {
+                if (!instance) {
+                        instance = new GameInfo();
+                }
+                return instance;
+        }
 
         reset() {
                 this.start = true;
@@ -87,13 +91,13 @@ export default class GameInfo {
                 return this.ballsSrc.slice(0, this.getLayers() + 1);
         }
 
-	getBallSize() {
-		return BALL_SIZE;
-	}
+        getBallSize() {
+                return BALL_SIZE;
+        }
 
-	getShooterSpeed() {
-		return SHOOTER_SPEED;
-	}
+        getShooterSpeed() {
+                return SHOOTER_SPEED;
+        }
 
         renewLives() {
                 this.lives = Math.ceil(Math.random() * MAX_NUM_LIVES);

@@ -14,7 +14,6 @@ export default class Hole extends Sprite {
         constructor(x = 0, y = 0, layer = 0) {
 		super(x, y);
                 this.layer = layer;
-                this.filled = false;
         }
 
 	rotate(angle) {
@@ -25,17 +24,5 @@ export default class Hole extends Sprite {
 
 		this.x = centX + Math.cos(rotatingAngle) * radius;
 		this.y = centY + Math.sin(rotatingAngle) * radius;
-
-		if (
-			this.filled &&
-			(
-				(this.x + ballSize / 2) >= gameInfo.canvasWidth ||
-				(this.y + ballSize / 2) >= gameInfo.canvasHeight ||
-				(this.x - ballSize / 2) <= 0 ||
-				(this.y - ballSize / 2) <= 0
-			)
-		) {
-			return true;
-		}
 	}
 }

@@ -1,16 +1,12 @@
 import GameInfo from "../runtime/gameInfo";
-import Hole from "../hole";
 let gameInfo = GameInfo.getInstance();
+import Shooter from "../shooter";
 
 module.exports = function(target) {
-
-        for (let i = 0, ball; i < gameInfo.balls.length; i++) {
-                ball = gameInfo.balls[i];
-                if (
-                        ball.visible &&
+        for (let ball of Array.from(gameInfo.balls).concat(gameInfo.pivot)) {
+                if (ball.visible &&
                         ball.dropping == undefined &&
-                        ball.isCollideWith(target)
-                ) {
+                        ball.isCollideWith(target)) {
                         return true;
                 }
         }
