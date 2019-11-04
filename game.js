@@ -1,13 +1,13 @@
-import './js/libs/weapp-adapter';
+import './src/libs/weapp-adapter';
 
-import Main from './js/main';
+import Main from './src/main';
 import GameInfo, {
         BALLS_SRC,
         BALLS_CVS
-} from './js/runtime/gameInfo';
+} from './src/runtime/gameInfo';
 
 let gameInfo = GameInfo.getInstance();
-let newImage = require('./js/utilities/newImage');
+let newImage = require('./src/utilities/newImage');
 
 let pixelRatio = gameInfo.pixelRatio;
 let ballSize = gameInfo.getBallSize();
