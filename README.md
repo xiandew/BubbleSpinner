@@ -1,7 +1,8 @@
-# HitPeas
+# BubbleSpinner
 
-A simple WeChat game. Inspired by the flash version on 4399 and reproduce that in JS.
+A WeChat mini game of Bubble Spinner. Simple yet entertaining!
 
-# You can play it here!
+## You can play it here!
+Scan the mini game code with WeCaht app.
 
 ![扫码_搜索联合传播样式-微信标准绿版.png](https://i.loli.net/2019/11/15/6aZrK4fuNLzkQWq.png)
