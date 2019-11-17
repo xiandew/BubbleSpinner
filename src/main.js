@@ -1,215 +1,74 @@
-import GameInfo from './runtime/gameInfo';
-import Scene from './runtime/scene';
-import NoiseBalls from "./runtime/noiseBalls";
+// import GameInfo from './runtime/gameInfo';
 
-import Lives from "./components/lives.js";
-import Spiral from './components/spiral';
-import Shooter from './components/shooter';
-let click = require('./utilities/click');
+// let gameInfo = GameInfo.getInstance();
 
-let gameInfo = GameInfo.getInstance();
-let ctx = canvas.getContext('2d');
-ctx.fillStyle = "#ffffff";
+// TODO test assetsLoader, reform gameInfo with the reference of dataStore
 
-/*----------------------------------------------------------------------------*/
+import AssetsLoader from "./data/AssetsLoader.js";
+import DataStore from "./data/DataStore.js";
+import MainMenu from "./scenes/MainMenu.js";
 
 // The entry class of the game
 export default class Main {
-        constructor() {
-                this.spiral = new Spiral();
-                this.shooter = Shooter.getInstance();
-                this.lives = new Lives();
-                this.noise = new NoiseBalls();
+    constructor() {
+        const loader = AssetsLoader.getInstance();
+        loader.onLoaded(assets => this.onAssetsLoaded(assets));
+        this.dataStore = DataStore.getInstance();
+    }
 
-                // make sure only add event listener once in 'update'
-                this.hasEventBind = true;
-                this.bindCallback = this.callback.bind(this);
-                click.addEvents(this.bindCallback);
+    onAssetsLoaded(assets) {
+        this.dataStore.assets = assets;
 
-                this.spiral.toChange = true;
+        // Ref: https://developers.weixin.qq.com/community/develop/doc/0008ecb3280ac8a3c908282cf56401
+        // scale the onscreen canvas
+        const { screenWidth, screenHeight, pixelRatio } = wx.getSystemInfoSync();
+        canvas.width = screenWidth * pixelRatio;
+        canvas.height = screenHeight * pixelRatio;
 
-                this.bindLoop = this.loop.bind(this);
-                this.frameID = requestAnimationFrame(this.bindLoop);
-        }
+        this.dataStore.screenWidth = screenWidth;
+        this.dataStore.screenHeight = screenHeight;
+        this.dataStore.ctx = canvas.getContext("2d");
+        this.dataStore.ctx.fillStyle = "#ffffff";
+        this.dataStore.ctx.scale(pixelRatio, pixelRatio);
 
-        restart() {
-                this.spiral.toChange = true;
-                this.hasEventBind = false;
-        }
+        this.dataStore.fps = 60;
+        wx.setPreferredFramesPerSecond(this.dataStore.fps);
 
-        update() {
-                if (gameInfo.over) {
-                        return;
-                }
+        // init game data
+        this.dataStore.bubbleSize = Math.ceil(0.055 * this.dataStore.screenWidth);
+        this.dataStore.score = 0;
 
-                this.spiral.update();
-                this.noise.update(this.spiral);
-
-                if (!this.spiral.toChange && gameInfo.start) {
-                        if (!this.shooter.hasEventBind) {
-                                this.shooter.addEvents()
-                        } else {
-                                this.shooter.update(this.spiral)
-                        }
-                }
-
-                if (gameInfo.levelup) {
-                        this.restart();
-                        gameInfo.levelup = false;
-                }
-        }
-
-        render() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                if (!gameInfo.start) {
-                        Scene.renderGameStart(this.spiral);
-                }
-
-                if (gameInfo.start) {
-                        Scene.renderGameScore();
-
-                        this.shooter.render();
-                        this.lives.render();
-                        this.noise.render();
-
-                        if (this.spiral.toChange) {
-                                Scene.changeSpiralAnime(this.spiral);
-                                return;
-                        } else {
-                                this.spiral.render();
-                        }
-                }
-
-                if (gameInfo.over) {
-                        if (!this.hasEventBind) {
-                                this.shooter.removeEvents();
-
-                                gameInfo.openDataContext.postMessage({
-                                        cmd: "clearSharedCanvas"
-                                });
-
-                                gameInfo.openDataContext.postMessage({
-                                        cmd: "updateScore",
-                                        score: gameInfo.score
-                                });
-
-                                this.hasEventBind = true;
-                                click.addEvents(this.bindCallback);
-                        }
-                        Scene.renderGameOver();
-                }
-        }
-
-        // loop all the frames
-        loop() {
-                this.update();
-                this.render();
-
-                this.frameID = requestAnimationFrame(this.bindLoop);
-        }
-
-        // click event callback
-        callback(btn) {
-                switch (btn) {
-                        case "RankListReturn":
-                                if (!gameInfo.showRank) {
-                                        return;
-                                }
-
-                                gameInfo.showRank = false;
-                                gameInfo.showGroupRank = false;
-                                break;
-                        case "GroupRankList":
-                                if (!gameInfo.showRank || gameInfo.showGroupRank) {
-                                        return;
-                                }
-
-                                wx.shareAppMessage({
-                                        title: "查看群排行",
-                                        imageUrl: "images/share/rankListIcon.png"
-                                });
-                                break;
-                        case "StartButton":
-                                if (gameInfo.start || gameInfo.showRank) {
-                                        return;
-                                }
-
-                                gameInfo.reset();
-
-                                this.hasEventBind = false;
-                                click.removeEvents();
-                                break;
-                        case "RankListIcon":
-                                if (gameInfo.start || gameInfo.showRank) {
-                                        return;
-                                }
-
-                                gameInfo.showRank = true;
-                                gameInfo.openDataContext.postMessage({
-                                        cmd: "showRankList"
-                                });
-                                break;
-                        case "FullRankList":
-                                if (!gameInfo.start || !gameInfo.over) {
-                                        return;
-                                }
-
-                                gameInfo.showRank = true;
-                                break;
-                        case "RestartButton":
-                                if (!gameInfo.start || !gameInfo.over || gameInfo.showRank) {
-                                        return;
-                                }
-
-                                gameInfo.reset();
-
-                                this.shooter.initShooter();
-                                this.spiral.toChange = true;
-
-                                this.hasEventBind = false;
-                                click.removeEvents();
-                                break;
-                }
-        }
+        // display MainMenu scene
+        new MainMenu();
+    }
 }
 
-const SHARE_IMG = [
-        'images/share/b_blue.png',
-        'images/share/b_cyan.png',
-        'images/share/b_green.png',
-        'images/share/b_pink.png',
-        'images/share/b_red.png',
-        'images/share/b_yellow.png'
-];
-
 wx.showShareMenu({
-        withShareTicket: true,
+    withShareTicket: true,
 });
 
 wx.onShareAppMessage(function() {
-        return {
-                title: '咻咻咻',
-                imageUrl: SHARE_IMG[Math.floor(Math.random() * SHARE_IMG.length)]
-        }
+    return {
+        title: '即刻畅玩，战豆到底！',
+        imageUrl: DataStore.getInstance().assets.get("share-img").src
+    }
 });
 
 // show group rank
 wx.onShow(res => {
-        let shareTicket = res.shareTicket;
-        if (shareTicket) {
-                gameInfo.showRank = true;
+    let shareTicket = res.shareTicket;
+    if (shareTicket) {
+        gameInfo.showRank = true;
 
-                // for muting the showGroupRank button
-                gameInfo.showGroupRank = true;
+        // for muting the showGroupRank button
+        gameInfo.showGroupRank = true;
 
-                gameInfo.openDataContext.postMessage({
-                        cmd: "clearSharedCanvas"
-                });
-                gameInfo.openDataContext.postMessage({
-                        cmd: "groupRankList",
-                        ticket: shareTicket
-                });
-        }
+        gameInfo.openDataContext.postMessage({
+            cmd: "clearSharedCanvas"
+        });
+        gameInfo.openDataContext.postMessage({
+            cmd: "groupRankList",
+            ticket: shareTicket
+        });
+    }
 });
