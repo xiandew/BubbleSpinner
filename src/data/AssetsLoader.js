@@ -1,4 +1,4 @@
-import Assets from './assets.js';
+import Assets from './Assets.js';
 
 export default class AssetsLoader {
     constructor(assets = Assets) {
@@ -13,7 +13,7 @@ export default class AssetsLoader {
     onLoaded(callback) {
         let loadedCount = 0;
         for (let asset of this.assets.values()) {
-            asset.onload = function() {
+            asset.onload = () => {
                 loadedCount++;
                 if (loadedCount >= this.assets.size) {
                     callback(this.assets);

@@ -1,8 +1,8 @@
 // Store as two-dimension array for new Map()
-export const Assets = [
+const Assets = [
     // Usage: MainMenu
     ["branding",  "assets/img/branding.png" ],
-    ["logo",      "assets/img/logo.png"     ],
+    ["logo",      "assets/img/logo-2d.png"     ],
     ["start-btn", "assets/img/start-btn.png"],
     ["rank-btn",  "assets/img/rank.png"     ],
 
@@ -24,9 +24,11 @@ export const Assets = [
     ["return-btn",     "assets/img/return.png"    ],
 
     // Bitmap font. Usage: MainScene, RankScene
-    ["bmfont-black", "assets/fonts/impact-black.png"],
-    ["bmfont-white", "assets/fonts/impact-white.png"],
+    ["bmfont-black", "assets/bmfonts/impact-black.png"],
+    ["bmfont-white", "assets/bmfonts/impact-white.png"],
 	
 	// Usage: wx.onShareAppMessage()
 	["share-img", "assets/img/share.png"]
 ];
+
+export default Assets;
