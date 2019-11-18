@@ -2,9 +2,9 @@
 const Assets = [
     // Usage: MainMenu
     ["branding",  "assets/img/branding.png" ],
-    ["logo",      "assets/img/logo-2d.png"     ],
+    ["logo",      "assets/img/logo-2d.png"  ],
     ["start-btn", "assets/img/start-btn.png"],
-    ["rank-btn",  "assets/img/rank.png"     ],
+    ["rank-btn",  "assets/img/rank-btn.png" ],
 
     // Usage: MainScene
     ["pivot",         "assets/img/pivot.png"        ],
@@ -19,16 +19,15 @@ const Assets = [
     // Usage: GameEnded
     ["restart-btn", "assets/img/restart-btn.png"],
 
-    // Usage: RankScene
-    ["group-rank-btn", "assets/img/group-rank.png"],
-    ["return-btn",     "assets/img/return.png"    ],
+    // Usage: RankScene (onscreen canvas)
+    ["group-rank-btn", "assets/img/group-rank-btn.png"],
+    ["return-btn",     "assets/img/return.png"        ],
 
-    // Bitmap font. Usage: MainScene, RankScene
-    ["bmfont-black", "assets/bmfonts/impact-black.png"],
-    ["bmfont-white", "assets/bmfonts/impact-white.png"],
-	
 	// Usage: wx.onShareAppMessage()
-	["share-img", "assets/img/share.png"]
+	["share-img", "assets/img/share.png"],
+
+    // Bitmap font. Usage: MainScene
+	["Konstructiv", "assets/bmfonts/Konstructiv.png"],
 ];
 
 export default Assets;
