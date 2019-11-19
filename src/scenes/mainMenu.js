@@ -70,6 +70,7 @@ export default class MainMenu {
                 this.dataStore.openDataContext.postMessage({
                     action: "showRankScene"
                 });
+                this.dataStore.lastScene = "MainMenu";
                 this.dataStore.currentScene = "RankScene";
             }
         });

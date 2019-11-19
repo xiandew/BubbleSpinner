@@ -1,73 +1,57 @@
 import DataStore from "../data/DataStore.js";
 import Sprite from "../base/Sprite.js";
-import roundRect from "../utils/roundRect.js";
+import drawRoundRect from "../utils/drawRoundRect.js";
 
 export default class RankScene {
     constructor() {
         this.dataStore = DataStore.getInstance();
 
+        // background for the scene
         let bg = wx.createCanvas();
         let bgCtx = bg.getContext("2d");
         bg.width = this.dataStore.canvasWidth;
         bg.height = this.dataStore.canvasHeight;
         this.bg = new Sprite(bg, 0.5 * this.dataStore.canvasWidth, 0.5 * this.dataStore.canvasHeight, this.dataStore.canvasWidth, this.dataStore.canvasHeight);
 
-        let headerText = "好友排行榜";
-        let headerStartY = 0.125 * bg.height;
-        let headerSize = 0.03 * bg.height;
+        // background for the leaderboard (top = 15%, height = 65%)
+        let lbTop = 0.15 * bg.height;
+        let lbHeight = 0.65 * bg.height;
+        // leaderboard margin x = 7.5 %
+        let lbmx = 0.075 * bg.width;
+        // leaderboard padding x = 6 %
+        let lbpx = 0.06 * bg.width;
+        bgCtx.fillStyle = "rgba(0, 0, 0, 0.8)";
+        bgCtx.strokeStyle = "rgba(80, 80, 80, 1)";
+        bgCtx.lineWidth = 2;
+        drawRoundRect(bgCtx, lbmx, lbTop, bg.width - 2 * lbmx, lbHeight, 0, true);
 
-        bgCtx.fillStyle = "#ffffff";
-        bgCtx.font = `bold ${headerSize}px Arial`;
-        bgCtx.textAlign = "center";
-        bgCtx.fillText(headerText, 0.5 * bg.width, headerStartY);
-
-        // mainPanel for meta and leaderboard
-        // mainPanel start y = 17%
-        // mainPanel end y = 70%
-        bgCtx.fillStyle = "#3c3c3c";
-        bgCtx.strokeStyle = "#000000";
-        bgCtx.lineWidth = 1;
-        let mainPanelStartX = 0.075 * bg.width;
-        let mainPanelStartY = 0.17 * bg.height;
-        let mainPanelWidth = 0.85 * bg.width;
-        let mainPanelHeight = 0.53 * bg.height;
-        roundRect(bgCtx, mainPanelStartX, mainPanelStartY, mainPanelWidth, mainPanelHeight, 8, true);
-
-        // meta start y = 17%
-        // meta height = 3%
+        // meta (top = 15%, height = 5%)
         let metaText = "每周一凌晨刷新";
-        let metaLineHeight = 0.03 * bg.height;
-        let metaSize = 0.5 * metaLineHeight;
-        bgCtx.fillStyle = "#9b9b9b";
+        let metaHeight = 0.05 * bg.height;
+        let metaSize = 0.3 * metaHeight;
+        bgCtx.fillStyle = "#ffffff";
         bgCtx.font = `${metaSize}px Arial`;
         bgCtx.textAlign = "left";
         bgCtx.textBaseline = "top";
-        bgCtx.fillText(
-            metaText,
-            mainPanelStartX + 0.07 * mainPanelWidth,
-            mainPanelStartY + 0.5 * (metaLineHeight - metaSize)
-        );
+        bgCtx.fillText(metaText, lbmx + lbpx, lbTop + 0.5 * (metaHeight - metaSize));
 
-        // leaderboard start y = 20%
-        // leaderboard height = 50%
+        // hr (top = 20%)
+        bgCtx.beginPath();
+        bgCtx.moveTo(lbmx, lbTop + metaHeight);
+        bgCtx.lineTo(bg.width - lbmx, lbTop + metaHeight);
+        bgCtx.stroke();
+
+        // canvas for the leaderboard (top = 20%, height = 60%)
         let leaderboard = wx.createCanvas();
-        leaderboard.width = mainPanelWidth;
-        leaderboard.height = 0.5 * bg.height;
+        leaderboard.width = bg.width - 2 * lbmx;
+        leaderboard.height = 0.6 * bg.height;
         this.leaderboard = new Sprite(
             leaderboard,
             0.5 * this.dataStore.canvasWidth,
-            0.35 * this.dataStore.canvasHeight,
+            0.5 * this.dataStore.canvasHeight,
             leaderboard.width,
             leaderboard.height
         );
-
-        // myPanel for my rank
-        // myPanel start y = 72.5%
-        // myPanel height = 12.5%
-        bgCtx.fillStyle = "#3f3f3f";
-        bgCtx.strokeStyle = "#bbbbbb";
-        bgCtx.lineWidth = 1;
-        roundRect(bgCtx, 0.075 * bg.width, 0.725 * bg.height, 0.85 * bg.width, 0.125 * bg.height, 8, true);
     }
 
     render() {

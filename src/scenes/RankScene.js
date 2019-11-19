@@ -18,19 +18,32 @@ export default class RankScene {
         this.returnBtn = new Sprite(
             this.dataStore.assets.get("return-btn"),
             0.115 * this.dataStore.screenWidth,
-            0.92 * this.dataStore.screenHeight,
-            0.08 * this.dataStore.screenWidth
+            0.9 * this.dataStore.screenHeight,
+            0.05 * this.dataStore.screenWidth
         );
         this.groupRankBtn = new Sprite(
             this.dataStore.assets.get("group-rank-btn"),
             0.728 * this.dataStore.screenWidth,
-            0.92 * this.dataStore.screenHeight,
+            0.9 * this.dataStore.screenHeight,
             0.35 * this.dataStore.screenWidth
         );
 
         this.touchHandler = new TouchHandler;
         this.touchHandler.onTouchEnd(e => {
-            // TODO
+            if (this.dataStore.currentScene !== "RankScene") {
+                return;
+            }
+
+            if (this.groupRankBtn.isTouched(e)) {
+                wx.shareAppMessage({
+                    title: "查看群排行",
+                    imageUrl: DataStore.getInstance().assets.get("share-img").src
+                });
+            }
+
+            if (this.returnBtn.isTouched(e)) {
+                this.dataStore.currentScene = this.dataStore.lastScene;
+            }
         });
     }
 

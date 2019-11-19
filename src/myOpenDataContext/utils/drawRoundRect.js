@@ -18,7 +18,7 @@
  * @param {Boolean} [fill = false] Whether to fill the rectangle.
  * @param {Boolean} [stroke = true] Whether to stroke the rectangle.
  */
-function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
+function drawRoundRect(ctx, x, y, width, height, radius, fill, stroke) {
     if (typeof stroke === 'undefined') {
         stroke = true;
     }
@@ -63,4 +63,4 @@ function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
 
 }
 
-export default roundRect;
+export default drawRoundRect;

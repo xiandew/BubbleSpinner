@@ -42,10 +42,7 @@ function init() {
     let mask = wx.createCanvas();
     let maskCtx = mask.getContext("2d");
     maskCtx.beginPath();
-    let masklg = maskCtx.createLinearGradient(0, 0, mask.width, mask.height);
-    masklg.addColorStop(0, 'rgba(117, 119, 126, 0.8)');
-    masklg.addColorStop(1, 'rgba(104, 105, 110, 0.9)');
-    maskCtx.fillStyle = masklg;
+    maskCtx.fillStyle = "rgba(30, 30, 30, 0.9)";
     maskCtx.fillRect(0, 0, mask.width, mask.height);
     maskCtx.closePath();
     dataStore.mask = new Sprite(
