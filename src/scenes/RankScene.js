@@ -17,20 +17,20 @@ export default class RankScene {
         this.ctx = this.dataStore.ctx;
         this.returnBtn = new Sprite(
             this.dataStore.assets.get("return-btn"),
-            0.115 * this.dataStore.screenWidth,
+            0.12 * this.dataStore.screenWidth,
             0.9 * this.dataStore.screenHeight,
-            0.05 * this.dataStore.screenWidth
+            0.06 * this.dataStore.screenWidth
         );
         this.groupRankBtn = new Sprite(
             this.dataStore.assets.get("group-rank-btn"),
-            0.728 * this.dataStore.screenWidth,
+            0.75 * this.dataStore.screenWidth,
             0.9 * this.dataStore.screenHeight,
-            0.35 * this.dataStore.screenWidth
+            0.3 * this.dataStore.screenWidth
         );
 
         this.touchHandler = new TouchHandler;
         this.touchHandler.onTouchEnd(e => {
-            if (this.dataStore.currentScene !== "RankScene") {
+            if (this.dataStore.currentScene !== this.toString()) {
                 return;
             }
 
@@ -51,6 +51,10 @@ export default class RankScene {
         this.dataStore.sharedCanvas.render(this.ctx);
         this.returnBtn.render(this.ctx);
         this.groupRankBtn.render(this.ctx);
+    }
+
+    toString() {
+        return "RankScene";
     }
 
     static getInstance() {

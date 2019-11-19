@@ -1,13 +1,12 @@
 import Sprite from "../base/Sprite.js";
 import DataStore from "../data/DataStore.js";
 import TouchHandler from "../utils/TouchHandler.js";
-import RankScene from "./RankScene.js";
 
 
 export default class MainMenu {
     constructor() {
         this.dataStore = DataStore.getInstance();
-        this.dataStore.currentScene = "MainMenu";
+        this.dataStore.currentScene = this.toString();
 
         this.ctx = this.dataStore.ctx;
 
@@ -56,7 +55,7 @@ export default class MainMenu {
 
         this.touchHandler = new TouchHandler();
         this.touchHandler.onTouchEnd((e) => {
-            if (this.dataStore.currentScene !== "MainMenu") {
+            if (this.dataStore.currentScene !== this.toString()) {
                 return;
             }
 
@@ -68,14 +67,12 @@ export default class MainMenu {
 
             if (this.rankBtn.isTouched(e)) {
                 this.dataStore.openDataContext.postMessage({
-                    action: "showRankScene"
+                    action: "drawRankScene"
                 });
-                this.dataStore.lastScene = "MainMenu";
-                this.dataStore.currentScene = "RankScene";
+                this.dataStore.lastScene = this.toString();
+                this.dataStore.currentScene = this.dataStore.RankScene.toString();
             }
         });
-
-        this.loop();
     }
 
     update() {
@@ -86,8 +83,8 @@ export default class MainMenu {
         this.ctx.clearRect(0, 0, this.dataStore.screenWidth, this.dataStore.screenHeight);
         this.ctx.fillRect(0, 0, this.dataStore.screenWidth, this.dataStore.screenHeight);
 
-        if (this.dataStore.currentScene === "RankScene") {
-            RankScene.getInstance().render();
+        if (this.dataStore.currentScene === this.dataStore.RankScene.toString()) {
+            this.dataStore.RankScene.render();
             return;
         }
 
@@ -106,9 +103,20 @@ export default class MainMenu {
     }
 
     // loop all the frames
-    loop() {
-        this.frameID = requestAnimationFrame(this.loop.bind(this));
+    run() {
+        this.frameID = requestAnimationFrame(this.run.bind(this));
         this.update();
         this.render();
+    }
+
+    toString() {
+        return "MainMenu";
+    }
+
+    static getInstance() {
+        if (!MainMenu.instance) {
+            MainMenu.instance = new MainMenu();
+        }
+        return MainMenu.instance;
     }
 }
