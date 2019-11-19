@@ -1,74 +1,58 @@
-import Shared from "./shared";
-let shared = new Shared();
+// import BitmapFont from "./utils/BitmapFont.js";
+// import BitmapText from "./utils/BitmapText.js";
 
-let drawRankList = require('./utilities/drawRankList');
-let rankListThumbnail = require('./utilities/drawRankListThumbnail');
-let valueOf = require("./utilities/valueOf");
-let getCurrentWeek = require("./utilities/getCurrentWeek");
+import AssetsLoader from "./data/AssetsLoader.js";
+import DataStore from "./data/DataStore.js";
+import Sprite from "./base/Sprite.js";
+import RankScene from "./scenes/RankScene.js";
 
-wx.onMessage(data => {
+wx.onMessage(msg => {
+    let action = msg.action;
 
-        switch (data.cmd) {
-                case "showRankList":
-                        drawRankList();
-                        break;
+    if (action === "init") {
+        const loader = AssetsLoader.getInstance();
+        loader.onLoaded(assets => onAssetsLoaded(assets));
 
-                case "updateScore":
-                        rankListThumbnail.drawBackground();
-                        updateScore(data.score);
-                        break;
+        init();
+    }
 
-                case "clearSharedCanvas":
-                        shared.ctx.clearRect(0, 0, shared.canvasWidth, shared.canvasHeight);
-                        break;
+    if (action === "showRankScene") {
+        RankScene.getInstance().render();
+    }
+});
 
-                case "groupRankList":
-			drawRankList(data.ticket);
-                        break;
-        }
-})
+function onAssetsLoaded(assets) {
+    let dataStore = DataStore.getInstance();
+    dataStore.assets = assets;
+}
 
-function updateScore(newScore) {
-        wx.getUserCloudStorage({
+function init() {
+    let dataStore = DataStore.getInstance();
 
-                keyList: ["week", "wkRecord", "maxRecord"],
-                success: data => {
+    dataStore.pixelRatio = wx.getSystemInfoSync().pixelRatio;
 
-                        let week = valueOf("week", data.KVDataList);
-                        let weekRecord = valueOf("wkRecord", data.KVDataList);
-                        let maxRecord = valueOf("maxRecord", data.KVDataList);
+    let sharedCanvas = wx.getSharedCanvas();
 
-                        let currentWeek = getCurrentWeek();
+    // Note: the offscreen canvas is not scaled by ctx.scale(). It is crucial for
+    // ctx.fillText() to be clear
+    dataStore.canvasWidth = sharedCanvas.width;
+    dataStore.canvasHeight = sharedCanvas.height;
+    dataStore.ctx = sharedCanvas.getContext("2d");
 
-                        let updates = [{
-                                        key: "currentScore",
-                                        value: newScore.toString()
-                                }]
-                                .concat((week != currentWeek ? [{
-                                        key: "week",
-                                        value: currentWeek.toString()
-                                }] : []))
-                                .concat((week != currentWeek || weekRecord < newScore ? [{
-                                        key: "wkRecord",
-                                        value: newScore.toString()
-                                }] : []))
-                                .concat((maxRecord < newScore ? [{
-                                        key: "maxRecord",
-                                        value: newScore.toString()
-                                }] : []));
-
-                        wx.setUserCloudStorage({
-                                KVDataList: updates,
-                                success: function() {
-                                        rankListThumbnail.draw();
-                                },
-                                fail: function() {
-                                        console.log('分数上传失败');
-                                }
-                        });
-                },
-                fail: function() {
-                        console.log('分数获取失败');
-                }
-        });
+    let mask = wx.createCanvas();
+    let maskCtx = mask.getContext("2d");
+    maskCtx.beginPath();
+    let masklg = maskCtx.createLinearGradient(0, 0, mask.width, mask.height);
+    masklg.addColorStop(0, 'rgba(117, 119, 126, 0.8)');
+    masklg.addColorStop(1, 'rgba(104, 105, 110, 0.9)');
+    maskCtx.fillStyle = masklg;
+    maskCtx.fillRect(0, 0, mask.width, mask.height);
+    maskCtx.closePath();
+    dataStore.mask = new Sprite(
+        mask,
+        0.5 * dataStore.canvasWidth,
+        0.5 * dataStore.canvasHeight,
+        dataStore.canvasWidth,
+        dataStore.canvasHeight
+    );
 }
