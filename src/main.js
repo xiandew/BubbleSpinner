@@ -1,12 +1,9 @@
-// import GameInfo from './runtime/gameInfo';
-
-// let gameInfo = GameInfo.getInstance();
-
 // TODO test assetsLoader, reform gameInfo with the reference of dataStore
 
 import AssetsLoader from "./data/AssetsLoader.js";
 import DataStore from "./data/DataStore.js";
 import MainMenu from "./scenes/MainMenu.js";
+import Sprite from "./base/Sprite.js";
 
 // The entry class of the game
 export default class Main {
@@ -30,6 +27,23 @@ export default class Main {
         this.dataStore.ctx = canvas.getContext("2d");
         this.dataStore.ctx.fillStyle = "#ffffff";
         this.dataStore.ctx.scale(pixelRatio, pixelRatio);
+
+        // setup the offscreen canvas for the ranking
+        let openDataContext = wx.getOpenDataContext();
+        let sharedCanvas = openDataContext.canvas;
+        sharedCanvas.width = canvas.width;
+        sharedCanvas.height = canvas.height;
+        this.dataStore.sharedCanvas = new Sprite(
+            sharedCanvas,
+            0.5 * screenWidth,
+            0.5 * screenHeight,
+            screenWidth,
+            screenHeight
+        );
+        this.dataStore.openDataContext = openDataContext;
+		this.dataStore.openDataContext.postMessage({
+			action: "init"
+        });
 
         this.dataStore.fps = 60;
         wx.setPreferredFramesPerSecond(this.dataStore.fps);

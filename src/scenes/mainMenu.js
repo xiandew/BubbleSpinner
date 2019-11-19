@@ -2,11 +2,12 @@ import Sprite from "../base/Sprite.js";
 import DataStore from "../data/DataStore.js";
 import TouchHandler from "../utils/TouchHandler.js";
 
-// TODO "openDataContext": "src/myOpenDataContext"
 
 export default class MainMenu {
     constructor() {
         this.dataStore = DataStore.getInstance();
+        this.dataStore.currentScene = this.toString();
+
         this.ctx = this.dataStore.ctx;
 
         this.branding = new Sprite(
@@ -26,10 +27,17 @@ export default class MainMenu {
         // the angle of the logo rotation
         this.logoAngle = 0;
 
-        this.mask = wx.createCanvas();
-        let maskCtx = this.mask.getContext("2d");
+        let mask = wx.createCanvas();
+        let maskCtx = mask.getContext("2d");
         maskCtx.fillStyle = "rgba(117, 119, 126, 0.8)";
-        maskCtx.fillRect(0, 0, this.mask.width, this.mask.height);
+        maskCtx.fillRect(0, 0, mask.width, mask.height);
+        this.mask = new Sprite(
+            mask,
+            0.5 * this.dataStore.screenWidth,
+            0.5 * this.dataStore.screenHeight,
+            this.dataStore.screenWidth,
+            this.dataStore.screenHeight
+        );
 
         this.startBtn = new Sprite(
             this.dataStore.assets.get("start-btn"),
@@ -47,14 +55,24 @@ export default class MainMenu {
 
         this.touchHandler = new TouchHandler();
         this.touchHandler.onTouchEnd((e) => {
+            if (this.dataStore.currentScene !== this.toString()) {
+                return;
+            }
+
             if (this.startBtn.isTouched(e)) {
                 this.touchHandler.destroy();
+                cancelAnimationFrame(this.frameID);
                 // Game start
             }
-        });
 
-        
-        this.loop();
+            if (this.rankBtn.isTouched(e)) {
+                this.dataStore.openDataContext.postMessage({
+                    action: "drawRankScene"
+                });
+                this.dataStore.lastScene = this.toString();
+                this.dataStore.currentScene = this.dataStore.RankScene.toString();
+            }
+        });
     }
 
     update() {
@@ -65,6 +83,11 @@ export default class MainMenu {
         this.ctx.clearRect(0, 0, this.dataStore.screenWidth, this.dataStore.screenHeight);
         this.ctx.fillRect(0, 0, this.dataStore.screenWidth, this.dataStore.screenHeight);
 
+        if (this.dataStore.currentScene === this.dataStore.RankScene.toString()) {
+            this.dataStore.RankScene.render();
+            return;
+        }
+
         // rotate the logo
         this.ctx.save();
         this.ctx.translate(this.dataStore.screenWidth / 2, this.dataStore.screenHeight / 2);
@@ -73,16 +96,27 @@ export default class MainMenu {
         this.logo.render(this.ctx);
         this.ctx.restore();
 
-        this.ctx.drawImage(this.mask, 0, 0, this.mask.width, this.mask.height);
+        this.mask.render(this.ctx);
         this.branding.render(this.ctx);
         this.startBtn.render(this.ctx);
         this.rankBtn.render(this.ctx);
     }
 
     // loop all the frames
-    loop() {
-        this.frameID = requestAnimationFrame(this.loop.bind(this));
+    run() {
+        this.frameID = requestAnimationFrame(this.run.bind(this));
         this.update();
         this.render();
+    }
+
+    toString() {
+        return "MainMenu";
+    }
+
+    static getInstance() {
+        if (!MainMenu.instance) {
+            MainMenu.instance = new MainMenu();
+        }
+        return MainMenu.instance;
     }
 }
