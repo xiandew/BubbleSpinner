@@ -13,24 +13,23 @@ import TouchHandler from "../utils/TouchHandler.js";
 
 export default class RankScene {
     constructor() {
-        this.dataStore = DataStore.getInstance();
-        this.ctx = this.dataStore.ctx;
+        this.ctx = DataStore.ctx;
         this.returnBtn = new Sprite(
-            this.dataStore.assets.get("return-btn"),
-            0.12 * this.dataStore.screenWidth,
-            0.9 * this.dataStore.screenHeight,
-            0.06 * this.dataStore.screenWidth
+            DataStore.assets.get("return-btn"),
+            0.12 * DataStore.screenWidth,
+            0.9 * DataStore.screenHeight,
+            0.06 * DataStore.screenWidth
         );
         this.groupRankBtn = new Sprite(
-            this.dataStore.assets.get("group-rank-btn"),
-            0.75 * this.dataStore.screenWidth,
-            0.9 * this.dataStore.screenHeight,
-            0.3 * this.dataStore.screenWidth
+            DataStore.assets.get("group-rank-btn"),
+            0.75 * DataStore.screenWidth,
+            0.9 * DataStore.screenHeight,
+            0.3 * DataStore.screenWidth
         );
 
         this.touchHandler = new TouchHandler;
         this.touchHandler.onTouchEnd(e => {
-            if (this.dataStore.currentScene !== this.toString()) {
+            if (DataStore.currentScene !== this.toString()) {
                 return;
             }
 
@@ -42,13 +41,13 @@ export default class RankScene {
             }
 
             if (this.returnBtn.isTouched(e)) {
-                this.dataStore.currentScene = this.dataStore.lastScene;
+                DataStore.currentScene = DataStore.lastScene;
             }
         });
     }
 
     render() {
-        this.dataStore.sharedCanvas.render(this.ctx);
+        DataStore.sharedCanvas.render(this.ctx);
         this.returnBtn.render(this.ctx);
         this.groupRankBtn.render(this.ctx);
     }

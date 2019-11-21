@@ -5,23 +5,22 @@ import TouchHandler from "../utils/TouchHandler.js";
 
 export default class MainMenu {
     constructor() {
-        this.dataStore = DataStore.getInstance();
-        this.dataStore.currentScene = this.toString();
+        DataStore.currentScene = this.toString();
 
-        this.ctx = this.dataStore.ctx;
+        this.ctx = DataStore.ctx;
 
         this.branding = new Sprite(
-            this.dataStore.assets.get("branding"),
-            0.5 * this.dataStore.screenWidth,
-            0.2 * this.dataStore.screenHeight,
-            0.6 * this.dataStore.screenWidth
+            DataStore.assets.get("branding"),
+            0.5 * DataStore.screenWidth,
+            0.2 * DataStore.screenHeight,
+            0.6 * DataStore.screenWidth
         );
 
         this.logo = new Sprite(
-            this.dataStore.assets.get("logo"),
-            0.5 * this.dataStore.screenWidth,
-            0.5 * this.dataStore.screenHeight,
-            3 * this.dataStore.bubbleSize,
+            DataStore.assets.get("logo"),
+            0.5 * DataStore.screenWidth,
+            0.5 * DataStore.screenHeight,
+            3 * DataStore.bubbleSize,
         );
 
         // the angle of the logo rotation
@@ -33,29 +32,29 @@ export default class MainMenu {
         maskCtx.fillRect(0, 0, mask.width, mask.height);
         this.mask = new Sprite(
             mask,
-            0.5 * this.dataStore.screenWidth,
-            0.5 * this.dataStore.screenHeight,
-            this.dataStore.screenWidth,
-            this.dataStore.screenHeight
+            0.5 * DataStore.screenWidth,
+            0.5 * DataStore.screenHeight,
+            DataStore.screenWidth,
+            DataStore.screenHeight
         );
 
         this.startBtn = new Sprite(
-            this.dataStore.assets.get("start-btn"),
-            0.5 * this.dataStore.screenWidth,
-            0.8 * this.dataStore.screenHeight,
-            0.45 * this.dataStore.screenWidth
+            DataStore.assets.get("start-btn"),
+            0.5 * DataStore.screenWidth,
+            0.8 * DataStore.screenHeight,
+            0.45 * DataStore.screenWidth
         );
 
         this.rankBtn = new Sprite(
-            this.dataStore.assets.get("rank-btn"),
-            0.5 * this.dataStore.screenWidth,
-            0.92 * this.dataStore.screenHeight,
-            0.08 * this.dataStore.screenWidth
+            DataStore.assets.get("rank-btn"),
+            0.5 * DataStore.screenWidth,
+            0.92 * DataStore.screenHeight,
+            0.08 * DataStore.screenWidth
         );
 
         this.touchHandler = new TouchHandler();
         this.touchHandler.onTouchEnd((e) => {
-            if (this.dataStore.currentScene !== this.toString()) {
+            if (DataStore.currentScene !== this.toString()) {
                 return;
             }
 
@@ -63,14 +62,15 @@ export default class MainMenu {
                 this.touchHandler.destroy();
                 cancelAnimationFrame(this.frameID);
                 // Game start
+                DataStore.MainScene.run();
             }
 
             if (this.rankBtn.isTouched(e)) {
-                this.dataStore.openDataContext.postMessage({
+                DataStore.openDataContext.postMessage({
                     action: "drawRankScene"
                 });
-                this.dataStore.lastScene = this.toString();
-                this.dataStore.currentScene = this.dataStore.RankScene.toString();
+                DataStore.lastScene = this.toString();
+                DataStore.currentScene = DataStore.RankScene.toString();
             }
         });
     }
@@ -80,19 +80,19 @@ export default class MainMenu {
     }
 
     render() {
-        this.ctx.clearRect(0, 0, this.dataStore.screenWidth, this.dataStore.screenHeight);
-        this.ctx.fillRect(0, 0, this.dataStore.screenWidth, this.dataStore.screenHeight);
+        this.ctx.clearRect(0, 0, DataStore.screenWidth, DataStore.screenHeight);
+        this.ctx.fillRect(0, 0, DataStore.screenWidth, DataStore.screenHeight);
 
-        if (this.dataStore.currentScene === this.dataStore.RankScene.toString()) {
-            this.dataStore.RankScene.render();
+        if (DataStore.currentScene === DataStore.RankScene.toString()) {
+            DataStore.RankScene.render();
             return;
         }
 
         // rotate the logo
         this.ctx.save();
-        this.ctx.translate(this.dataStore.screenWidth / 2, this.dataStore.screenHeight / 2);
+        this.ctx.translate(DataStore.screenWidth / 2, DataStore.screenHeight / 2);
         this.ctx.rotate(this.logoAngle);
-        this.ctx.translate(-this.dataStore.screenWidth / 2, -this.dataStore.screenHeight / 2);
+        this.ctx.translate(-DataStore.screenWidth / 2, -DataStore.screenHeight / 2);
         this.logo.render(this.ctx);
         this.ctx.restore();
 
