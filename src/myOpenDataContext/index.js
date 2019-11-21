@@ -16,28 +16,26 @@ wx.onMessage(msg => {
         init();
     }
 
-    if (action === "showRankScene") {
-        RankScene.getInstance().render();
+    if (action === "drawRankScene") {
+        DataStore.RankScene.render();
     }
 });
 
 function onAssetsLoaded(assets) {
-    let dataStore = DataStore.getInstance();
-    dataStore.assets = assets;
+    DataStore.assets = assets;
 }
 
 function init() {
-    let dataStore = DataStore.getInstance();
 
-    dataStore.pixelRatio = wx.getSystemInfoSync().pixelRatio;
+    DataStore.pixelRatio = wx.getSystemInfoSync().pixelRatio;
 
     let sharedCanvas = wx.getSharedCanvas();
 
     // Note: the offscreen canvas is not scaled by ctx.scale(). It is crucial for
     // ctx.fillText() to be clear
-    dataStore.canvasWidth = sharedCanvas.width;
-    dataStore.canvasHeight = sharedCanvas.height;
-    dataStore.ctx = sharedCanvas.getContext("2d");
+    DataStore.canvasWidth = sharedCanvas.width;
+    DataStore.canvasHeight = sharedCanvas.height;
+    DataStore.ctx = sharedCanvas.getContext("2d");
 
     let mask = wx.createCanvas();
     let maskCtx = mask.getContext("2d");
@@ -45,11 +43,13 @@ function init() {
     maskCtx.fillStyle = "rgba(30, 30, 30, 0.9)";
     maskCtx.fillRect(0, 0, mask.width, mask.height);
     maskCtx.closePath();
-    dataStore.mask = new Sprite(
+    DataStore.mask = new Sprite(
         mask,
-        0.5 * dataStore.canvasWidth,
-        0.5 * dataStore.canvasHeight,
-        dataStore.canvasWidth,
-        dataStore.canvasHeight
+        0.5 * DataStore.canvasWidth,
+        0.5 * DataStore.canvasHeight,
+        DataStore.canvasWidth,
+        DataStore.canvasHeight
     );
+
+    DataStore.RankScene = RankScene.getInstance();
 }

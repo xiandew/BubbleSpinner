@@ -4,14 +4,12 @@ import drawRoundRect from "../utils/drawRoundRect.js";
 
 export default class RankScene {
     constructor() {
-        this.dataStore = DataStore.getInstance();
-
         // background for the scene
         let bg = wx.createCanvas();
         let bgCtx = bg.getContext("2d");
-        bg.width = this.dataStore.canvasWidth;
-        bg.height = this.dataStore.canvasHeight;
-        this.bg = new Sprite(bg, 0.5 * this.dataStore.canvasWidth, 0.5 * this.dataStore.canvasHeight, this.dataStore.canvasWidth, this.dataStore.canvasHeight);
+        bg.width = DataStore.canvasWidth;
+        bg.height = DataStore.canvasHeight;
+        this.bg = new Sprite(bg, 0.5 * DataStore.canvasWidth, 0.5 * DataStore.canvasHeight, DataStore.canvasWidth, DataStore.canvasHeight);
 
         // background for the leaderboard (top = 15%, height = 65%)
         let lbTop = 0.15 * bg.height;
@@ -47,16 +45,16 @@ export default class RankScene {
         leaderboard.height = 0.6 * bg.height;
         this.leaderboard = new Sprite(
             leaderboard,
-            0.5 * this.dataStore.canvasWidth,
-            0.5 * this.dataStore.canvasHeight,
+            0.5 * DataStore.canvasWidth,
+            0.5 * DataStore.canvasHeight,
             leaderboard.width,
             leaderboard.height
         );
     }
 
     render() {
-        let ctx = this.dataStore.ctx;
-        this.dataStore.mask.render(ctx);
+        let ctx = DataStore.ctx;
+        DataStore.mask.render(ctx);
         this.bg.render(ctx);
     }
 
