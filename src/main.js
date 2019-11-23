@@ -51,8 +51,12 @@ export default class Main {
         wx.setPreferredFramesPerSecond(DataStore.fps);
 
         // init shared (used in more than one scenes) game data
-        DataStore.bubbleSize = Math.ceil(0.055 * DataStore.screenWidth);
+        // distance between each corner to the center in a single hex
+        DataStore.hexSize = Math.ceil(0.069 * DataStore.screenWidth) / 2;
+        // bubbleSize = (hexSize * 2 / √3 + hexSize * 2) / 1.9
+        DataStore.bubbleSize = DataStore.hexSize * (1 / Math.sqrt(3) + 1) * 2 / 1.9;
         DataStore.score = 0;
+        DataStore.level = 0;
 
         // init scenes
         DataStore.MainMenu = MainMenu.getInstance();
