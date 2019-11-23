@@ -60,9 +60,17 @@ export default class Spinner {
         });
     }
 
-    render() {
-        this.pivot.render(DataStore.ctx);
-        this.bubbles.forEach(b => b.render(DataStore.ctx));
+    getX() {
+        return this.pivot.x;
+    }
+
+    getY() {
+        return this.pivot.y;
+    }
+
+    render(ctx) {
+        this.pivot.render(ctx);
+        this.bubbles.forEach(b => b.render(ctx));
     }
 
     static getInstance() {

@@ -1,6 +1,7 @@
 import RotateAnimator from "./RotateAnimator.js";
 import FadeOutAnimator from "./FadeOutAnimator.js";
 import RotateOutAnimator from "./RotateOutAnimator.js";
+import RotateInAnimator from "./RotateInAnimator.js";
 
 
 /**
@@ -15,6 +16,7 @@ export default class AnimatorController {
             "Rotate": RotateAnimator,
             "FadeOut": FadeOutAnimator,
             "RotateOut": RotateOutAnimator,
+            "RotateIn": RotateInAnimator,
         }[animation];
     }
 

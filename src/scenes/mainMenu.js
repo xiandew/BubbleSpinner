@@ -108,7 +108,7 @@ export default class MainMenu extends Scene {
             this.logo.animator.animationComplete) {
 
             cancelAnimationFrame(this.frameID);
-            DataStore.MainScene.run();
+            DataStore.MainScene.enter();
         }
     }
 
