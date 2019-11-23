@@ -1,13 +1,14 @@
 import Sprite from "../base/Sprite.js";
 import DataStore from "../data/DataStore.js";
 import TouchHandler from "../utils/TouchHandler.js";
+import AnimatorController from "../animation/AnimatorController.js";
+import Scene from "./Scene.js";
 
-
-export default class MainMenu {
+export default class MainMenu extends Scene {
     constructor() {
-        DataStore.currentScene = this.toString();
+        super();
 
-        this.ctx = DataStore.ctx;
+        DataStore.currentScene = this.toString();
 
         this.branding = new Sprite(
             DataStore.assets.get("branding"),
@@ -22,9 +23,7 @@ export default class MainMenu {
             0.5 * DataStore.screenHeight,
             3 * DataStore.bubbleSize,
         );
-
-        // the angle of the logo rotation
-        this.logoAngle = 0;
+        AnimatorController.registerAnimator(this.logo, "Rotate");
 
         let mask = wx.createCanvas();
         let maskCtx = mask.getContext("2d");
@@ -61,8 +60,9 @@ export default class MainMenu {
             if (this.startBtn.isTouched(e)) {
                 this.touchHandler.destroy();
                 cancelAnimationFrame(this.frameID);
-                // Game start
-                DataStore.MainScene.run();
+                AnimatorController.registerAnimator(this.logo, "RotateOut");
+                AnimatorController.registerAnimator(this.mask, "FadeOut");
+                this.exit();
             }
 
             if (this.rankBtn.isTouched(e)) {
@@ -75,27 +75,15 @@ export default class MainMenu {
         });
     }
 
-    update() {
-        this.logoAngle += 0.01;
-    }
-
     render() {
-        this.ctx.clearRect(0, 0, DataStore.screenWidth, DataStore.screenHeight);
-        this.ctx.fillRect(0, 0, DataStore.screenWidth, DataStore.screenHeight);
+        super.render();
 
         if (DataStore.currentScene === DataStore.RankScene.toString()) {
             DataStore.RankScene.render();
             return;
         }
 
-        // rotate the logo
-        this.ctx.save();
-        this.ctx.translate(DataStore.screenWidth / 2, DataStore.screenHeight / 2);
-        this.ctx.rotate(this.logoAngle);
-        this.ctx.translate(-DataStore.screenWidth / 2, -DataStore.screenHeight / 2);
-        this.logo.render(this.ctx);
-        this.ctx.restore();
-
+        this.logo.animator.animate(this.ctx);
         this.mask.render(this.ctx);
         this.branding.render(this.ctx);
         this.startBtn.render(this.ctx);
@@ -107,6 +95,21 @@ export default class MainMenu {
         this.frameID = requestAnimationFrame(this.run.bind(this));
         this.update();
         this.render();
+    }
+
+    exit() {
+        this.frameID = requestAnimationFrame(this.exit.bind(this));
+
+        super.render();
+        this.logo.animator.animate(this.ctx);
+        this.mask.animator.animate(this.ctx);
+
+        if (this.mask.animator.animationComplete &&
+            this.logo.animator.animationComplete) {
+
+            cancelAnimationFrame(this.frameID);
+            DataStore.MainScene.run();
+        }
     }
 
     toString() {

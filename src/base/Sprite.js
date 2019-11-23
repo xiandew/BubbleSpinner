@@ -23,6 +23,14 @@ export default class Sprite {
         );
     }
 
+    getX() {
+        return this.x;
+    }
+
+    getY() {
+        return this.y;
+    }
+
     collides(other) {
         return (
             other.startX < this.endX &&
