@@ -1,6 +1,7 @@
 import DataStore from "../data/DataStore.js";
 import Sprite from "../base/Sprite.js";
 import TouchHandler from "../utils/TouchHandler.js";
+import Scene from "./Scene.js";
 
 /**
  * This scene is static (no animation). It composes of two parts. One part is
@@ -11,9 +12,8 @@ import TouchHandler from "../utils/TouchHandler.js";
  *     return btn can be shown immediately in concern of ux.
  */
 
-export default class RankScene {
+export default class RankScene  {
     constructor() {
-        this.ctx = DataStore.ctx;
         this.returnBtn = new Sprite(
             DataStore.assets.get("return-btn"),
             0.12 * DataStore.screenWidth,
