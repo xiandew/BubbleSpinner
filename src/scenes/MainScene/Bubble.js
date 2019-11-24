@@ -1,4 +1,4 @@
-import Sprite from "../../../base/Sprite.js";
+import Sprite from "../../base/Sprite.js";
 
 export default class Bubble extends Sprite {
     constructor(img, x, y, bubbleSize) {
