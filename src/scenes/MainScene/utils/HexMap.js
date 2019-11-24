@@ -1,32 +1,33 @@
-import DataStore from "../../../data/DataStore.js";
 import Hex from "./Hex.js";
 
 export default class HexMap {
     constructor() {
-        this.mapRadius = Math.ceil(Math.max(DataStore.screenWidth, 0.5 * DataStore.screenHeight) / DataStore.bubbleSize);
-        this.data = new Array(2 * this.mapRadius + 1);
+        // the number of rings for the entire map
+        console.assert(HexMap.radius);
+
+        this.data = new Array(2 * HexMap.radius + 1);
         for (let r = 0; r < this.data.length; r++) {
-            this.data[r] = new Array(2 * this.mapRadius + 1 - Math.abs(this.mapRadius - r));
+            this.data[r] = new Array(2 * HexMap.radius + 1 - Math.abs(HexMap.radius - r));
         }
 
         // Ref: https://www.redblobgames.com/grids/hexagons/implementation.html#org28ed58f
-        for (let q = -this.mapRadius; q <= this.mapRadius; q++) {
-            let r1 = Math.max(-this.mapRadius, -q - this.mapRadius);
-            let r2 = Math.min(this.mapRadius, -q + this.mapRadius);
+        for (let q = -HexMap.radius; q <= HexMap.radius; q++) {
+            let r1 = Math.max(-HexMap.radius, -q - HexMap.radius);
+            let r2 = Math.min(HexMap.radius, -q + HexMap.radius);
             for (let r = r1; r <= r2; r++) {
-                let Q = q + this.mapRadius;
-                let R = r + this.mapRadius;
-                this.data[R][Q - Math.max(0, this.mapRadius - R)] = new Hex(Q, R, -Q - R);
+                let Q = q + HexMap.radius;
+                let R = r + HexMap.radius;
+                this.data[R][Q - Math.max(0, HexMap.radius - R)] = new Hex(Q, R, -Q - R);
             }
         }
     }
 
     map(hex) {
-        return this.data[hex.r][hex.q - Math.max(0, this.mapRadius - hex.r)];
+        return this.data[hex.r][hex.q - Math.max(0, HexMap.radius - hex.r)];
     }
 
     centre() {
-        return this.data[this.mapRadius][this.mapRadius];
+        return this.data[HexMap.radius][HexMap.radius];
     }
 
     // Ref: https://www.redblobgames.com/grids/hexagons/#rings

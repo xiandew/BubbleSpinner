@@ -23,9 +23,10 @@ export default class Hex {
         return Hex.add(a, Hex.direction(direction));
     }
     // Ref: https://www.redblobgames.com/grids/hexagons/#hex-to-pixel
-    toPixel(bubbleSize) {
-        let x = bubbleSize * (Math.sqrt(3) * this.q + Math.sqrt(3) / 2 * this.r);
-        let y = bubbleSize * (3. / 2 * this.r);
+    toPixel() {
+        console.assert(Hex.size != undefined);
+        let x = Hex.size * (Math.sqrt(3) * this.q + Math.sqrt(3) / 2 * this.r);
+        let y = Hex.size * (3. / 2 * this.r);
         return {x: x, y: y};
     }
     len() {

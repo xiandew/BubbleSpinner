@@ -1,13 +1,13 @@
 import DataStore from "../data/DataStore.js";
 import Spinner from "./MainScene/Spinner.js";
 import Scene from "./Scene.js";
-import AnimatorController from "../animation/AnimatorController.js";
+import AnimatorManager from "../animation/AnimatorManager.js";
 
 export default class MainScene extends Scene {
     constructor() {
         super();
         this.spinner = Spinner.getInstance();
-        AnimatorController.registerAnimator(this.spinner, "RotateIn");
+        AnimatorManager.registerAnimator(this.spinner, "RotateIn");
     }
 
     enter() {

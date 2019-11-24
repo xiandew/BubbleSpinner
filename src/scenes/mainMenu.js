@@ -1,8 +1,9 @@
 import Sprite from "../base/Sprite.js";
 import DataStore from "../data/DataStore.js";
 import TouchHandler from "../utils/TouchHandler.js";
-import AnimatorController from "../animation/AnimatorController.js";
+import AnimatorManager from "../animation/AnimatorManager.js";
 import Scene from "./Scene.js";
+
 
 export default class MainMenu extends Scene {
     constructor() {
@@ -21,9 +22,9 @@ export default class MainMenu extends Scene {
             DataStore.assets.get("logo"),
             0.5 * DataStore.screenWidth,
             0.5 * DataStore.screenHeight,
-            3 * DataStore.bubbleSize,
+            0.175 * DataStore.screenWidth,
         );
-        AnimatorController.registerAnimator(this.logo, "Rotate");
+        AnimatorManager.registerAnimator(this.logo, "Rotate");
 
         let mask = wx.createCanvas();
         let maskCtx = mask.getContext("2d");
@@ -60,8 +61,8 @@ export default class MainMenu extends Scene {
             if (this.startBtn.isTouched(e)) {
                 this.touchHandler.destroy();
                 cancelAnimationFrame(this.frameID);
-                AnimatorController.registerAnimator(this.logo, "RotateOut");
-                AnimatorController.registerAnimator(this.mask, "FadeOut");
+                AnimatorManager.registerAnimator(this.logo, "RotateOut");
+                AnimatorManager.registerAnimator(this.mask, "FadeOut");
                 this.exit();
             }
 
