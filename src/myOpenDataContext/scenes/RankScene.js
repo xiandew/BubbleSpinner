@@ -53,9 +53,8 @@ export default class RankScene {
     }
 
     render() {
-        let ctx = DataStore.ctx;
-        DataStore.mask.render(ctx);
-        this.bg.render(ctx);
+        DataStore.mask.render(DataStore.ctx);
+        this.bg.render(DataStore.ctx);
     }
 
     static getInstance() {
