@@ -17,6 +17,13 @@ export default class FadeOutAnimator extends Animator {
         this.factor = Math.max(0, this.factor);
 
         ctx.save();
+
+        // a zoom out effect as fading out. Not visible for full-screen elements
+        let scale = 2 - this.factor;
+        ctx.translate(this.target.getX(), this.target.getY());
+        ctx.scale(scale, scale);
+        ctx.translate(-this.target.getX(), -this.target.getY());
+
         ctx.globalAlpha = this.factor;
         this.target.render(ctx);
         ctx.restore();

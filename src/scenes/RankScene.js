@@ -12,8 +12,10 @@ import Scene from "./Scene.js";
  *     return btn can be shown immediately in concern of ux.
  */
 
-export default class RankScene  {
+export default class RankScene extends Scene {
     constructor() {
+        super();
+
         this.returnBtn = new Sprite(
             DataStore.assets.get("return-btn"),
             0.12 * DataStore.screenWidth,
