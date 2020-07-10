@@ -1,13 +1,12 @@
 export default class BitmapText {
     constructor(bitmapFont) {
         this.bitmapFont = bitmapFont;
-        this.fontSize = 96;
     }
 
-    // only for drawing a single line of numbers and not support the font colour option
-    draw(ctx, text, x = 0, y = 0) {
+    // Only for drawing a single line of numbers and not support the font colour option
+    draw(ctx, text, fontSize, x = 0, y = 0) {
 
-        let fontScale = this.fontSize / this.bitmapFont.defaultSize;
+        let fontScale = fontSize / this.bitmapFont.defaultSize;
         let charArr = text.toString().split("");
 
         if (this.textAlign == "center") {
