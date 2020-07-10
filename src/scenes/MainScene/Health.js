@@ -1,9 +1,11 @@
 import DataStore from "../../data/DataStore.js";
 import Bubble from "../MainScene/Bubble.js";
 import RendererManager from "../../renderer/RendererManager.js";
+import UUID from "../../base/UUID.js";
 
 export default class Health {
     constructor() {
+        this.id = UUID.getUUID();
         this.currHealth = this.maxHealth = 5;
         this.sprites = new Array(this.maxHealth).fill(null).map((e, i) => {
             return new Bubble(
