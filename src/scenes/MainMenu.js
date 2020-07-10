@@ -1,7 +1,7 @@
-import Sprite from "../base/Sprite.js";
 import DataStore from "../data/DataStore.js";
+import Sprite from "../base/Sprite.js";
+import RendererManager from "../renderer/RendererManager.js";
 import TouchHandler from "../utils/TouchHandler.js";
-import AnimatorManager from "../animation/AnimatorManager.js";
 import Scene from "./Scene.js";
 
 
@@ -24,7 +24,6 @@ export default class MainMenu extends Scene {
             0.5 * DataStore.screenHeight,
             0.175 * DataStore.screenWidth,
         );
-        AnimatorManager.registerAnimator(this.logo, "Rotate");
 
         let mask = wx.createCanvas();
         let maskCtx = mask.getContext("2d");
@@ -60,10 +59,11 @@ export default class MainMenu extends Scene {
 
             if (this.startBtn.isTouched(e)) {
                 this.touchHandler.destroy();
-                cancelAnimationFrame(this.frameID);
-                AnimatorManager.registerAnimator(this.logo, "RotateOut");
-                AnimatorManager.registerAnimator(this.mask, "FadeOut");
-                this.exit();
+                this.rendererManager.remove(this.branding);
+                this.rendererManager.remove(this.startBtn);
+                this.rendererManager.remove(this.rankBtn);
+                this.rendererManager.setRenderer(this.logo, "RotateOut");
+                this.rendererManager.setRenderer(this.mask, "FadeOut");
             }
 
             if (this.rankBtn.isTouched(e)) {
@@ -74,21 +74,31 @@ export default class MainMenu extends Scene {
                 DataStore.currentScene = DataStore.RankScene.toString();
             }
         });
+
+        this.rendererManager = new RendererManager();
+        this.rendererManager.setRenderer(this.logo, "Rotate");
+        this.rendererManager.setRenderer(this.mask);
+        this.rendererManager.setRenderer(this.branding);
+        this.rendererManager.setRenderer(this.startBtn);
+        this.rendererManager.setRenderer(this.rankBtn);
     }
 
     render() {
         super.render();
 
+        // Render the rank scene
         if (DataStore.currentScene === DataStore.RankScene.toString()) {
-            DataStore.RankScene.render();
-            return;
+            return DataStore.RankScene.render();
         }
 
-        this.logo.animator.animate(this.ctx);
-        this.mask.render(this.ctx);
-        this.branding.render(this.ctx);
-        this.startBtn.render(this.ctx);
-        this.rankBtn.render(this.ctx);
+        // Render this scene
+        this.rendererManager.render(this.ctx);
+
+        // Exited
+        if (this.mask.fadedOut && this.logo.rotatedOut) {
+            cancelAnimationFrame(this.frameID);
+            DataStore.MainScene.run();
+        }
     }
 
     // loop all the frames
@@ -96,21 +106,6 @@ export default class MainMenu extends Scene {
         this.frameID = requestAnimationFrame(this.run.bind(this));
         this.update();
         this.render();
-    }
-
-    exit() {
-        this.frameID = requestAnimationFrame(this.exit.bind(this));
-
-        super.render();
-        this.logo.animator.animate(this.ctx);
-        this.mask.animator.animate(this.ctx);
-
-        if (this.mask.animator.animationComplete &&
-            this.logo.animator.animationComplete) {
-
-            cancelAnimationFrame(this.frameID);
-            DataStore.MainScene.enter();
-        }
     }
 
     toString() {

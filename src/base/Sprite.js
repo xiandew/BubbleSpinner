@@ -1,26 +1,24 @@
+import UUID from "./UUID.js";
+import Texture from "../renderer/Texture.js";
+
 export default class Sprite {
     constructor(img, x = 0, y = 0, width = 0, height = 0) {
-        this.img = img;
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height ? height : img.height / img.width * width;
-
-        this.startX = this.x - this.width / 2;
-        this.startY = this.y - this.height / 2;
-        this.endX = this.x + this.width / 2;
-        this.endY = this.y + this.height / 2;
+        this.id = UUID.getUUID();
+        this.texture = new Texture(img, width, height);
+        this.setX(x);
+        this.setY(y);
     }
 
-    render(ctx) {
-        // draw the image from the center at (x, y)
-        ctx.drawImage(
-            this.img,
-            this.startX,
-            this.startY,
-            this.width,
-            this.height
-        );
+    setX(x) {
+        this.x = x;
+        this.startX = x - this.texture.width / 2;
+        this.endX = x + this.texture.width / 2;
+    }
+
+    setY(y) {
+        this.y = y;
+        this.startY = y - this.texture.height / 2;
+        this.endY = y + this.texture.height / 2;
     }
 
     getX() {
@@ -48,6 +46,16 @@ export default class Sprite {
             y >= this.startY &&
             x <= this.endX &&
             y <= this.endY
+        );
+    }
+
+    render(ctx) {
+        ctx.drawImage(
+            this.texture.img,
+            this.startX,
+            this.startY,
+            this.texture.width,
+            this.texture.height
         );
     }
 }

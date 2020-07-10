@@ -1,5 +1,5 @@
 export default class TouchHandler {
-    constructor () {}
+    constructor() { }
 
     onTouchStart(callback) {
         this.tsHandler = callback;
@@ -17,9 +17,15 @@ export default class TouchHandler {
     }
 
     destroy() {
-        wx.offTouchStart(this.tsHandler);
-        wx.offTouchMove(this.tmHandler);
-        wx.offTouchEnd(this.teHandler);
+        if (this.tsHandler) {
+            wx.offTouchStart(this.tsHandler);
+        }
+        if (this.tmHandler) {
+            wx.offTouchMove(this.tmHandler);
+        }
+        if (this.teHandler) {
+            wx.offTouchEnd(this.teHandler);
+        }
     }
 }
 

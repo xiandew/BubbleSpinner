@@ -1,5 +1,6 @@
 import DataStore from "../data/DataStore.js";
 import Sprite from "../base/Sprite.js";
+import RendererManager from "../renderer/RendererManager.js";
 import TouchHandler from "../utils/TouchHandler.js";
 import Scene from "./Scene.js";
 
@@ -46,12 +47,15 @@ export default class RankScene extends Scene {
                 DataStore.currentScene = DataStore.lastScene;
             }
         });
+
+        this.rendererManager = new RendererManager();
+        this.rendererManager.setRenderer(DataStore.sharedCanvas);
+        this.rendererManager.setRenderer(this.returnBtn);
+        this.rendererManager.setRenderer(this.groupRankBtn);
     }
 
     render() {
-        DataStore.sharedCanvas.render(this.ctx);
-        this.returnBtn.render(this.ctx);
-        this.groupRankBtn.render(this.ctx);
+        this.rendererManager.render(this.ctx);
     }
 
     toString() {
