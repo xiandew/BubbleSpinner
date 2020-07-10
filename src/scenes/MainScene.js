@@ -4,6 +4,7 @@ import Spinner from "./MainScene/Spinner.js";
 import Shooter from "./MainScene/Shooter.js";
 import Scene from "./Scene.js";
 import Health from "./MainScene/Health.js";
+import Score from "./MainScene/Score.js";
 
 
 export default class MainScene extends Scene {
@@ -12,11 +13,13 @@ export default class MainScene extends Scene {
         this.spinner = Spinner.getInstance();
         this.shooter = Shooter.getInstance();
         this.health = Health.getInstance();
+        this.score = Score.getInstance();
 
         this.rendererManager = new RendererManager();
         this.rendererManager.setRenderer(this.spinner, "RotateIn");
         this.rendererManager.setRenderer(this.shooter);
         this.rendererManager.setRenderer(this.health);
+        this.rendererManager.setRenderer(this.score);
     }
 
     update() {

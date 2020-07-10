@@ -3,29 +3,22 @@ import BitmapFont from "../../utils/BitmapFont.js";
 import BitmapText from "../../utils/BitmapText.js";
 import Konstructiv from "../../../assets/bmfonts/Konstructiv.js";
 import RendererManager from "../../renderer/RendererManager.js";
+import UUID from "../../base/UUID.js";
 
 export default class Score {
     constructor() {
+        this.id = UUID.getUUID();
         this.bitmapText = new BitmapText(
-            new BitmapFont(DataStore.assets.get("Konstructiv")),
-            Konstructiv
+            new BitmapFont(DataStore.assets.get("Konstructiv"), Konstructiv),
         );
 
-        this.floatingScores = [];
-        this.rendererManager = new RendererManager();
+        this.fontSize = 0.075 * DataStore.screenWidth;
+        this.startX = 0.055 * DataStore.screenWidth;
+        this.startY = 0.165 * DataStore.screenWidth;
     }
 
     render(ctx) {
-        this.floatingScores.forEach(score => {
-            if (score.fadedOutUp) {
-                this.rendererManager.remove(score);
-            }
-        });
-        this.rendererManager.render(ctx);
-    }
-
-    addFloatingScores(text, x, y) {
-        this.floatingScores.push({text, x, y});
+        this.bitmapText.draw(ctx, DataStore.score, this.fontSize, this.startX, this.startY);
     }
 
     static getInstance() {
