@@ -10,7 +10,7 @@ export default class HexMap {
             this.data[r] = new Array(2 * HexMap.radius + 1 - Math.abs(HexMap.radius - r));
         }
 
-        // Ref: https://www.redblobgames.com/grids/hexagons/implementation.html#org28ed58f
+        // Ref: https://www.redblobgames.com/grids/hexagons/implementation.html#shape-hexagon
         for (let q = -HexMap.radius; q <= HexMap.radius; q++) {
             let r1 = Math.max(-HexMap.radius, -q - HexMap.radius);
             let r2 = Math.min(HexMap.radius, -q + HexMap.radius);
@@ -51,6 +51,10 @@ export default class HexMap {
             results = results.concat(this.cubeRing(center, k));
         }
         return results;
+    }
+
+    getAdjacentHexes(center) {
+        return this.cubeRing(center, 1);
     }
 
     static getInstance() {

@@ -1,15 +1,14 @@
-import Animator from "./Animator.js";
+import Renderer from "../Renderer.js";
 
-export default class FadeOutAnimator extends Animator {
+export default class FadeOutAnimator extends Renderer {
     constructor(target) {
         super(target);
-        this.animationComplete = false;
         this.factor = 1;
-        this.step = 0.1;
+        this.step = 0.05;
     }
 
-    animate(ctx) {
-        if (this.animationComplete) {
+    render(ctx) {
+        if (this.target.fadedOut) {
             return;
         }
 
@@ -25,11 +24,11 @@ export default class FadeOutAnimator extends Animator {
         ctx.translate(-this.target.getX(), -this.target.getY());
 
         ctx.globalAlpha = this.factor;
-        this.target.render(ctx);
+        super.render(ctx);
         ctx.restore();
 
         if (this.factor == 0) {
-            this.animationComplete = true;
+            this.target.fadedOut = true;
         }
     }
 }

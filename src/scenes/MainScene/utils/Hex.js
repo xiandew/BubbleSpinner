@@ -4,8 +4,9 @@ export default class Hex {
         this.q = q;
         this.r = r;
         this.s = s;
-        if (Math.round(q + r + s) !== 0)
+        if (Math.round(q + r + s) !== 0) {
             throw "q + r + s must be 0";
+        }
     }
     static add(a, b) {
         return new Hex(a.q + b.q, a.r + b.r, a.s + b.s);
@@ -52,6 +53,15 @@ export default class Hex {
             si = -qi - ri;
         }
         return new Hex(qi, ri, si);
+    }
+
+    /**
+     * Keep track of the object at this hex
+     * @param {*} obj Object at this hex
+     */
+    setObj(obj) {
+        obj.hex = this;
+        this.obj = obj;
     }
 }
 

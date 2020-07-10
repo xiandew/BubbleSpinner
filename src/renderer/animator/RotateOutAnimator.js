@@ -1,15 +1,15 @@
-import Animator from "./Animator.js";
+import Renderer from "../Renderer.js";
 
-export default class RotateOutAnimator extends Animator {
+
+export default class RotateOutAnimator extends Renderer {
     constructor(target) {
         super(target);
-        this.animationComplete = false;
         this.factor = 1;
         this.step = 0.02;
     }
 
-    animate(ctx) {
-        if (this.animationComplete) {
+    render(ctx) {
+        if (this.target.rotatedOut) {
             return;
         }
         this.factor -= this.step;
@@ -20,11 +20,11 @@ export default class RotateOutAnimator extends Animator {
         ctx.scale(scale, scale);
         ctx.rotate(Math.PI * 2 * scale);
         ctx.translate(-this.target.getX(), -this.target.getY());
-        this.target.render(ctx);
+        super.render(ctx);
         ctx.restore();
 
         if (this.factor <= 0) {
-            this.animationComplete = true;
+            this.target.rotatedOut = true;
         }
     }
 }
