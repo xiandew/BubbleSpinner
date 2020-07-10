@@ -7,7 +7,7 @@ export default class ShooterController {
     constructor(shooter) {
         this.shooter = shooter;
         this.spinner = Spinner.getInstance();
-        DataStore.bottomBound = DataStore.screenHeight - 1.5 * Bubble.size;
+        DataStore.bottomBound = DataStore.screenHeight - Bubble.size;
     }
 
     createCurrShot() {
@@ -33,7 +33,7 @@ export default class ShooterController {
         return new Sprite(
             d[Math.floor(Math.random() * d.length)],
             0.5 * DataStore.screenWidth,
-            DataStore.screenHeight - Bubble.size,
+            DataStore.screenHeight - 0.5 * Bubble.size,
             0.5 * Bubble.size,
             0.5 * Bubble.size
         );
@@ -43,8 +43,8 @@ export default class ShooterController {
 class Shot extends Bubble {
     constructor(img) {
         super(img, 0.5 * DataStore.screenWidth, DataStore.bottomBound);
-        // == 12.8 when screenWidth = 320 and pixelRatio = 2;
-        this.speed = canvas.width * 0.02;
+        // Scale the speed based on the bubble size to prevent from tunneling
+        this.speed = 0.75 * Bubble.size;
     }
     collideXBounds() {
         return (

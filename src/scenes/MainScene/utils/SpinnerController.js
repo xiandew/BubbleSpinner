@@ -21,7 +21,7 @@ export default class SpinnerController {
 
         // init spinner data
         // distance between each corner to the center in a single hex
-        Hex.size = Math.ceil(0.069 * DataStore.screenWidth) / 2;
+        Hex.size = Math.ceil(0.065 * DataStore.screenWidth) / 2;
 
         // bubbleSize = (hexSize * 2 / √3 + hexSize * 2) / 1.9
         Bubble.size = Hex.size * (1 / Math.sqrt(3) + 1) * 2 / 1.9;
