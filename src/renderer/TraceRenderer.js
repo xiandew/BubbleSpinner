@@ -5,6 +5,15 @@ import DataStore from "../data/DataStore.js";
 export default class TraceRenderer extends Renderer {
     constructor(target) {
         super(target);
+
+        this.canvas = wx.createCanvas();
+        this.canvas.width = canvas.width;
+        this.canvas.height = canvas.height;
+
+        this.ctx = this.canvas.getContext("2d");
+        this.ctx.scale(DataStore.pixelRatio, DataStore.pixelRatio);
+        this.ctx.lineWidth = Bubble.size;
+        this.ctx.lineCap = "round";
     }
 
     render(ctx) {
@@ -12,15 +21,19 @@ export default class TraceRenderer extends Renderer {
             return;
         }
 
-        ctx.beginPath();
-        ctx.strokeStyle = "rgba(0,128,0,0.2)";
-        ctx.lineWidth = Bubble.size;
-        ctx.lineCap = "round";
+        this.ctx.beginPath();
+        this.ctx.moveTo(DataStore.screenWidth * 0.5, DataStore.bottomBound);
+        this.ctx.lineTo(this.target.touchX, this.target.touchY);
+        this.ctx.stroke();
+        this.ctx.closePath();
 
-        ctx.moveTo(DataStore.screenWidth * 0.5, DataStore.bottomBound);
-        ctx.lineTo(this.target.touchX, this.target.touchY);
+        this.ctx.globalCompositeOperation = 'source-in';
 
-        ctx.stroke();
-        ctx.closePath();
+        this.ctx.fillStyle = "rgba(0, 128, 0, 0.2)";
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+        this.ctx.globalCompositeOperation = "source-over";
+
+        ctx.drawImage(this.canvas, 0, 0, DataStore.screenWidth, DataStore.screenHeight);
     }
 }
