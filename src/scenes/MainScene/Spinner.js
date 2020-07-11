@@ -153,7 +153,12 @@ export default class Spinner {
 
             // Remove same bubbles and floating bubbles from the spinner
             sameOrFloatingBubbles.forEach(bubble => {
-                // Init dropping animation
+                let i = this.bubbles.indexOf(bubble);
+                console.assert(i >= 0);
+
+                // Remove bubble from the spinner
+                this.bubbles.splice(i, 1);
+                this.rendererManager.setRenderer(bubble, "CollisionAndGravity", other);
             });
         } else {
             // Reduce health
