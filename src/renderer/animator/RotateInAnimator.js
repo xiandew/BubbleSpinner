@@ -8,7 +8,7 @@ export default class RotateInAnimator extends Renderer {
     }
 
     render(ctx) {
-        if (this.animationComplete) {
+        if (this.target.rotatedIn) {
             return super.render(ctx);
         }
         this.factor += this.step;
@@ -24,7 +24,7 @@ export default class RotateInAnimator extends Renderer {
         ctx.restore();
 
         if (this.factor >= Math.PI / 2) {
-            this.animationComplete = true;
+            this.target.rotatedIn = true;
         }
     }
 }

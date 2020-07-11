@@ -85,7 +85,7 @@ export default class Shooter {
         }
 
         if (this.curbounces >= this.maxBounces && this.currShot.speedY < 0) {
-            this.rendererManager.setRenderer(this.currShot, "Gravity");
+            this.rendererManager.setRenderer(this.currShot, "GravityAndBounce");
             // Reset current bounces
             this.curbounces = 0;
             return this.state = State.RESTORING;

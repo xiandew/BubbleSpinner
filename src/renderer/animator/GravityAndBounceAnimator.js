@@ -1,7 +1,7 @@
 import Renderer from "../Renderer.js";
 import DataStore from "../../data/DataStore.js";
 
-export default class GravityAnimator extends Renderer {
+export default class GravityAndBounceAnimator extends Renderer {
     constructor(target) {
         super(target);
         this.target.speedX = 2.5 * (this.speedX > 0 ? 1 : -1);
