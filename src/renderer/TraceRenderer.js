@@ -1,6 +1,7 @@
 import Renderer from "./Renderer.js";
 import Bubble from "../scenes/MainScene/Bubble.js";
 import DataStore from "../data/DataStore.js";
+import { State } from "../scenes/MainScene/Shooter.js";
 
 export default class TraceRenderer extends Renderer {
     constructor(target) {
@@ -17,7 +18,7 @@ export default class TraceRenderer extends Renderer {
     }
 
     render(ctx) {
-        if (!this.target.renderTrace) {
+        if (this.target.state != State.AIMING) {
             return;
         }
 
@@ -35,5 +36,7 @@ export default class TraceRenderer extends Renderer {
         this.ctx.globalCompositeOperation = "source-over";
 
         ctx.drawImage(this.canvas, 0, 0, DataStore.screenWidth, DataStore.screenHeight);
+
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 }

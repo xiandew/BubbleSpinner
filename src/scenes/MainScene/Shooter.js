@@ -5,6 +5,13 @@ import UUID from "../../base/UUID.js";
 import Bubble from "./Bubble.js";
 import RendererManager from "../../renderer/RendererManager.js";
 
+export class State {
+    static LOADING = 1;
+    static LOADED = 2;
+    static AIMING = 3;
+    static SHOOTING = 4;
+    static RESTORING = 5;
+}
 
 export default class Shooter {
     constructor() {
@@ -15,26 +22,25 @@ export default class Shooter {
 
         this.maxBounces = 8;
         this.curbounces = 0;
+        this.state = State.LOADING;
 
         this.touchHandler = new TouchHandler();
         wx.onTouchStart((e) => {
-            if (this.readyToShoot) {
-                this.renderTrace = true;
+            if (this.state == State.LOADED) {
+                this.state = State.AIMING;
                 this.touchX = e.touches[0].clientX;
                 this.touchY = e.touches[0].clientY;
             }
         });
         this.touchHandler.onTouchMove((e) => {
-            if (this.readyToShoot) {
+            if (this.state == State.AIMING) {
                 this.touchX = e.touches[0].clientX;
                 this.touchY = e.touches[0].clientY;
             }
         });
         this.touchHandler.onTouchEnd((e) => {
-            if (this.readyToShoot) {
-                this.readyToShoot = false;
-                this.renderTrace = false;
-                this.shooting = true;
+            if (this.state == State.AIMING) {
+                this.state = State.SHOOTING;
 
                 let angle = Math.atan2(
                     this.touchY - this.currShot.getY(),
@@ -51,11 +57,12 @@ export default class Shooter {
     }
 
     update() {
-        if (this.currShot.zoomedInUp && this.nextShot.zoomedIn && !this.readyToShoot) {
-            this.readyToShoot = true;
+        if ((this.state == State.LOADING && this.currShot.zoomedInUp && this.nextShot.zoomedIn) ||
+            (this.state == State.RESTORING && this.currShot.landed)) {
+            return this.state = State.LOADED;
         }
 
-        if (!this.shooting) {
+        if (this.state != State.SHOOTING) {
             return;
         }
 
@@ -69,7 +76,7 @@ export default class Shooter {
             this.rendererManager.setRenderer(this.currShot, "ZoomInUp");
             // Reset current bounces
             this.curbounces = 0;
-            return this.shooting = false;
+            return this.state = State.LOADING;
         }
 
         if ((this.currShot.collideXBounds() ? (this.currShot.speedX *= (-1), true) : false) ||
@@ -81,7 +88,7 @@ export default class Shooter {
             this.rendererManager.setRenderer(this.currShot, "Gravity");
             // Reset current bounces
             this.curbounces = 0;
-            return this.shooting = false;
+            return this.state = State.RESTORING;
         }
 
         this.currShot.update();
