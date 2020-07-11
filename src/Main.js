@@ -1,5 +1,3 @@
-// TODO reform gameInfo with the reference of dataStore
-
 import AssetsLoader from "./data/AssetsLoader.js";
 import DataStore from "./data/DataStore.js";
 import Sprite from "./base/Sprite.js";
