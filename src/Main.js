@@ -26,6 +26,7 @@ export default class Main {
 
         DataStore.screenWidth = screenWidth;
         DataStore.screenHeight = screenHeight;
+        DataStore.pixelRatio = pixelRatio;
         DataStore.ctx = canvas.getContext("2d");
         DataStore.ctx.fillStyle = "#ffffff";
         DataStore.ctx.scale(pixelRatio, pixelRatio);
