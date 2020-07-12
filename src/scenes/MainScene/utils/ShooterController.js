@@ -8,10 +8,16 @@ export default class ShooterController {
         this.shooter = shooter;
         this.spinner = Spinner.getInstance();
         DataStore.bottomBound = DataStore.screenHeight - Bubble.size;
+
+        // Scale the speed based on the bubble size to prevent from tunneling
+        this.shootingSpeed = 0.75 * Bubble.size;
+
+        // Scale the fiction of rotation by the shooting speed
+        this.spinner.frictionOfRotation = this.shootingSpeed * 0.0001;
     }
 
     createCurrShot() {
-        return new Shot(this.shooter.nextShot ? this.shooter.nextShot.texture.img : this.createNextShot().texture.img);
+        return new Shot(this.shooter.nextShot ? this.shooter.nextShot.texture.img : this.createNextShot().texture.img, this.shootingSpeed);
     }
 
     // get the next shot whose asset is more likely to be the least frequent one on the spinner
@@ -41,10 +47,9 @@ export default class ShooterController {
 }
 
 class Shot extends Bubble {
-    constructor(img) {
+    constructor(img, speed) {
         super(img, 0.5 * DataStore.screenWidth, DataStore.bottomBound);
-        // Scale the speed based on the bubble size to prevent from tunneling
-        this.speed = 0.75 * Bubble.size;
+        this.speed = speed;
     }
     collideXBounds() {
         return (
