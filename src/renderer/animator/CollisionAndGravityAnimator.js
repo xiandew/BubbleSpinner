@@ -25,7 +25,9 @@ export default class CollisionAndGravityAnimator extends Renderer {
     }
 
     render(ctx) {
-        if (this.target.getY() >= DataStore.screenHeight + Bubble.size) {
+        if (this.target.getX() <= -Bubble.size ||
+            this.target.getX() >= DataStore.screenWidth + Bubble.size ||
+            this.target.getY() >= DataStore.screenHeight + Bubble.size) {
             return this.outOfSight = true;
         }
 

@@ -2,6 +2,14 @@ import UUID from "../../base/UUID.js";
 import SpinnerController from "./utils/SpinnerController.js";
 import RendererManager from "../../renderer/RendererManager.js";
 import Bubble from "./Bubble.js";
+import DataStore from "../../data/DataStore.js";
+
+class State {
+    static ROTATE_IN = 1;
+    static STILL = 2;
+    static ROTAING = 3;
+    static ROTATE_OUT = 4;
+}
 
 /**
  * Spinner logic
@@ -19,7 +27,9 @@ export default class Spinner {
             this.rendererManager.setRenderer(bubble);
         });
 
+        this.angularSpeedThreshold = 0.1;
         this.angleOfRotation = 0;
+        this.frictionOfRotation = 0;
     }
 
     getX() {
@@ -54,11 +64,11 @@ export default class Spinner {
                     let toCentreX = x - this.getX();
                     let toCentreY = y - this.getY();
                     let radius = Math.sqrt(toCentreX ** 2 + toCentreY ** 2)
-                    let angle = Math.atan2(toCentreY, toCentreX) - this.angleOfRotation;
+                    let angleOffset = Math.atan2(toCentreY, toCentreX) - this.angleOfRotation;
 
                     return {
-                        x: this.getX() + Math.cos(angle) * radius,
-                        y: this.getY() + Math.sin(angle) * radius
+                        x: this.getX() + Math.cos(angleOffset) * radius,
+                        y: this.getY() + Math.sin(angleOffset) * radius
                     }
                 };
 
@@ -157,6 +167,7 @@ export default class Spinner {
                 console.assert(i >= 0);
 
                 // Remove bubble from the spinner
+                bubble.hex.unsetObj();
                 this.bubbles.splice(i, 1);
                 this.rendererManager.setRenderer(bubble, "CollisionAndGravity", other);
             });
@@ -164,12 +175,60 @@ export default class Spinner {
             // Reduce health
         }
 
-        // Rotate the spinner
-        // ...
+        // Init rotation
+        this.state = State.ROTAING;
+
+        // Caculate the tangent speed of the spinner rotation
+        // The tangent speed is proportional to the distance between the pivot and the linear speed line
+        // The vertical distance d between the point (((x_0, y_0))) and the line (Ax + By + C = 0) is given by
+        // d = |A·x_0 + B·y_0 + C| / √(A^2 + B^2)
+        // y = kx + m ∴ -kx + y - m = 0 ∴ A = -k, B = 1, C = -m
+        let k = other.speedY / other.speedX;
+        let m = newBubble.getY() - k * newBubble.getX();
+        let A = -k, B = 1, C = -m;
+        let d = Math.abs(A * this.pivot.getX() + B * this.pivot.getY() + C) / Math.sqrt(A ** 2 + B ** 2);
+
+        // The further the collision away from the pivot, the faster the rotation will be
+        let scale = d / DataStore.screenWidth;
+        let tangentialSpeed = other.speed * scale;
+
+        // Get the direction of rotation
+        if (other.speedX < 0 && (k * this.pivot.getX() + m) > this.pivot.getY() ||
+            other.speedX > 0 && (k * this.pivot.getX() + m) < this.pivot.getY()) {
+            tangentialSpeed *= (-1);
+        }
+
+        // The fewer bubbles on the spinner, the faster the rotation will be
+        this.angularSpeed = tangentialSpeed / this.bubbles.length;
+
+        // Make sure of the spinner not too fast
+        this.angularSpeed = Math.sign(this.angularSpeed) * Math.min(Math.abs(this.angularSpeed), this.angularSpeedThreshold);
+
+        console.assert(this.frictionOfRotation);
+        if (Math.sign(this.angularSpeed) == Math.sign(this.frictionOfRotation)) {
+            this.frictionOfRotation *= (-1);
+        }
     }
 
     update() {
-        // this.angleOfRotation += 0.001;
+        if (this.state == State.ROTAING) {
+
+            this.angularSpeed += this.frictionOfRotation;
+            if (Math.sign(this.angularSpeed) == Math.sign(this.frictionOfRotation)) {
+                return this.state == State.STILL;
+            }
+
+            this.bubbles.forEach(bubble => {
+                let toCentreY = bubble.getY() - this.pivot.getY();
+                let toCentreX = bubble.getX() - this.pivot.getX();
+                let radius = Math.sqrt(toCentreX ** 2 + toCentreY ** 2)
+                let angleOfRotationInChange = Math.atan2(toCentreY, toCentreX) - this.angularSpeed;
+
+                bubble.setX(this.pivot.getX() + Math.cos(angleOfRotationInChange) * radius);
+                bubble.setY(this.pivot.getY() + Math.sin(angleOfRotationInChange) * radius);
+            });
+            this.angleOfRotation += this.angularSpeed;
+        }
     }
 
     render(ctx) {

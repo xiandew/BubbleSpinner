@@ -28,7 +28,7 @@ export default class Hex {
         console.assert(Hex.size != undefined);
         let x = Hex.size * (Math.sqrt(3) * this.q + Math.sqrt(3) / 2 * this.r);
         let y = Hex.size * (3. / 2 * this.r);
-        return {x: x, y: y};
+        return { x: x, y: y };
     }
     len() {
         return (Math.abs(this.q) + Math.abs(this.r) + Math.abs(this.s)) / 2;
@@ -62,6 +62,11 @@ export default class Hex {
     setObj(obj) {
         obj.hex = this;
         this.obj = obj;
+    }
+
+    unsetObj() {
+        this.obj.hex = null;
+        this.obj = null;
     }
 }
 
