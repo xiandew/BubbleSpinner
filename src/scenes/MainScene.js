@@ -25,6 +25,7 @@ export default class MainScene extends Scene {
     update() {
         this.shooter.update();
         this.spinner.update();
+        this.score.update();
     }
 
     render() {

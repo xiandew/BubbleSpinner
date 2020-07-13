@@ -3,6 +3,7 @@ import SpinnerController from "./utils/SpinnerController.js";
 import RendererManager from "../../renderer/RendererManager.js";
 import Bubble from "./Bubble.js";
 import DataStore from "../../data/DataStore.js";
+import Score from "./Score.js";
 
 class State {
     static ROTATE_IN = 1;
@@ -170,6 +171,7 @@ export default class Spinner {
                 bubble.hex.unsetObj();
                 this.bubbles.splice(i, 1);
                 this.rendererManager.setRenderer(bubble, "CollisionAndGravity", other);
+                Score.getInstance().addBubbleScore(bubble);
             });
         } else {
             // Reduce health
