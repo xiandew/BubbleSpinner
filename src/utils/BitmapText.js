@@ -4,12 +4,12 @@ export default class BitmapText {
     }
 
     // Only for drawing a single line of numbers and not support the font colour option
-    draw(ctx, text, fontSize, x = 0, y = 0) {
+    draw(ctx, text, fontSize = 0, x = 0, y = 0, textAlign = "left") {
 
         let fontScale = fontSize / this.bitmapFont.defaultSize;
         let charArr = text.toString().split("");
 
-        if (this.textAlign == "center") {
+        if (textAlign == "center") {
             let textWidth = 0;
             charArr.forEach(n => {
                 let ch = this.bitmapFont.chars[n];
@@ -18,7 +18,7 @@ export default class BitmapText {
             x -= 0.5 * textWidth;
         }
 
-        if (this.textAlign == "right") {
+        if (textAlign == "right") {
             charArr = charArr.reverse();
         }
 
@@ -31,12 +31,12 @@ export default class BitmapText {
                 parseInt(ch.y),
                 parseInt(ch.width),
                 parseInt(ch.height),
-                fontScale * parseInt(ch.xoffset) + (this.textAlign == "right" ? -xadvance : 0) + x,
+                fontScale * parseInt(ch.xoffset) + (textAlign == "right" ? -xadvance : 0) + x,
                 fontScale * parseInt(ch.yoffset) + y,
                 fontScale * parseInt(ch.width),
                 fontScale * parseInt(ch.height)
             );
-            x += xadvance * (this.textAlign == "right" ? -1 : 1);
+            x += xadvance * (textAlign == "right" ? -1 : 1);
         });
     }
 }

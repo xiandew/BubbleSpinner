@@ -4,6 +4,7 @@ import BitmapText from "../../utils/BitmapText.js";
 import Konstructiv from "../../../assets/bmfonts/Konstructiv.js";
 import RendererManager from "../../renderer/RendererManager.js";
 import UUID from "../../base/UUID.js";
+import Bubble from "./Bubble.js";
 
 export default class Score {
     constructor() {
@@ -13,12 +14,31 @@ export default class Score {
         );
 
         this.fontSize = 0.075 * DataStore.screenWidth;
-        this.startX = 0.055 * DataStore.screenWidth;
-        this.startY = 0.165 * DataStore.screenWidth;
+        this.x = 0.055 * DataStore.screenWidth;
+        this.y = 0.165 * DataStore.screenWidth;
+
+        this.bubbleScores = [];
+        this.rendererManager = new RendererManager();
+    }
+
+    update() {
+        for (let i = this.bubbleScores.length - 1; i >= 0; i--) {
+            let bubbleScore = this.bubbleScores[i];
+            if (bubbleScore.bubble.getY() > DataStore.screenHeight - 5 * Bubble.size) {
+                this.rendererManager.setRenderer(bubbleScore, "FadeOutUp");
+                this.bubbleScores.splice(i, 1);
+                DataStore.score += bubbleScore.score;
+            }
+        }
     }
 
     render(ctx) {
-        this.bitmapText.draw(ctx, DataStore.score, this.fontSize, this.startX, this.startY);
+        this.bitmapText.draw(ctx, DataStore.score, this.fontSize, this.x, this.y);
+        this.rendererManager.render(ctx);
+    }
+
+    addBubbleScore(bubble) {
+        this.bubbleScores.push(new BubbleScore(bubble));
     }
 
     static getInstance() {
@@ -26,5 +46,22 @@ export default class Score {
             Score.instance = new Score();
         }
         return Score.instance;
+    }
+}
+
+class BubbleScore extends Score {
+    constructor(bubble) {
+        super();
+        this.bubble = bubble;
+        this.score = this.getScore();
+        this.fontSize = Bubble.size * 1.2;
+    }
+
+    getScore() {
+        return DataStore.level < 2 ? 1 : DataStore.level - 1;
+    }
+
+    render(ctx) {
+        this.bitmapText.draw(ctx, `+${this.score}`, this.fontSize, this.x, this.y, "center");
     }
 }
