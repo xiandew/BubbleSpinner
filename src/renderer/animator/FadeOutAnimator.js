@@ -9,7 +9,7 @@ export default class FadeOutAnimator extends Renderer {
 
     render(ctx) {
         if (this.target.fadedOut) {
-            return;
+            return this.outOfSight = true;
         }
 
         this.factor -= this.step;

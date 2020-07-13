@@ -4,6 +4,7 @@ import RendererManager from "../../renderer/RendererManager.js";
 import Bubble from "./Bubble.js";
 import DataStore from "../../data/DataStore.js";
 import Score from "./Score.js";
+import Health from "./Health.js";
 
 class State {
     static ROTATE_IN = 1;
@@ -174,7 +175,8 @@ export default class Spinner {
                 Score.getInstance().addBubbleScore(bubble);
             });
         } else {
-            // Reduce health
+            // Wasted a shot, lose health
+            Health.getInstance().loseHealth();
         }
 
         // Init rotation
