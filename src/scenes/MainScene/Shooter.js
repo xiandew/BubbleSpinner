@@ -1,19 +1,19 @@
 import ShooterController from "./utils/ShooterController.js";
 import TouchHandler from "../../utils/TouchHandler.js";
-import DataStore from "../../data/DataStore.js";
 import UUID from "../../base/UUID.js";
-import Bubble from "./Bubble.js";
 import RendererManager from "../../renderer/RendererManager.js";
+import Health from "./Health.js";
 
-export class State {
-    static LOADING = 1;
-    static LOADED = 2;
-    static AIMING = 3;
-    static SHOOTING = 4;
-    static RESTORING = 5;
-}
 
 export default class Shooter {
+    static State = class {
+        static LOADING = 1;
+        static LOADED = 2;
+        static AIMING = 3;
+        static SHOOTING = 4;
+        static RESTORING = 5;
+    }
+
     constructor() {
         this.id = UUID.getUUID();
         this.controller = new ShooterController(this);
@@ -22,25 +22,25 @@ export default class Shooter {
 
         this.maxBounces = 8;
         this.curbounces = 0;
-        this.state = State.LOADING;
+        this.state = Shooter.State.LOADING;
 
         this.touchHandler = new TouchHandler();
         wx.onTouchStart((e) => {
-            if (this.state == State.LOADED) {
-                this.state = State.AIMING;
+            if (this.state == Shooter.State.LOADED && Health.getInstance().currHealth) {
+                this.state = Shooter.State.AIMING;
                 this.touchX = e.touches[0].clientX;
                 this.touchY = e.touches[0].clientY;
             }
         });
         this.touchHandler.onTouchMove((e) => {
-            if (this.state == State.AIMING) {
+            if (this.state == Shooter.State.AIMING) {
                 this.touchX = e.touches[0].clientX;
                 this.touchY = e.touches[0].clientY;
             }
         });
-        this.touchHandler.onTouchEnd((e) => {
-            if (this.state == State.AIMING) {
-                this.state = State.SHOOTING;
+        this.touchHandler.onTouchEnd(() => {
+            if (this.state == Shooter.State.AIMING) {
+                this.state = Shooter.State.SHOOTING;
 
                 let angle = Math.atan2(
                     this.touchY - this.currShot.getY(),
@@ -57,12 +57,12 @@ export default class Shooter {
     }
 
     update() {
-        if ((this.state == State.LOADING && this.currShot.zoomedInUp && this.nextShot.zoomedIn) ||
-            (this.state == State.RESTORING && this.currShot.landed)) {
-            return this.state = State.LOADED;
+        if ((this.state == Shooter.State.LOADING && this.currShot.zoomedInUp && this.nextShot.zoomedIn) ||
+            (this.state == Shooter.State.RESTORING && this.currShot.landed)) {
+            return this.state = Shooter.State.LOADED;
         }
 
-        if (this.state != State.SHOOTING) {
+        if (this.state != Shooter.State.SHOOTING) {
             return;
         }
 
@@ -76,7 +76,7 @@ export default class Shooter {
             this.rendererManager.setRenderer(this.currShot, "ZoomInUp");
             // Reset current bounces
             this.curbounces = 0;
-            return this.state = State.LOADING;
+            return this.state = Shooter.State.LOADING;
         }
 
         if ((this.currShot.collideXBounds() ? (this.currShot.speedX *= (-1), true) : false) ||
@@ -88,7 +88,7 @@ export default class Shooter {
             this.rendererManager.setRenderer(this.currShot, "GravityAndBounce");
             // Reset current bounces
             this.curbounces = 0;
-            return this.state = State.RESTORING;
+            return this.state = Shooter.State.RESTORING;
         }
 
         this.currShot.update();

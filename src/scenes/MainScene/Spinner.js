@@ -6,17 +6,18 @@ import DataStore from "../../data/DataStore.js";
 import Score from "./Score.js";
 import Health from "./Health.js";
 
-class State {
-    static ROTATE_IN = 1;
-    static STILL = 2;
-    static ROTAING = 3;
-    static ROTATE_OUT = 4;
-}
 
 /**
  * Spinner logic
  */
 export default class Spinner {
+    static State = class {
+        static ROTATE_IN = 1;
+        static STILL = 2;
+        static ROTAING = 3;
+        static ROTATE_OUT = 4;
+    }
+
     constructor() {
         this.id = UUID.getUUID();
         this.controller = new SpinnerController();
@@ -180,7 +181,7 @@ export default class Spinner {
         }
 
         // Init rotation
-        this.state = State.ROTAING;
+        this.state = Spinner.State.ROTAING;
 
         // Caculate the tangent speed of the spinner rotation
         // The tangent speed is proportional to the distance between the pivot and the linear speed line
@@ -215,11 +216,11 @@ export default class Spinner {
     }
 
     update() {
-        if (this.state == State.ROTAING) {
+        if (this.state == Spinner.State.ROTAING) {
 
             this.angularSpeed += this.frictionOfRotation;
             if (Math.sign(this.angularSpeed) == Math.sign(this.frictionOfRotation)) {
-                return this.state == State.STILL;
+                return this.state == Spinner.State.STILL;
             }
 
             this.bubbles.forEach(bubble => {

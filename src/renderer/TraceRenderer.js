@@ -1,7 +1,7 @@
 import Renderer from "./Renderer.js";
 import Bubble from "../scenes/MainScene/Bubble.js";
 import DataStore from "../data/DataStore.js";
-import { State } from "../scenes/MainScene/Shooter.js";
+import Shooter from "../scenes/MainScene/Shooter.js";
 
 export default class TraceRenderer extends Renderer {
     constructor(target) {
@@ -18,7 +18,7 @@ export default class TraceRenderer extends Renderer {
     }
 
     render(ctx) {
-        if (this.target.state != State.AIMING) {
+        if (this.target.state != Shooter.State.AIMING) {
             return;
         }
 
