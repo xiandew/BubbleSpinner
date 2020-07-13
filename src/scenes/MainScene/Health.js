@@ -25,6 +25,11 @@ export default class Health {
         this.rendererManager.render(ctx);
     }
 
+    loseHealth() {
+        this.currHealth--;
+        this.rendererManager.setRenderer(this.sprites.pop(), "FadeOut");
+    }
+
     static getInstance() {
         if (!Health.instance) {
             Health.instance = new Health();
