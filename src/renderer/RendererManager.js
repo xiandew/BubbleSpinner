@@ -8,6 +8,7 @@ import ZoomInUpAnimator from "./animator/ZoomInUpAnimator.js";
 import TraceRenderer from "./TraceRenderer.js";
 import GravityAndBounceAnimator from "./animator/GravityAndBounceAnimator.js";
 import CollisionAndGravityAnimator from "./animator/CollisionAndGravityAnimator.js";
+import FadeOutUpAnimator from "./animator/FadeOutUpAnimator.js";
 
 
 export default class RendererManager {
@@ -28,6 +29,7 @@ export default class RendererManager {
             animation === "Trace" ? new TraceRenderer(target) :
             animation === "GravityAndBounce" ? new GravityAndBounceAnimator(target) :
             animation === "CollisionAndGravity" ? new CollisionAndGravityAnimator(target, ...args) :
+            animation === "FadeOutUp" ? new FadeOutUpAnimator(target) :
             new Renderer(target)
 
         this.renderers[target.id] = renderer;
