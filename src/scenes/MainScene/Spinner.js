@@ -5,6 +5,7 @@ import Bubble from "./Bubble.js";
 import DataStore from "../../data/DataStore.js";
 import Score from "./Score.js";
 import Health from "./Health.js";
+import { SpawnedBubble } from "./NPC.js";
 
 
 /**
@@ -98,6 +99,10 @@ export default class Spinner {
         closestHex.hex.setObj(newBubble);
         this.bubbles.push(newBubble);
         this.rendererManager.setRenderer(newBubble);
+
+        if (other instanceof SpawnedBubble) {
+            return;
+        }
 
         // Find same bubbles
         let sameBubbles = ((rootBubble) => {
@@ -220,7 +225,7 @@ export default class Spinner {
 
             this.angularSpeed += this.frictionOfRotation;
             if (Math.sign(this.angularSpeed) == Math.sign(this.frictionOfRotation)) {
-                return this.state == Spinner.State.STILL;
+                return this.state = Spinner.State.STILL;
             }
 
             this.bubbles.forEach(bubble => {

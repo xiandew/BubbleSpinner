@@ -7,22 +7,26 @@ export default class Health {
     constructor() {
         this.id = UUID.getUUID();
         this.currHealth = this.maxHealth = 5;
-        this.sprites = new Array(this.maxHealth).fill(null).map((e, i) => {
+        this.rendererManager = new RendererManager();
+        this.resetHealth();
+    }
+
+    render(ctx) {
+        this.rendererManager.render(ctx);
+    }
+
+    resetHealth() {
+        this.currHealth = this.currHealth || Math.ceil(Math.random() * this.maxHealth);
+        this.sprites = new Array(this.currHealth).fill(null).map((e, i) => {
             return new Bubble(
                 DataStore.assets.get("gray-bubble"),
                 Bubble.size + Bubble.size * 1.05 * i,
                 Bubble.size,
             )
         });
-
-        this.rendererManager = new RendererManager();
         this.sprites.forEach(sprite => {
             this.rendererManager.setRenderer(sprite, "Rotate");
         });
-    }
-
-    render(ctx) {
-        this.rendererManager.render(ctx);
     }
 
     loseHealth() {
