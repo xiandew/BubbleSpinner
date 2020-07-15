@@ -2,7 +2,6 @@ import ShooterController from "./utils/ShooterController.js";
 import TouchHandler from "../../utils/TouchHandler.js";
 import UUID from "../../base/UUID.js";
 import RendererManager from "../../renderer/RendererManager.js";
-import Health from "./Health.js";
 
 
 export default class Shooter {
@@ -26,7 +25,7 @@ export default class Shooter {
 
         this.touchHandler = new TouchHandler();
         wx.onTouchStart((e) => {
-            if (this.state == Shooter.State.LOADED && Health.getInstance().currHealth) {
+            if (this.state == Shooter.State.LOADED && this.controller.permit()) {
                 this.state = Shooter.State.AIMING;
                 this.touchX = e.touches[0].clientX;
                 this.touchY = e.touches[0].clientY;
@@ -57,7 +56,7 @@ export default class Shooter {
     }
 
     update() {
-        if ((this.state == Shooter.State.LOADING && this.currShot.zoomedInUp && this.nextShot.zoomedIn) ||
+        if ((this.state == Shooter.State.LOADING && this.currShot.zoomedInUp) ||
             (this.state == Shooter.State.RESTORING && this.currShot.landed)) {
             return this.state = Shooter.State.LOADED;
         }

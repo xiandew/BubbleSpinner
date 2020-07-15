@@ -10,7 +10,7 @@ export default class RotateOutAnimator extends Renderer {
 
     render(ctx) {
         if (this.target.rotatedOut) {
-            return;
+            return this.outOfSight = true;
         }
         this.factor -= this.step;
 

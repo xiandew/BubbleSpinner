@@ -9,7 +9,8 @@ import Bubble from "../Bubble.js";
  * to make it cleaner
  */
 export default class SpinnerController {
-    constructor() {
+    constructor(spinner) {
+        this.spinner = spinner;
         this.bubbleAssets = shuffle([
             DataStore.assets.get("blue-bubble"),
             DataStore.assets.get("cyan-bubble"),
@@ -76,18 +77,32 @@ export default class SpinnerController {
 
         let bubbles = new Array(spinner.length);
         spinner.forEach((hex, i) => {
-            let { x, y } = hex.toPixel();
-            let bubble = new Bubble(
-                this.randomBubbleAsset(),
-                x + this.xOffset,
-                y + this.yOffset
-            );
+            let { x, y } = this.hexToCoordinates(hex);
+            let bubble = new Bubble(this.randomBubbleAsset(), x, y);
             hex.setObj(bubble);
             bubbles[i] = bubble;
         });
 
         return bubbles;
     }
+
+    hexToCoordinates(hex) {
+        let { x, y } = hex.toPixel();
+        x += this.xOffset;
+        y += this.yOffset;
+
+        let pivotX = this.spinner.getX();
+        let pivotY = this.spinner.getY();
+        let toPivotX = x - pivotX;
+        let toPivotY = y - pivotY;
+        let radius = Math.sqrt(toPivotX ** 2 + toPivotY ** 2)
+        let angleOffset = Math.atan2(toPivotY, toPivotX) - this.spinner.angleOfRotation;
+
+        return {
+            x: pivotX + Math.cos(angleOffset) * radius,
+            y: pivotY + Math.sin(angleOffset) * radius
+        }
+    };
 
     getAdjacentHexes(center) {
         return this.hexMap.getAdjacentHexes(center);

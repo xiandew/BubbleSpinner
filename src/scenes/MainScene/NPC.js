@@ -85,7 +85,7 @@ export default class NPC {
     }
 
     update() {
-        if (this.health.currHealth || this.spinner.state != Spinner.State.STILL) {
+        if (this.health.currHealth || this.spinner.state != Spinner.State.STAND) {
             return;
         }
 
