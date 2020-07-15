@@ -2,6 +2,7 @@ import DataStore from "../../../data/DataStore.js";
 import Sprite from "../../../base/Sprite.js";
 import Spinner from "../Spinner.js";
 import Bubble from "../Bubble.js";
+import Health from "../Health.js";
 
 export default class ShooterController {
     constructor(shooter) {
@@ -43,6 +44,10 @@ export default class ShooterController {
             0.5 * Bubble.size,
             0.5 * Bubble.size
         );
+    }
+
+    permit() {
+        return Health.getInstance().currHealth && this.spinner.state != Spinner.State.ANIMATING;
     }
 }
 

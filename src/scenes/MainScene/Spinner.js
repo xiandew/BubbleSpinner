@@ -13,27 +13,22 @@ import { SpawnedBubble } from "./NPC.js";
  */
 export default class Spinner {
     static State = class {
-        static ROTATE_IN = 1;
-        static STILL = 2;
-        static ROTAING = 3;
-        static ROTATE_OUT = 4;
+        static ANIMATING = 1;
+        static STAND = 2;
+        static ROTATING = 3;
     }
 
     constructor() {
         this.id = UUID.getUUID();
-        this.controller = new SpinnerController();
-        this.pivot = this.controller.createPivot();
-        this.bubbles = this.controller.createBubbles();
-
-        this.rendererManager = new RendererManager();
-        this.rendererManager.setRenderer(this.pivot);
-        this.bubbles.forEach(bubble => {
-            this.rendererManager.setRenderer(bubble);
-        });
-
         this.angularSpeedThreshold = 0.1;
         this.angleOfRotation = 0;
         this.frictionOfRotation = 0;
+        this.state = Spinner.State.ANIMATING;
+        this.rendererManager = new RendererManager();
+
+        this.controller = new SpinnerController(this);
+        this.createPivot();
+        this.createBubbles();
     }
 
     getX() {
@@ -60,24 +55,8 @@ export default class Spinner {
         // Adjust the bubble that collides the spinner to the closest hex
         let neighbouringHexes = this.controller.getAdjacentHexes(bubble.hex).map(neighbour => {
             if (neighbour && !neighbour.obj) {
-                let hexToCoordinate = (hex) => {
-                    let { x, y } = hex.toPixel();
-                    x += this.controller.xOffset;
-                    y += this.controller.yOffset;
-
-                    let toCentreX = x - this.getX();
-                    let toCentreY = y - this.getY();
-                    let radius = Math.sqrt(toCentreX ** 2 + toCentreY ** 2)
-                    let angleOffset = Math.atan2(toCentreY, toCentreX) - this.angleOfRotation;
-
-                    return {
-                        x: this.getX() + Math.cos(angleOffset) * radius,
-                        y: this.getY() + Math.sin(angleOffset) * radius
-                    }
-                };
-
                 let hex = neighbour,
-                    coor = hexToCoordinate(neighbour),
+                    coor = this.controller.hexToCoordinates(neighbour),
                     sortCrit = (other.getX() - coor.x) ** 2 + (other.getY() - coor.y) ** 2;
                 return { hex, coor, sortCrit };
             }
@@ -177,7 +156,8 @@ export default class Spinner {
                 // Remove bubble from the spinner
                 bubble.hex.unsetObj();
                 this.bubbles.splice(i, 1);
-                this.rendererManager.setRenderer(bubble, "CollisionAndGravity", other);
+                this.rendererManager.remove(bubble);
+                DataStore.MainScene.rendererManager.setRenderer(bubble, "CollisionAndGravity", other);
                 Score.getInstance().addBubbleScore(bubble);
             });
         } else {
@@ -185,8 +165,16 @@ export default class Spinner {
             Health.getInstance().loseHealth();
         }
 
+        // Level up
+        if (!this.bubbles.length) {
+            DataStore.MainScene.rendererManager.setRenderer(this, "RotateOut");
+            DataStore.level++;
+            this.state = Spinner.State.ANIMATING;
+            return;
+        }
+
         // Init rotation
-        this.state = Spinner.State.ROTAING;
+        this.state = Spinner.State.ROTATING;
 
         // Caculate the tangent speed of the spinner rotation
         // The tangent speed is proportional to the distance between the pivot and the linear speed line
@@ -221,11 +209,24 @@ export default class Spinner {
     }
 
     update() {
-        if (this.state == Spinner.State.ROTAING) {
+        if (this.state == Spinner.State.ANIMATING) {
+            if (this.rotatedIn) {
+                this.rotatedIn = false;
+                DataStore.MainScene.rendererManager.setRenderer(this);
+                this.state = Spinner.State.STAND;
+            }
+            if (this.rotatedOut) {
+                this.rotatedOut = false;
+                this.createBubbles();
+                DataStore.MainScene.rendererManager.setRenderer(this, "RotateIn");
+            }
+        }
+
+        if (this.state == Spinner.State.ROTATING) {
 
             this.angularSpeed += this.frictionOfRotation;
             if (Math.sign(this.angularSpeed) == Math.sign(this.frictionOfRotation)) {
-                return this.state = Spinner.State.STILL;
+                return this.state = Spinner.State.STAND;
             }
 
             this.bubbles.forEach(bubble => {
@@ -243,6 +244,18 @@ export default class Spinner {
 
     render(ctx) {
         this.rendererManager.render(ctx);
+    }
+
+    createPivot() {
+        this.pivot = this.controller.createPivot();
+        this.rendererManager.setRenderer(this.pivot);
+    }
+
+    createBubbles() {
+        this.bubbles = this.controller.createBubbles();
+        this.bubbles.forEach(bubble => {
+            this.rendererManager.setRenderer(bubble);
+        });
     }
 
     static getInstance() {
