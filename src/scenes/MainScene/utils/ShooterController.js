@@ -47,7 +47,7 @@ export default class ShooterController {
     }
 
     permit() {
-        return Health.getInstance().currHealth && this.spinner.state != Spinner.State.ANIMATING;
+        return Health.getInstance().currHealth && (this.spinner.state == Spinner.State.STAND || this.spinner.state == Spinner.State.ROTATING);
     }
 }
 

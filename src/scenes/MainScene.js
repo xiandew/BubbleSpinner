@@ -35,6 +35,10 @@ export default class MainScene extends Scene {
     render() {
         super.render();
         this.rendererManager.render(this.ctx);
+
+        if (DataStore.currentScene == DataStore.GameEnded.toString()) {
+            DataStore.GameEnded.render();
+        }
     }
 
     // loop all the frames
@@ -42,6 +46,10 @@ export default class MainScene extends Scene {
         this.frameID = requestAnimationFrame(this.run.bind(this));
         this.update();
         this.render();
+    }
+
+    toString() {
+        return "MainScene";
     }
 
     static getInstance() {

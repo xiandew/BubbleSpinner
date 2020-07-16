@@ -2,6 +2,7 @@ import ShooterController from "./utils/ShooterController.js";
 import TouchHandler from "../../utils/TouchHandler.js";
 import UUID from "../../base/UUID.js";
 import RendererManager from "../../renderer/RendererManager.js";
+import DataStore from "../../data/DataStore.js";
 
 
 export default class Shooter {
@@ -25,6 +26,10 @@ export default class Shooter {
 
         this.touchHandler = new TouchHandler();
         wx.onTouchStart((e) => {
+            if (DataStore.currentScene != DataStore.MainScene.toString()) {
+                return;
+            }
+
             if (this.state == Shooter.State.LOADED && this.controller.permit()) {
                 this.state = Shooter.State.AIMING;
                 this.touchX = e.touches[0].clientX;

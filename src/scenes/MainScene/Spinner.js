@@ -16,6 +16,7 @@ export default class Spinner {
         static ANIMATING = 1;
         static STAND = 2;
         static ROTATING = 3;
+        static CRASH = 4;
     }
 
     constructor() {
@@ -239,6 +240,17 @@ export default class Spinner {
                 bubble.setY(this.pivot.getY() + Math.sin(angleOfRotationInChange) * radius);
             });
             this.angleOfRotation += this.angularSpeed;
+
+            if (this.bubbles.some(bubble =>
+                bubble.endX >= DataStore.screenWidth ||
+                bubble.endY >= DataStore.screenHeight ||
+                bubble.startX <= 0 ||
+                bubble.startY <= 0
+            )) {
+                this.state = Spinner.State.CRASH;
+                DataStore.lastScene = DataStore.currentScene;
+                DataStore.currentScene = DataStore.GameEnded.toString();
+            }
         }
     }
 
