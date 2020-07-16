@@ -68,7 +68,8 @@ export default class MainMenu extends Scene {
 
             if (this.rankBtn.isTouched(e)) {
                 DataStore.openDataContext.postMessage({
-                    action: "drawRankScene"
+                    // TODO action: "GameEnded"
+                    action: "RankScene"
                 });
                 DataStore.lastScene = this.toString();
                 DataStore.currentScene = DataStore.RankScene.toString();

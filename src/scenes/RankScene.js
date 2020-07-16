@@ -17,6 +17,18 @@ export default class RankScene extends Scene {
     constructor() {
         super();
 
+        let mask = wx.createCanvas();
+        let maskCtx = mask.getContext("2d");
+        maskCtx.fillStyle = "rgba(30, 30, 30, 0.9)";
+        maskCtx.fillRect(0, 0, mask.width, mask.height);
+        this.mask = new Sprite(
+            mask,
+            0.5 * DataStore.screenWidth,
+            0.5 * DataStore.screenHeight,
+            DataStore.screenWidth,
+            DataStore.screenHeight
+        );
+
         this.returnBtn = new Sprite(
             DataStore.assets.get("return-btn"),
             0.12 * DataStore.screenWidth,
@@ -49,9 +61,10 @@ export default class RankScene extends Scene {
         });
 
         this.rendererManager = new RendererManager();
-        this.rendererManager.setRenderer(DataStore.sharedCanvas);
+        this.rendererManager.setRenderer(this.mask);
         this.rendererManager.setRenderer(this.returnBtn);
         this.rendererManager.setRenderer(this.groupRankBtn);
+        this.rendererManager.setRenderer(DataStore.sharedCanvas);
     }
 
     render() {

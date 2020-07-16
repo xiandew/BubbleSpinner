@@ -1,10 +1,9 @@
-// import BitmapFont from "./utils/BitmapFont.js";
-// import BitmapText from "./utils/BitmapText.js";
-
-import AssetsLoader from "./data/AssetsLoader.js";
-import DataStore from "./data/DataStore.js";
-import Sprite from "./base/Sprite.js";
-import RankScene from "./scenes/RankScene.js";
+import AssetsLoader from "./src/data/AssetsLoader.js";
+import DataStore from "./src/data/DataStore.js";
+import Sprite from "./src/base/Sprite.js";
+import RankScene from "./src/scenes/RankScene.js";
+import GameEnded from "./src/scenes/GameEnded.js";
+import Scene from "./src/scenes/Scene.js";
 
 wx.onMessage(msg => {
     let action = msg.action;
@@ -16,8 +15,12 @@ wx.onMessage(msg => {
         init();
     }
 
-    if (action === "drawRankScene") {
+    if (action === "RankScene") {
         DataStore.RankScene.render();
+    }
+
+    if (action === "GameEnded") {
+        DataStore.GameEnded.render();
     }
 });
 
@@ -26,30 +29,16 @@ function onAssetsLoaded(assets) {
 }
 
 function init() {
-
-    DataStore.pixelRatio = wx.getSystemInfoSync().pixelRatio;
-
     let sharedCanvas = wx.getSharedCanvas();
 
-    // Note: the offscreen canvas is not scaled by ctx.scale(). It is crucial for
+    DataStore.pixelRatio = wx.getSystemInfoSync().pixelRatio;
+    // Note: the offscreen canvas is not scaled by ctx.scale(). It is crucial to draw all
+    // the sprites as proportional to the canvas that has already been scaled up for
     // ctx.fillText() to be clear
     DataStore.canvasWidth = sharedCanvas.width;
     DataStore.canvasHeight = sharedCanvas.height;
     DataStore.ctx = sharedCanvas.getContext("2d");
 
-    let mask = wx.createCanvas();
-    let maskCtx = mask.getContext("2d");
-    maskCtx.beginPath();
-    maskCtx.fillStyle = "rgba(30, 30, 30, 0.9)";
-    maskCtx.fillRect(0, 0, mask.width, mask.height);
-    maskCtx.closePath();
-    DataStore.mask = new Sprite(
-        mask,
-        0.5 * DataStore.canvasWidth,
-        0.5 * DataStore.canvasHeight,
-        DataStore.canvasWidth,
-        DataStore.canvasHeight
-    );
-
     DataStore.RankScene = RankScene.getInstance();
+    DataStore.GameEnded = GameEnded.getInstance();
 }
