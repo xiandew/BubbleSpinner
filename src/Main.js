@@ -42,8 +42,8 @@ export default class Main {
             screenHeight
         );
         DataStore.openDataContext = openDataContext;
-		DataStore.openDataContext.postMessage({
-			action: "init"
+        DataStore.openDataContext.postMessage({
+            action: "init"
         });
 
         DataStore.fps = 60;
@@ -67,10 +67,10 @@ wx.showShareMenu({
     withShareTicket: true,
 });
 
-wx.onShareAppMessage(function() {
+wx.onShareAppMessage(() => {
     return {
         title: '即刻畅玩，战豆到底！',
-        imageUrl: DataStore.getInstance().assets.get("share-img").src
+        imageUrl: DataStore.assets.get("share-img").src
     }
 });
 
