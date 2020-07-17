@@ -17,7 +17,6 @@ export default class AssetsLoader {
                 loadedCount++;
                 if (loadedCount >= this.assets.size) {
                     callback(this.assets);
-                    this.loaded = true;
                 }
             }
         }

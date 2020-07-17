@@ -23,6 +23,16 @@ export default class Sprite {
         );
     }
 
+    renderCrop(ctx, sx, sy, sWidth, sHeight) {
+        ctx.drawImage(
+            this.img, sx, sy, sWidth, sHeight,
+            this.startX,
+            this.startY,
+            this.width,
+            this.height
+        )
+    }
+
     collides(other) {
         return (
             other.startX < this.endX &&

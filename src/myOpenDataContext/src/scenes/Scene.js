@@ -15,4 +15,8 @@ export default class Scene {
 
         this.bitmapText = new BitmapText(new BitmapFont(DataStore.assets.get("Konstructiv"), Konstructiv));
     }
+
+    render() {
+        DataStore.ctx.clearRect(0, 0, DataStore.canvasWidth, DataStore.canvasHeight);
+    }
 }

@@ -7,16 +7,20 @@ wx.onMessage(function (msg) {
     let action = msg.action;
 
     if (action === "LoadAssets") {
-        this.loader = AssetsLoader.getInstance();
-        this.loader.onLoaded(assets => onAssetsLoaded(assets));
+        AssetsLoader.getInstance().onLoaded(assets => onAssetsLoaded(assets));
     }
 
     if (action === "RankScene") {
-        if (this.loader.loaded) DataStore.RankScene.render();
+        if (DataStore.assets) DataStore.RankScene.render();
+        DataStore.currentScene = RankScene.toString();
     }
 
     if (action === "GameEnded") {
         DataStore.GameEnded.render();
+    }
+
+    if (action === "MainMenu") {
+        DataStore.currentScene = "MainMenu";
     }
 });
 
@@ -38,5 +42,5 @@ function onAssetsLoaded(assets) {
     DataStore.GameEnded = GameEnded.getInstance();
 
 
-    DataStore.RankScene.render();
+    if (DataStore.currentScene === RankScene.toString()) DataStore.RankScene.render();
 }

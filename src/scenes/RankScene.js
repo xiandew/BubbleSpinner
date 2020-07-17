@@ -57,6 +57,9 @@ export default class RankScene extends Scene {
 
             if (this.returnBtn.isTouched(e)) {
                 DataStore.currentScene = DataStore.lastScene;
+                DataStore.openDataContext.postMessage({
+                    action: "MainMenu"
+                });
             }
         });
 

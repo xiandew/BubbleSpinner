@@ -7,22 +7,22 @@ export default class Text {
         this.ml = ml;
     }
 
-    draw(ctx, x, y) {
-        ctx.font = `${this.fontSize}px Arial`;
+    draw(ctx, x, y, font) {
+        ctx.font = font || `${this.fontSize}px Arial`;
         ctx.fillText(this.text, x, y);
     }
 
     // draw text with a fixed width by omitting the overflow part
-    drawWithOverflowEllipsis(ctx, x, y, w) {
+    drawOverflowEllipsis(ctx, x, y, w) {
 
         ctx.font = `${this.fontSize}px Arial`;
 
-        if (ctx.measureText(text).width < w) {
-            ctx.fillText(text, x, y);
+        if (ctx.measureText(this.text).width < w) {
+            ctx.fillText(this.text, x, y);
             return;
         }
 
-        let chars = text.split("");
+        let chars = this.text.split("");
         let txt = "";
 
         for (let i = 0; i < chars.length; i++) {
