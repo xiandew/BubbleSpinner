@@ -78,6 +78,19 @@ export default class RankScene extends Scene {
                 });
             }
         });
+
+        this.sy = 0;
+        wx.onTouchStart(e => {
+            this.startY = this.sy + e.touches[0].clientY;
+        });
+        wx.onTouchMove(e => {
+            this.sy = this.startY - e.touches[0].clientY;
+            this.render(this.sy);
+        });
+        wx.onTouchEnd(e => {
+            this.sy = ((arr) => { arr.sort((a, b) => { return a - b; }); return arr })([0, this.sy, this.leaderboardCanvas.height - this.leaderboardSprite.height])[1];
+            this.render(this.sy);
+        });
     }
 
     drawLayout() {
@@ -108,7 +121,7 @@ export default class RankScene extends Scene {
         }
 
         let grid = new Grid(0, 0.178 * this.leaderboardCanvas.width, 0, this.leaderboardBackground.pr, 0, this.leaderboardBackground.pl, this.leaderboardCanvas.width);
-        this.leaderboardSprite.height = this.leaderboardCanvas.height = Math.max(this.leaderboardCanvas.height, grid.height * records.length);
+        this.leaderboardCanvas.height = Math.max(this.leaderboardCanvas.height, grid.height * records.length);
 
         records.forEach((record, i) => {
             grid.top = i * grid.height;
@@ -150,9 +163,9 @@ export default class RankScene extends Scene {
         this.render();
     }
 
-    render() {
+    render(sy = 0) {
         this.sprite.render(DataStore.ctx);
-        this.leaderboardSprite.render(DataStore.ctx);
+        this.leaderboardSprite.renderCrop(DataStore.ctx, 0, sy, this.leaderboardCanvas.width, this.leaderboardSprite.height);
     }
 
     static getInstance() {
