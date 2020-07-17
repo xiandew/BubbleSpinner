@@ -1,22 +1,18 @@
 import AssetsLoader from "./src/data/AssetsLoader.js";
 import DataStore from "./src/data/DataStore.js";
-import Sprite from "./src/base/Sprite.js";
 import RankScene from "./src/scenes/RankScene.js";
 import GameEnded from "./src/scenes/GameEnded.js";
-import Scene from "./src/scenes/Scene.js";
 
-wx.onMessage(msg => {
+wx.onMessage(function (msg) {
     let action = msg.action;
 
-    if (action === "init") {
-        const loader = AssetsLoader.getInstance();
-        loader.onLoaded(assets => onAssetsLoaded(assets));
-
-        init();
+    if (action === "LoadAssets") {
+        this.loader = AssetsLoader.getInstance();
+        this.loader.onLoaded(assets => onAssetsLoaded(assets));
     }
 
     if (action === "RankScene") {
-        DataStore.RankScene.render();
+        if (this.loader.loaded) DataStore.RankScene.render();
     }
 
     if (action === "GameEnded") {
@@ -26,9 +22,8 @@ wx.onMessage(msg => {
 
 function onAssetsLoaded(assets) {
     DataStore.assets = assets;
-}
 
-function init() {
+
     let sharedCanvas = wx.getSharedCanvas();
 
     DataStore.pixelRatio = wx.getSystemInfoSync().pixelRatio;
@@ -41,4 +36,7 @@ function init() {
 
     DataStore.RankScene = RankScene.getInstance();
     DataStore.GameEnded = GameEnded.getInstance();
+
+
+    DataStore.RankScene.render();
 }
