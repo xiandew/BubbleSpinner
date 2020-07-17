@@ -18,6 +18,10 @@ wx.onMessage(function (msg) {
     if (action === "GameEnded") {
         DataStore.GameEnded.render();
     }
+
+    if (action === "MainMenu") {
+        DataStore.currentScene = "MainMenu";
+    }
 });
 
 function onAssetsLoaded(assets) {

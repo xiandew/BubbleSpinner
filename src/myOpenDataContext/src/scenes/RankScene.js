@@ -61,33 +61,24 @@ export default class RankScene extends Scene {
                 });
 
                 let currentWeek = Week.getCurrentWeek();
-                let currentWeekRecords = userRecords//.filter(userRecord => userRecord.week == currentWeek);
+                let currentWeekRecords = userRecords.filter(userRecord => userRecord.week == currentWeek);
                 currentWeekRecords.sort((r1, r2) => r2.wkRecord - r1.wkRecord);
-
-                wx.getUserInfo({
-                    openIdList: ['selfOpenId'],
-                    success: (res) => {
-                        let [user] = res.data;
-                        let nickname = user.nickName;
-                        let avatarUrl = user.avatarUrl;
-                        let myRecord = currentWeekRecords.find(r => r.nickname == nickname && r.avatar == avatarUrl);
-                        if (myRecord) myRecord.isMine = true;
-
-                        this.drawRecords(currentWeekRecords);
-                    }
-                });
+                this.drawRecords(currentWeekRecords);
             }
         });
 
         this.sy = 0;
         wx.onTouchStart(e => {
+            if (DataStore.currentScene != RankScene.toString()) return;
             this.startY = this.sy + e.touches[0].clientY;
         });
         wx.onTouchMove(e => {
+            if (DataStore.currentScene != RankScene.toString()) return;
             this.sy = this.startY - e.touches[0].clientY;
             this.render(this.sy);
         });
         wx.onTouchEnd(e => {
+            if (DataStore.currentScene != RankScene.toString()) return;
             this.sy = ((arr) => { arr.sort((a, b) => { return a - b; }); return arr })([0, this.sy, this.leaderboardCanvas.height - this.leaderboardSprite.height])[1];
             this.render(this.sy);
         });
@@ -164,8 +155,13 @@ export default class RankScene extends Scene {
     }
 
     render(sy = 0) {
+        super.render();
         this.sprite.render(DataStore.ctx);
         this.leaderboardSprite.renderCrop(DataStore.ctx, 0, sy, this.leaderboardCanvas.width, this.leaderboardSprite.height);
+    }
+
+    static toString() {
+        return "RankScene";
     }
 
     static getInstance() {
