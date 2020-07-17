@@ -163,6 +163,15 @@ export default class GameEnded extends Scene {
             // Draw the score
             this.bitmapText.draw(this.leaderboardThumbnailContext, record.wkRecord, grid.fontSize * 1.2, grid.center, grid.top + rank.lineHeight + grid.avatarSize + nickname.lineHeight, "center");
         });
+
+        // Draw the current score
+        this.bitmapText.draw(this.ctx, records[1].currentScore, 0.15 * DataStore.canvasWidth, 0.5 * DataStore.canvasWidth, 0.1 * DataStore.canvasHeight, "center");
+
+        // Draw the max record
+        this.ctx.textAlign = "center"
+        let maxRecord = new Text(`历史最高分: ${records[1].maxRecord}`, 1.2 * this.header.fontSize, 6 * this.header.fontSize);
+        maxRecord.draw(this.ctx, 0.5 * DataStore.canvasWidth, DataStore.canvasHeight - 0.5 * maxRecord.lineHeight);
+
         this.render();
     }
 
