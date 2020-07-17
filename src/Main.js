@@ -43,7 +43,7 @@ export default class Main {
         );
         DataStore.openDataContext = openDataContext;
         DataStore.openDataContext.postMessage({
-            action: "init"
+            action: "LoadAssets"
         });
 
         DataStore.fps = 60;
