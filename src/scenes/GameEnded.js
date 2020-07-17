@@ -3,6 +3,7 @@ import Sprite from "../base/Sprite.js";
 import RendererManager from "../renderer/RendererManager.js";
 import TouchHandler from "../utils/TouchHandler.js";
 import Scene from "./Scene.js";
+import Score from "./MainScene/Score.js";
 
 /**
  * This scene is static (no animation)
@@ -25,9 +26,9 @@ export default class GameEnded extends Scene {
 
         this.restartBtn = new Sprite(
             DataStore.assets.get("restart-btn"),
-            0.12 * DataStore.screenWidth,
-            0.9 * DataStore.screenHeight,
-            0.06 * DataStore.screenWidth
+            0.5 * DataStore.screenWidth,
+            0.75 * DataStore.screenHeight,
+            0.45 * DataStore.screenWidth
         );
 
         this.touchHandler = new TouchHandler;
@@ -52,13 +53,13 @@ export default class GameEnded extends Scene {
     }
 
     toString() {
-        return "RankScene";
+        return "GameEnded";
     }
 
     static getInstance() {
-        if (!RankScene.instance) {
-            RankScene.instance = new RankScene();
+        if (!GameEnded.instance) {
+            GameEnded.instance = new GameEnded();
         }
-        return RankScene.instance;
+        return GameEnded.instance;
     }
 }

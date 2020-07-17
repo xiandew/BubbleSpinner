@@ -5,6 +5,7 @@ import Sprite from "./base/Sprite.js";
 import MainMenu from "./scenes/MainMenu.js";
 import MainScene from "./scenes/MainScene.js";
 import RankScene from "./scenes/RankScene.js";
+import GameEnded from "./scenes/GameEnded.js";
 
 // The entry class of the game
 export default class Main {
@@ -57,6 +58,7 @@ export default class Main {
         DataStore.MainMenu = MainMenu.getInstance();
         DataStore.MainScene = MainScene.getInstance();
         DataStore.RankScene = RankScene.getInstance();
+        DataStore.GameEnded = GameEnded.getInstance();
 
         // start MainMenu scene
         DataStore.MainMenu.run();
