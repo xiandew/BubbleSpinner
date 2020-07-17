@@ -11,12 +11,13 @@ wx.onMessage(function (msg) {
     }
 
     if (action === "RankScene") {
-        if (DataStore.assets) DataStore.RankScene.render();
         DataStore.currentScene = RankScene.toString();
+        if (DataStore.assets) DataStore.RankScene.render();
     }
 
     if (action === "GameEnded") {
-        DataStore.GameEnded.render();
+        DataStore.currentScene = GameEnded.toString();
+        if (DataStore.assets) DataStore.GameEnded.render();
     }
 
     if (action === "MainMenu") {

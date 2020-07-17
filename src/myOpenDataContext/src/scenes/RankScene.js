@@ -25,12 +25,6 @@ export default class RankScene extends Scene {
 
         this.drawLayout();
 
-        this.loading = new Text(
-            "加载中",
-            this.header.fontSize,
-            this.leaderboardBackground.height - this.header.lineHeight
-        );
-
         // Canvas for the leaderboard
         this.leaderboardCanvas = wx.createCanvas();
         this.leaderboardContext = this.leaderboardCanvas.getContext("2d");
@@ -41,6 +35,12 @@ export default class RankScene extends Scene {
             this.leaderboardBackground.ml + 0.5 * this.leaderboardCanvas.width,
             this.leaderboardBackground.top + this.header.lineHeight + 0.5 * this.leaderboardCanvas.height,
             this.leaderboardCanvas.width,
+            this.leaderboardCanvas.height
+        );
+
+        this.loading = new Text(
+            "加载中",
+            this.header.fontSize,
             this.leaderboardCanvas.height
         );
 
@@ -108,7 +108,8 @@ export default class RankScene extends Scene {
         if (!records) {
             this.leaderboardContext.fillStyle = "#888888";
             this.leaderboardContext.textAlign = "center";
-            return this.loading.draw(this.leaderboardContext, 0.5 * this.leaderboardCanvas.width, 0.5 * this.leaderboardCanvas.height);
+            this.loading.draw(this.leaderboardContext, 0.5 * this.leaderboardCanvas.width, 0.5 * this.leaderboardCanvas.height);
+            return this.render();
         }
 
         let grid = new Grid(0, 0.178 * this.leaderboardCanvas.width, 0, this.leaderboardBackground.pr, 0, this.leaderboardBackground.pl, this.leaderboardCanvas.width);
@@ -155,6 +156,7 @@ export default class RankScene extends Scene {
     }
 
     render(sy = 0) {
+        if (DataStore.currentScene !== RankScene.toString()) return;
         super.render();
         this.sprite.render(DataStore.ctx);
         this.leaderboardSprite.renderCrop(DataStore.ctx, 0, sy, this.leaderboardCanvas.width, this.leaderboardSprite.height);
