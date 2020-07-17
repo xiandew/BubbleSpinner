@@ -38,5 +38,7 @@ export default class BitmapText {
             );
             x += xadvance * (textAlign == "right" ? -1 : 1);
         });
+
+        return x;
     }
 }

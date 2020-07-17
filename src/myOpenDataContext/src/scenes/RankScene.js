@@ -3,6 +3,7 @@ import Sprite from "../base/Sprite.js";
 import Scene from "./Scene.js";
 import Grid from "../utils/Grid.js";
 import Text from "../utils/Text.js";
+import Week from "../utils/Week.js";
 
 export default class RankScene extends Scene {
     constructor() {
@@ -19,22 +20,64 @@ export default class RankScene extends Scene {
         this.header = new Text(
             "每周一凌晨刷新",
             0.015 * DataStore.canvasHeight,
-            0.05 * DataStore.canvasHeight
+            0.04 * DataStore.canvasHeight
         );
 
         this.drawLayout();
 
-        // canvas for the leaderboard (top = 20%, height = 60%)
-        let leaderboard = wx.createCanvas();
-        leaderboard.width = DataStore.canvasWidth - this.leaderboardBackground.mr - this.leaderboardBackground.ml;
-        leaderboard.height = DataStore.canvasHeight * 0.6;
-        this.leaderboard = new Sprite(
-            leaderboard,
-            0.5 * DataStore.canvasWidth,
-            0.5 * DataStore.canvasHeight,
-            leaderboard.width,
-            leaderboard.height
+        this.loading = new Text(
+            "加载中",
+            this.header.fontSize,
+            this.leaderboardBackground.height - this.header.lineHeight
         );
+
+        // Canvas for the leaderboard
+        this.leaderboardCanvas = wx.createCanvas();
+        this.leaderboardContext = this.leaderboardCanvas.getContext("2d");
+        this.leaderboardCanvas.width = DataStore.canvasWidth - this.leaderboardBackground.mr - this.leaderboardBackground.ml;
+        this.leaderboardCanvas.height = this.leaderboardBackground.height - this.header.lineHeight;
+        this.leaderboardSprite = new Sprite(
+            this.leaderboardCanvas,
+            this.leaderboardBackground.ml + 0.5 * this.leaderboardCanvas.width,
+            this.leaderboardBackground.top + this.header.lineHeight + 0.5 * this.leaderboardCanvas.height,
+            this.leaderboardCanvas.width,
+            this.leaderboardCanvas.height
+        );
+
+        this.drawRecords();
+
+        wx.getFriendCloudStorage({
+            keyList: ["week", "wkRecord"],
+            success: res => {
+                let userRecords = res.data.map(rawUserRecord => {
+                    let userRecord = {
+                        nickname: rawUserRecord.nickname,
+                        avatarUrl: rawUserRecord.avatarUrl,
+                        week: null,
+                        wkRecord: null
+                    };
+                    rawUserRecord.KVDataList.forEach(KVData => { userRecord[KVData.key] = KVData.value });
+                    return userRecord;
+                });
+
+                let currentWeek = Week.getCurrentWeek();
+                let currentWeekRecords = userRecords//.filter(userRecord => userRecord.week == currentWeek);
+                currentWeekRecords.sort((r1, r2) => r2.wkRecord - r1.wkRecord);
+
+                wx.getUserInfo({
+                    openIdList: ['selfOpenId'],
+                    success: (res) => {
+                        let [user] = res.data;
+                        let nickname = user.nickName;
+                        let avatarUrl = user.avatarUrl;
+                        let myRecord = currentWeekRecords.find(r => r.nickname == nickname && r.avatar == avatarUrl);
+                        if (myRecord) myRecord.isMine = true;
+
+                        this.drawRecords(currentWeekRecords);
+                    }
+                });
+            }
+        });
     }
 
     drawLayout() {
@@ -46,7 +89,7 @@ export default class RankScene extends Scene {
         this.ctx.fillStyle = "#ffffff";
         this.ctx.textAlign = "left";
         this.ctx.textBaseline = "top";
-        this.header.draw(this.ctx, this.leaderboardBackground.mr + this.leaderboardBackground.pr, this.leaderboardBackground.top + 0.5 * (this.header.lineHeight - this.header.fontSize));
+        this.header.draw(this.ctx, this.leaderboardBackground.mr + 0.8 * this.leaderboardBackground.pr, this.leaderboardBackground.top + 0.5 * (this.header.lineHeight - this.header.fontSize));
 
         // hr (top = 20%)
         this.ctx.beginPath();
@@ -55,8 +98,61 @@ export default class RankScene extends Scene {
         this.ctx.stroke();
     }
 
+    drawRecords(records) {
+        this.leaderboardContext.clearRect(0, 0, this.leaderboardCanvas.width, this.leaderboardCanvas.height);
+
+        if (!records) {
+            this.leaderboardContext.fillStyle = "#888888";
+            this.leaderboardContext.textAlign = "center";
+            return this.loading.draw(this.leaderboardContext, 0.5 * this.leaderboardCanvas.width, 0.5 * this.leaderboardCanvas.height);
+        }
+
+        let grid = new Grid(0, 0.178 * this.leaderboardCanvas.width, 0, this.leaderboardBackground.pr, 0, this.leaderboardBackground.pl, this.leaderboardCanvas.width);
+        this.leaderboardSprite.height = this.leaderboardCanvas.height = Math.max(this.leaderboardCanvas.height, grid.height * records.length);
+
+        records.forEach((record, i) => {
+            grid.top = i * grid.height;
+            grid.mid = grid.top + 0.5 * grid.height;
+            grid.fontSize = 0.25 * grid.height;
+            grid.avatarSize = 0.5 * grid.height;
+
+            this.leaderboardContext.fillStyle = i % 2 ? "rgba(30, 30, 30, 0.8)" : "rgba(0, 0, 0, 0)";
+            grid.draw(this.leaderboardContext);
+
+            // Draw the rank
+            this.leaderboardContext.fillStyle = i == 0 ? '#fa7e00' : i == 1 ? '#fec11e' : i == 2 ? '#fbd413' : '#888888';
+            this.leaderboardContext.textAlign = "center";
+            this.leaderboardContext.textBaseline = "middle";
+            new Text(i + 1).draw(this.leaderboardContext, grid.pl, grid.mid, `italic bold ${grid.fontSize}px Arial`);
+
+            // Draw the avatar
+            let avatar = wx.createImage();
+            avatar.y = grid.mid;
+            avatar.onload = () => {
+                new Sprite(avatar, 2.2 * grid.pl + 0.5 * grid.avatarSize, avatar.y, grid.avatarSize, grid.avatarSize).render(this.leaderboardContext);
+                // Refresh the shared canvas
+                this.render();
+            }
+            avatar.src = record.avatarUrl;
+
+            // Draw the score, use the start x of the score to truncate long nicknames
+            let scoreStartX = this.bitmapText.draw(this.leaderboardContext, record.wkRecord, 0.3 * grid.height, grid.width - grid.pr, grid.mid - 0.15 * grid.height, "right");
+            let nicknameEndX = scoreStartX - grid.pl;
+            let nicknameStartX = 2.8 * grid.pl + grid.avatarSize;
+
+            // Draw the nickname
+            this.leaderboardContext.fillStyle = '#ffffff';
+            this.leaderboardContext.textAlign = 'left';
+            new Text(record.nickname, grid.fontSize).drawOverflowEllipsis(this.leaderboardContext, nicknameStartX, grid.mid, nicknameEndX - nicknameStartX);
+        });
+
+        // Refresh the shared canvas
+        this.render();
+    }
+
     render() {
         this.sprite.render(DataStore.ctx);
+        this.leaderboardSprite.render(DataStore.ctx);
     }
 
     static getInstance() {

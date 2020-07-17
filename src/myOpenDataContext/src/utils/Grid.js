@@ -2,21 +2,18 @@ import DataStore from "../data/DataStore";
 
 export default class Grid {
 
-    constructor(top, height, mr, pr, ml = mr, pl = pr) {
+    constructor(top, height, mr, pr, ml = mr, pl = pr, width) {
         this.top = top;
         this.height = height;
         this.mr = mr;
         this.ml = ml;
         this.pr = pr;
         this.pl = pl;
-    }
-
-    getWidth() {
-        return DataStore.canvasWidth - this.mr - this.ml;
+        this.width = width || DataStore.canvasWidth - this.mr - this.ml;
     }
 
     draw(ctx, ...args) {
-        Grid.draw(ctx, this.ml, this.top, this.getWidth(), this.height, ...args);
+        Grid.draw(ctx, this.ml, this.top, this.width, this.height, ...args);
     }
 
     /**
