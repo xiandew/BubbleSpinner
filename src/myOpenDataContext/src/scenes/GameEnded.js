@@ -3,6 +3,7 @@ import Sprite from "../base/Sprite.js";
 import Scene from "./Scene.js";
 import Grid from "../utils/Grid.js";
 import Text from "../utils/Text.js";
+import Week from "../utils/Week.js";
 
 export default class GameEnded extends Scene {
     constructor() {
@@ -11,9 +12,9 @@ export default class GameEnded extends Scene {
         // background for the leaderboard thumbnail (mx = 7.5%, top = 30%, height = 27.5%)
         this.leaderboardThumbnailBackground = new Grid(
             0.3 * DataStore.canvasHeight,
-            0.275 * DataStore.canvasHeight,
+            0.26 * DataStore.canvasHeight,
             0.075 * DataStore.canvasWidth,
-            0.06 * DataStore.canvasWidth
+            0.04 * DataStore.canvasWidth
         );
         // meta (top = 30%, height = 5%)
         this.header = new Text(
@@ -26,45 +27,34 @@ export default class GameEnded extends Scene {
             0.015 * DataStore.canvasHeight,
             0.05 * DataStore.canvasHeight,
             0,
-            -0.03 * DataStore.canvasWidth
-        );
-        this.loading = new Text(
-            "加载中",
-            this.header.fontSize,
-            this.leaderboardThumbnailBackground.height - this.header.lineHeight
+            -0.02 * DataStore.canvasWidth
         );
 
         this.drawLayout();
 
+        this.leaderboardThumbnailCanvas = wx.createCanvas();
+        this.leaderboardThumbnailContext = this.leaderboardThumbnailCanvas.getContext("2d");
+        this.leaderboardThumbnailCanvas.width = DataStore.canvasWidth - this.leaderboardThumbnailBackground.mr - this.leaderboardThumbnailBackground.ml;
+        this.leaderboardThumbnailCanvas.height = this.leaderboardThumbnailBackground.height - this.header.lineHeight;
+        this.leaderboardThumbnailSprite = new Sprite(
+            this.leaderboardThumbnailCanvas,
+            this.leaderboardThumbnailBackground.ml + 0.5 * this.leaderboardThumbnailCanvas.width,
+            this.leaderboardThumbnailBackground.top + this.header.lineHeight + 0.5 * this.leaderboardThumbnailCanvas.height,
+            this.leaderboardThumbnailCanvas.width,
+            this.leaderboardThumbnailCanvas.height
+        );
 
-        // this.leaderboardThumbnail = wx.createCanvas();
-        // this.leaderboardThumbnail
+        this.loading = new Text(
+            "加载中",
+            this.header.fontSize,
+            this.leaderboardThumbnailCanvas.height
+        );
 
-
-        this.drawRanks();
+        this.drawRecords();
 
         wx.getFriendCloudStorage({
             keyList: ["week", "wkRecord", "currentScore", "maxRecord"],
             success: (res) => {
-                function getCurrentWeek() {
-                    let today = new Date();
-                    let newYearsDate = new Date(today.getFullYear(), 0, 1);
-
-                    // start from Monday
-                    let offsetDays = 1;
-                    let newYearsDay = newYearsDate.getDay();
-                    if (newYearsDay != 0) {
-                        offsetDays += (7 - newYearsDay);
-                    }
-
-                    let firstMonday = new Date(today.getFullYear(), 0, 1 + offsetDays);
-                    let days = Math.ceil(
-                        (today.valueOf() - firstMonday.valueOf()) / 86400000
-                    );
-
-                    // Count the first full week as 1 and the last as 52
-                    return Math.ceil(days / 7) + 1;
-                };
 
                 let userRecords = res.data.map(rawUserRecord => {
                     let userRecord = {
@@ -75,12 +65,12 @@ export default class GameEnded extends Scene {
                         currentScore: null,
                         maxRecord: null
                     };
-                    rawUserRecord.KVDataList.forEach(KVData => { userRecord[KVData.key] = userRecord[KVData.value] });
+                    rawUserRecord.KVDataList.forEach(KVData => { userRecord[KVData.key] = KVData.value });
                     return userRecord;
                 });
 
-                let currentWeek = getCurrentWeek();
-                let currentWeekRecords = userRecords.filter(userRecord => userRecord.week == currentWeek);
+                let currentWeek = Week.getCurrentWeek();
+                let currentWeekRecords = userRecords//.filter(userRecord => userRecord.week == currentWeek);
                 currentWeekRecords.sort((r1, r2) => r2.wkRecord - r1.wkRecord);
 
                 // Find the one record before, the user's record and the one after
@@ -90,13 +80,13 @@ export default class GameEnded extends Scene {
                         let [user] = res.data;
                         let nickname = user.nickName;
                         let avatarUrl = user.avatarUrl;
-                        let rank = currentWeekRecords.findIndex(r => r.nickname == nickname && r.avatar == avatarUrl);
+                        let rank = currentWeekRecords.findIndex(r => r.nickname == nickname && r.avatarUrl == avatarUrl);
 
-                        this.drawRanks([
+                        this.drawRecords([
                             currentWeekRecords[rank - 1],
                             currentWeekRecords[rank],
                             currentWeekRecords[rank + 1]
-                        ]);
+                        ].map((r, i) => { r.rank = rank + i; return r; }));
                     }
                 });
             }
@@ -104,7 +94,7 @@ export default class GameEnded extends Scene {
     }
 
     drawLayout() {
-        this.ctx.fillStyle = "rgba(63, 63, 63, 0.5)";
+        this.ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
         this.ctx.strokeStyle = "rgba(80, 80, 80, 1)";
         this.leaderboardThumbnailBackground.draw(this.ctx);
 
@@ -115,7 +105,7 @@ export default class GameEnded extends Scene {
 
         this.ctx.fillStyle = "#ffffff";
         this.ctx.textAlign = "right";
-        this.more.draw(this.ctx, DataStore.canvasWidth - this.leaderboardThumbnailBackground.ml - this.leaderboardThumbnailBackground.pl - this.more.ml, this.header.top);
+        this.more.draw(this.ctx, DataStore.canvasWidth - this.leaderboardThumbnailBackground.ml - this.leaderboardThumbnailBackground.pl - this.more.ml, this.leaderboardThumbnailBackground.top + 0.5 * (this.header.lineHeight - this.header.fontSize));
 
         // hr
         this.ctx.beginPath();
@@ -124,16 +114,67 @@ export default class GameEnded extends Scene {
         this.ctx.stroke();
     }
 
-    drawRanks(ranks) {
-        if (!ranks) {
-            this.ctx.fillStyle = "#888888";
-            this.ctx.textAlign = "center";
-            this.loading.draw(this.ctx, 0.5 * DataStore.canvasWidth, this.leaderboardThumbnailBackground.top + this.header.lineHeight + 0.5 * this.loading.lineHeight);
+    drawRecords(records) {
+        this.leaderboardThumbnailContext.clearRect(0, 0, this.leaderboardThumbnailCanvas.width, this.leaderboardThumbnailCanvas.height);
+        if (!records) {
+            this.leaderboardThumbnailContext.fillStyle = "#888888";
+            this.leaderboardThumbnailContext.textAlign = "center";
+            this.loading.draw(this.leaderboardThumbnailContext, 0.5 * this.leaderboardThumbnailCanvas.width, 0.5 * this.leaderboardThumbnailCanvas.height);
+            return this.render();
         }
+
+        let grid = new Grid(0, this.leaderboardThumbnailCanvas.height, 0, this.leaderboardThumbnailBackground.pr, 0, this.leaderboardThumbnailBackground.pl, this.leaderboardThumbnailCanvas.width / 3);
+
+        records.forEach((record, i) => {
+            grid.ml = i * grid.width;
+            grid.center = grid.ml + 0.5 * grid.width;
+            grid.avatarSize = 0.3 * grid.height;
+            grid.fontSize = 0.32 * grid.avatarSize;
+            grid.pt = 0.1 * grid.height;
+
+            this.leaderboardThumbnailContext.fillStyle = i === 1 ? "rgba(63, 63, 63, 0.5)" : "rgba(0, 0, 0, 0)";
+            this.leaderboardThumbnailContext.strokeStyle = i === 1 ? "rgba(63, 63, 63, 0.5)" : "rgba(0, 0, 0, 0)";
+            grid.draw(this.leaderboardThumbnailContext);
+
+            if (!record) return;
+
+            // Draw the rank
+            this.leaderboardThumbnailContext.fillStyle = i === 1 ? "#41bf8c" : "#888888";
+            this.leaderboardThumbnailContext.textAlign = "center";
+            let rank = new Text(record.rank, grid.fontSize, 1.5 * grid.fontSize);
+            rank.draw(this.leaderboardThumbnailContext, grid.center, grid.top + grid.pt + 0.5 * rank.lineHeight, `italic bold ${rank.fontSize}px Arial`);
+
+            // Draw the avatar
+            let avatar = wx.createImage();
+            avatar.x = grid.center;
+            avatar.onload = () => {
+                new Sprite(avatar, avatar.x, grid.top + grid.pt + rank.lineHeight + 0.5 * grid.avatarSize, grid.avatarSize, grid.avatarSize).render(this.leaderboardThumbnailContext);
+                // Refresh the shared canvas
+                this.render();
+            }
+            avatar.src = record.avatarUrl;
+
+            // Draw the nickname
+            this.leaderboardThumbnailContext.fillStyle = '#888';
+            this.leaderboardThumbnailContext.textAlign = 'center';
+            let nickname = new Text(record.nickname, grid.fontSize, 3.5 * grid.fontSize);
+            nickname.drawOverflowEllipsis(this.leaderboardThumbnailContext, grid.center, grid.top + grid.pt + rank.lineHeight + grid.avatarSize + 0.5 * nickname.lineHeight, grid.width - grid.pr - grid.pl);
+
+            // Draw the score
+            this.bitmapText.draw(this.leaderboardThumbnailContext, record.wkRecord, grid.fontSize * 1.2, grid.center, grid.top + rank.lineHeight + grid.avatarSize + nickname.lineHeight, "center");
+        });
+        this.render();
     }
 
     render() {
+        if (DataStore.currentScene !== GameEnded.toString()) return;
+        super.render();
         this.sprite.render(DataStore.ctx);
+        this.leaderboardThumbnailSprite.render(DataStore.ctx);
+    }
+
+    static toString() {
+        return "GameEnded";
     }
 
     static getInstance() {
