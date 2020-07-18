@@ -29,6 +29,9 @@ export default class ShooterController {
         // bubble assets on the spinner, concat with `a`
         let b = this.spinner.bubbles.map(bubble => bubble.texture.img).concat(a);
 
+        // filter out invalid bubbles which may appear when restarting
+        b = b.filter(asset => this.spinner.controller.getBubbleAssets().includes(asset));
+
         // the least frequent bubble in `b`
         let c = [...b.reduce((f, b) => f.set(b, (f.get(b) || 0) + 1), new Map())].reduce((a, b) => b[1] < a[1] ? b : a)[0];
 

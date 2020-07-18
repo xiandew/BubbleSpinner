@@ -17,12 +17,7 @@ export default class Shooter {
     constructor() {
         this.id = UUID.getUUID();
         this.controller = new ShooterController(this);
-        this.currShot = this.controller.createCurrShot();
-        this.nextShot = this.controller.createNextShot();
-
         this.maxBounces = 8;
-        this.curbounces = 0;
-        this.state = Shooter.State.LOADING;
 
         this.touchHandler = new TouchHandler();
         wx.onTouchStart((e) => {
@@ -56,8 +51,20 @@ export default class Shooter {
 
         this.rendererManager = new RendererManager();
         this.rendererManager.setRenderer(this, "Trace");
+        this.reload();
+    }
+
+    reload() {
+        if (this.currShot) this.rendererManager.remove(this.currShot);
+        if (this.nextShot) this.rendererManager.remove(this.nextShot);
+        this.currShot = this.controller.createCurrShot();
+        this.nextShot = this.controller.createNextShot();
         this.rendererManager.setRenderer(this.nextShot, "ZoomIn");
         this.rendererManager.setRenderer(this.currShot, "ZoomInUp");
+
+        // Reset current bounces
+        this.curbounces = 0;
+        return this.state = Shooter.State.LOADING;
     }
 
     update() {
@@ -72,15 +79,7 @@ export default class Shooter {
 
         // Collision detection with the spinner
         if (this.controller.spinner.collides(this.currShot)) {
-            this.rendererManager.remove(this.currShot);
-            this.rendererManager.remove(this.nextShot);
-            this.currShot = this.controller.createCurrShot();
-            this.nextShot = this.controller.createNextShot();
-            this.rendererManager.setRenderer(this.nextShot, "ZoomIn");
-            this.rendererManager.setRenderer(this.currShot, "ZoomInUp");
-            // Reset current bounces
-            this.curbounces = 0;
-            return this.state = Shooter.State.LOADING;
+            return this.reload();
         }
 
         if ((this.currShot.collideXBounds() ? (this.currShot.speedX *= (-1), true) : false) ||

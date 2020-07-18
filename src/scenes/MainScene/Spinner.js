@@ -168,9 +168,8 @@ export default class Spinner {
 
         // Level up
         if (!this.bubbles.length) {
-            DataStore.MainScene.rendererManager.setRenderer(this, "RotateOut");
             DataStore.level++;
-            this.state = Spinner.State.ANIMATING;
+            this.reload();
             return;
         }
 
@@ -207,6 +206,12 @@ export default class Spinner {
         if (Math.sign(this.angularSpeed) == Math.sign(this.frictionOfRotation)) {
             this.frictionOfRotation *= (-1);
         }
+    }
+
+    reload() {
+        // Only initiate the reloading process and update() will take care of the rest
+        DataStore.MainScene.rendererManager.setRenderer(this, "RotateOut");
+        this.state = Spinner.State.ANIMATING;
     }
 
     update() {
