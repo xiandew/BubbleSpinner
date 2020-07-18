@@ -3,7 +3,6 @@ import Sprite from "../base/Sprite.js";
 import Scene from "./Scene.js";
 import Grid from "../utils/Grid.js";
 import Text from "../utils/Text.js";
-import Week from "../utils/Week.js";
 
 export default class RankScene extends Scene {
     constructor() {
@@ -62,7 +61,7 @@ export default class RankScene extends Scene {
     }
 
     drawLayout() {
-        this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+        this.ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
         this.ctx.strokeStyle = "rgba(80, 80, 80, 1)";
         this.ctx.lineWidth = 2;
         this.leaderboardBackground.draw(this.ctx);
@@ -125,8 +124,8 @@ export default class RankScene extends Scene {
             grid.fontSize = 0.25 * grid.height;
             grid.avatarSize = 0.5 * grid.height;
 
-            this.leaderboardContext.fillStyle = i % 2 ? "rgba(30, 30, 30, 0.8)" : "rgba(0, 0, 0, 0)";
-            grid.draw(this.leaderboardContext);
+            this.leaderboardContext.fillStyle = i % 2 ? "rgba(30, 30, 30, 0.6)" : "rgba(0, 0, 0, 0)";
+            grid.draw(this.leaderboardContext, 0, true, false);
 
             // Draw the rank
             this.leaderboardContext.fillStyle = i == 0 ? '#fa7e00' : i == 1 ? '#fec11e' : i == 2 ? '#fbd413' : '#888888';
