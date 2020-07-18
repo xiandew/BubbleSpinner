@@ -64,11 +64,12 @@ export default class MainMenu extends Scene {
                 this.rendererManager.remove(this.rankBtn);
                 this.rendererManager.setRenderer(this.logo, "RotateOut");
                 this.rendererManager.setRenderer(this.mask, "FadeOut");
+                DataStore.lastScene = this.toString();
+                DataStore.currentScene = DataStore.MainScene.toString();
             }
 
             if (this.rankBtn.isTouched(e)) {
                 DataStore.openDataContext.postMessage({
-                    // TODO action: "GameEnded"
                     action: "RankScene"
                 });
                 DataStore.lastScene = this.toString();

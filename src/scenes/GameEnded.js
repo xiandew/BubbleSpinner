@@ -3,7 +3,6 @@ import Sprite from "../base/Sprite.js";
 import RendererManager from "../renderer/RendererManager.js";
 import TouchHandler from "../utils/TouchHandler.js";
 import Scene from "./Scene.js";
-import Score from "./MainScene/Score.js";
 
 /**
  * This scene is static (no animation)
@@ -31,20 +30,47 @@ export default class GameEnded extends Scene {
             0.45 * DataStore.screenWidth
         );
 
+        // Fill the background outside the open data context to provide the visual feedback for the touch event
+        let leaderboardThumbnailBackground = wx.createCanvas();
+        let leaderboardThumbnailBackgroundCtx = leaderboardThumbnailBackground.getContext("2d");
+        leaderboardThumbnailBackgroundCtx.fillStyle = "rgba(0, 0, 0, 0.5)";
+        leaderboardThumbnailBackgroundCtx.fillRect(0, 0, leaderboardThumbnailBackground.width, leaderboardThumbnailBackground.height);
+        this.leaderboardThumbnailBackground = new Sprite(
+            leaderboardThumbnailBackground,
+            0.5 * DataStore.screenWidth,
+            0.43 * DataStore.screenHeight,
+            0.85 * DataStore.screenWidth,
+            0.26 * DataStore.screenHeight
+        );
+
+
         this.touchHandler = new TouchHandler;
         this.touchHandler.onTouchEnd(e => {
-            if (DataStore.currentScene !== this.toString()) {
-                return;
+            if (DataStore.currentScene !== this.toString()) return;
+
+            if (this.leaderboardThumbnailBackground.isTouched(e)) {
+                DataStore.openDataContext.postMessage({
+                    action: "RankScene"
+                });
+                DataStore.lastScene = DataStore.currentScene;
+                DataStore.currentScene = DataStore.RankScene.toString();
             }
 
             if (this.restartBtn.isTouched(e)) {
-                DataStore.currentScene = DataStore.lastScene;
+                DataStore.openDataContext.postMessage({
+                    action: "Restart"
+                });
+                DataStore.currentScene = DataStore.MainScene.toString();
+                DataStore.lastScene = this.toString();
+
+                DataStore.MainScene.restart();
             }
         });
 
         this.rendererManager = new RendererManager();
         this.rendererManager.setRenderer(this.mask);
         this.rendererManager.setRenderer(this.restartBtn);
+        this.rendererManager.setRenderer(this.leaderboardThumbnailBackground);
         this.rendererManager.setRenderer(DataStore.sharedCanvas);
     }
 

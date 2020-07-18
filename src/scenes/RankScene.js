@@ -44,21 +44,21 @@ export default class RankScene extends Scene {
 
         this.touchHandler = new TouchHandler;
         this.touchHandler.onTouchEnd(e => {
-            if (DataStore.currentScene !== this.toString()) {
-                return;
-            }
+            if (DataStore.currentScene !== this.toString()) return;
 
             if (this.groupRankBtn.isTouched(e)) {
                 wx.shareAppMessage({
                     title: "查看群排行",
-                    imageUrl: DataStore.getInstance().assets.get("share-img").src
+                    imageUrl: DataStore.assets.get("share-img").src
                 });
             }
 
             if (this.returnBtn.isTouched(e)) {
                 DataStore.currentScene = DataStore.lastScene;
+                DataStore.lastScene = this.toString();
                 DataStore.openDataContext.postMessage({
-                    action: "MainMenu"
+                    action: DataStore.currentScene,
+                    lastScene: DataStore.lastScene
                 });
             }
         });

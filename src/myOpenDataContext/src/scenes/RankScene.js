@@ -44,29 +44,6 @@ export default class RankScene extends Scene {
             this.leaderboardCanvas.height
         );
 
-        this.drawRecords();
-
-        wx.getFriendCloudStorage({
-            keyList: ["week", "wkRecord"],
-            success: res => {
-                let userRecords = res.data.map(rawUserRecord => {
-                    let userRecord = {
-                        nickname: rawUserRecord.nickname,
-                        avatarUrl: rawUserRecord.avatarUrl,
-                        week: null,
-                        wkRecord: null
-                    };
-                    rawUserRecord.KVDataList.forEach(KVData => { userRecord[KVData.key] = KVData.value });
-                    return userRecord;
-                });
-
-                let currentWeek = Week.getCurrentWeek();
-                let currentWeekRecords = userRecords.filter(userRecord => userRecord.week == currentWeek);
-                currentWeekRecords.sort((r1, r2) => r2.wkRecord - r1.wkRecord);
-                this.drawRecords(currentWeekRecords);
-            }
-        });
-
         this.sy = 0;
         wx.onTouchStart(e => {
             if (DataStore.currentScene != RankScene.toString()) return;
@@ -102,15 +79,30 @@ export default class RankScene extends Scene {
         this.ctx.stroke();
     }
 
+    drawLoading() {
+        this.leaderboardContext.fillStyle = "#888888";
+        this.leaderboardContext.textAlign = "center";
+        this.loading.draw(this.leaderboardContext, 0.5 * this.leaderboardCanvas.width, 0.5 * this.leaderboardCanvas.height);
+        this.render();
+    }
+
+    loadRecords() {
+        this.drawLoading();
+        if (DataStore.currentWeekRecords) {
+            return this.drawRecords(DataStore.currentWeekRecords);
+        }
+
+        wx.getFriendCloudStorage({
+            keyList: ["week", "wkRecord", "record"],
+            success: res => {
+                DataStore.currentWeekRecords = DataStore.getCurrentWeekRecords(res.data);
+                this.drawRecords(DataStore.currentWeekRecords);
+            }
+        });
+    }
+
     drawRecords(records) {
         this.leaderboardContext.clearRect(0, 0, this.leaderboardCanvas.width, this.leaderboardCanvas.height);
-
-        if (!records) {
-            this.leaderboardContext.fillStyle = "#888888";
-            this.leaderboardContext.textAlign = "center";
-            this.loading.draw(this.leaderboardContext, 0.5 * this.leaderboardCanvas.width, 0.5 * this.leaderboardCanvas.height);
-            return this.render();
-        }
 
         let grid = new Grid(0, 0.178 * this.leaderboardCanvas.width, 0, this.leaderboardBackground.pr, 0, this.leaderboardBackground.pl, this.leaderboardCanvas.width);
         this.leaderboardCanvas.height = Math.max(this.leaderboardCanvas.height, grid.height * records.length);
