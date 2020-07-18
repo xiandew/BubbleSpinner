@@ -68,7 +68,7 @@ DataStore.upgradeDeprecatedRecord = (deprecatedRecord) => {
     };
     if (deprecatedRecord.week == Week.getThisWeek()) {
         record.wkRecord = parseInt(deprecatedRecord.wkRecord);
-        record.lastUpdate = Week.getTuesdayByWeek(deprecatedRecord.week).getTime();
+        record.lastUpdate = Week.getTuesdayOfWeek(deprecatedRecord.week).getTime();
     }
     record.currentScore = deprecatedRecord.currentScore && parseInt(deprecatedRecord.currentScore);
     return record;
