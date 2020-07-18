@@ -3,6 +3,7 @@ import Sprite from "../base/Sprite.js";
 import Scene from "./Scene.js";
 import Grid from "../utils/Grid.js";
 import Text from "../utils/Text.js";
+import Week from "../utils/Week.js";
 
 export default class GameEnded extends Scene {
     constructor() {
@@ -22,7 +23,7 @@ export default class GameEnded extends Scene {
             0.05 * DataStore.canvasHeight
         );
         this.more = new Text(
-            "查看全部排行 ⮞",
+            "查看全部排行 ►",
             0.015 * DataStore.canvasHeight,
             0.05 * DataStore.canvasHeight,
             0,
@@ -54,7 +55,7 @@ export default class GameEnded extends Scene {
         this.drawLoading();
 
         wx.getFriendCloudStorage({
-            keyList: ["week", "wkRecord", "currentScore", "maxRecord", "record"],
+            keyList: ["week", "wkRecord", "maxRecord", "record"],
             success: (res) => {
 
                 DataStore.currentWeekRecords = DataStore.getCurrentWeekRecords(res.data);
@@ -91,13 +92,26 @@ export default class GameEnded extends Scene {
                 if (record) record = JSON.parse(record.value);
                 let deprecatedRecord = res.KVDataList.reduce((acc, cur) => { acc[cur.key] = cur.value; return acc }, {});
 
-                let today = new Date();
+                let now = new Date();
                 if (!record && deprecatedRecord) {
                     record = DataStore.upgradeDeprecatedRecord(deprecatedRecord);
                 }
 
-                record.currentScore = DataStore.currentScore;
-                record.lastUpdate = today.getTime();
+                // Update week record
+                if (
+                    !record.lastUpdate || record.lastUpdate < Week.getThisMonday().getTime() ||
+                    !record.wkRecord || DataStore.currentScore > record.wkRecord
+                ) {
+                    record.wkRecord = DataStore.currentScore;
+                }
+
+                // Update max record
+                if (!record.wxgame.score || record.wxgame.score < record.wkRecord) {
+                    record.wxgame.score = record.wkRecord;
+                    record.wxgame.update_time = now.getTime();
+                }
+
+                record.lastUpdate = now.getTime();
 
                 wx.setUserCloudStorage({
                     KVDataList: [{ key: "record", value: JSON.stringify(record) }],
@@ -187,7 +201,7 @@ export default class GameEnded extends Scene {
         this.drawLayout();
 
         // Draw the current score
-        this.bitmapText.draw(this.ctx, records[1].currentScore, 0.17 * DataStore.canvasWidth, 0.5 * DataStore.canvasWidth, 0.1 * DataStore.canvasHeight, "center");
+        this.bitmapText.draw(this.ctx, DataStore.currentScore, 0.17 * DataStore.canvasWidth, 0.5 * DataStore.canvasWidth, 0.1 * DataStore.canvasHeight, "center");
 
         // Draw the max record
         this.ctx.textAlign = "center"

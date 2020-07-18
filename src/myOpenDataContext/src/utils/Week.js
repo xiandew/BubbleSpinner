@@ -12,16 +12,16 @@ export default class Week {
         return new Date(year, 0, 1 + offsetDays);
     }
 
-    static getMondayByWeek(week, year = new Date().getFullYear()) {
+    static getMondayOfWeek(week, year = new Date().getFullYear()) {
         let firstMondayOfYear = Week.getFirstMondayOfTheYear(year);
         let thisMonday = new Date();
         thisMonday.setDate(firstMondayOfYear.getDate() + (week - 1) * 7);
         return thisMonday;
     }
 
-    static getTuesdayByWeek(week, year = new Date().getFullYear()) {
+    static getTuesdayOfWeek(week, year = new Date().getFullYear()) {
         let thisTuesday = new Date();
-        thisTuesday.setDate(Week.getMondayByWeek(week, year).getDate() + 1);
+        thisTuesday.setDate(Week.getMondayOfWeek(week, year).getDate() + 1);
         return thisTuesday;
     }
 
