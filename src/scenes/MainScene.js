@@ -46,12 +46,11 @@ export default class MainScene extends Scene {
     }
 
     restart() {
-        this.health.resetHealth();
         DataStore.score = 0;
         DataStore.level = 0;
 
-        this.rendererManager.setRenderer(this.spinner, "RotateOut");
-        this.spinner.state = Spinner.State.ANIMATING;
+        this.health.resetHealth();
+        this.spinner.reload();
     }
 
     // loop all the frames
