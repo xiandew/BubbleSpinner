@@ -218,6 +218,13 @@ export default class Spinner {
             }
             if (this.rotatedOut) {
                 this.rotatedOut = false;
+
+                // Restart
+                this.bubbles.forEach(bubble => {
+                    bubble.hex.unsetObj();
+                    this.rendererManager.remove(bubble);
+                });
+
                 this.createBubbles();
                 DataStore.MainScene.rendererManager.setRenderer(this, "RotateIn");
             }
@@ -248,6 +255,10 @@ export default class Spinner {
                 bubble.startY <= 0
             )) {
                 this.state = Spinner.State.CRASH;
+                DataStore.openDataContext.postMessage({
+                    action: "GameEnded",
+                    currentScore: DataStore.score
+                });
                 DataStore.lastScene = DataStore.currentScene;
                 DataStore.currentScene = DataStore.GameEnded.toString();
             }

@@ -39,6 +39,19 @@ export default class MainScene extends Scene {
         if (DataStore.currentScene == DataStore.GameEnded.toString()) {
             DataStore.GameEnded.render();
         }
+
+        if (DataStore.currentScene == DataStore.RankScene.toString()) {
+            DataStore.RankScene.render();
+        }
+    }
+
+    restart() {
+        this.health.resetHealth();
+        DataStore.score = 0;
+        DataStore.level = 0;
+
+        this.rendererManager.setRenderer(this.spinner, "RotateOut");
+        this.spinner.state = Spinner.State.ANIMATING;
     }
 
     // loop all the frames
