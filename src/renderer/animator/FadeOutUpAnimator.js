@@ -5,7 +5,7 @@ import Bubble from "../../scenes/MainScene/Bubble.js";
 export default class FadeOutUpAnimator extends Renderer {
     constructor(target) {
         super(target);
-        console.assert(target.bubble);
+        // console.assert(target.bubble);
 
         this.target.x = (() => { let a = [Bubble.size, this.target.bubble.getX(), DataStore.screenWidth - Bubble.size]; a.sort((a, b) => { return a - b; }); return a; })()[1];
         this.target.y = this.y = this.target.bubble.getY();

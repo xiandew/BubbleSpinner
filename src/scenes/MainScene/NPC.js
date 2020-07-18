@@ -33,7 +33,7 @@ export default class NPC {
 
     spawn() {
         let numOfSpawns = this.minSpawns + Math.round(Math.random() * (this.maxSpawns - this.minSpawns));
-        console.assert(!this.spawnedBubbles.length);
+        // console.assert(!this.spawnedBubbles.length);
         for (let i = 0; i < numOfSpawns; i++) {
 
             // Get the initial position of each NPC bubbles
@@ -54,7 +54,7 @@ export default class NPC {
     }
 
     aim() {
-        console.assert(SpawnedBubble.speed);
+        // console.assert(SpawnedBubble.speed);
         // find best destinations for NPC bubbles
         let bubbles = this.spinner.bubbles.slice();
         bubbles.sort((b1, b2) => {

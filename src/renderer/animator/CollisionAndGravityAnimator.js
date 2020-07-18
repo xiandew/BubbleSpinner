@@ -4,11 +4,11 @@ import Bubble from "../../scenes/MainScene/Bubble.js";
 
 export default class CollisionAndGravityAnimator extends Renderer {
     constructor(target, other) {
-        console.assert(other.speed);
-        console.assert(other.speedX);
-        console.assert(other.speedY);
-        console.assert(other.getX);
-        console.assert(other.getY);
+        // console.assert(other.speed);
+        // console.assert(other.speedX);
+        // console.assert(other.speedY);
+        // console.assert(other.getX);
+        // console.assert(other.getY);
         super(target);
 
         // Init collision animation
