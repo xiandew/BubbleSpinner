@@ -16,6 +16,12 @@ export default class Health {
     }
 
     resetHealth() {
+        if (this.sprites && this.sprites.length) {
+            this.sprites.forEach((sprite) => {
+                this.rendererManager.remove(sprite);
+            });
+        }
+
         this.currHealth = this.currHealth || Math.ceil(Math.random() * this.maxHealth);
         this.sprites = new Array(this.currHealth).fill(null).map((e, i) => {
             return new Bubble(
