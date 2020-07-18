@@ -3,7 +3,7 @@ import Hex from "./Hex.js";
 export default class HexMap {
     constructor() {
         // the number of rings for the entire map
-        console.assert(HexMap.radius);
+        // console.assert(HexMap.radius);
 
         this.data = new Array(2 * HexMap.radius + 1);
         for (let r = 0; r < this.data.length; r++) {

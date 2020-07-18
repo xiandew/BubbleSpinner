@@ -18,7 +18,7 @@ export default class RendererManager {
     }
 
     setRenderer(target, animation = null, ...args) {
-        console.assert(target.id);
+        // console.assert(target.id);
         let renderer =
             animation === "Rotate" ? new RotateAnimator(target) :
             animation === "RotateOut" ? new RotateOutAnimator(target) :

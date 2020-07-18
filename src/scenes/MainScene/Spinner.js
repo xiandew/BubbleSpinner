@@ -152,7 +152,7 @@ export default class Spinner {
             // Remove same bubbles and floating bubbles from the spinner
             sameOrFloatingBubbles.forEach(bubble => {
                 let i = this.bubbles.indexOf(bubble);
-                console.assert(i >= 0);
+                // console.assert(i >= 0);
 
                 // Remove bubble from the spinner
                 bubble.hex.unsetObj();
@@ -203,7 +203,7 @@ export default class Spinner {
         // Make sure of the spinner not too fast
         this.angularSpeed = Math.sign(this.angularSpeed) * Math.min(Math.abs(this.angularSpeed), this.angularSpeedThreshold);
 
-        console.assert(this.frictionOfRotation);
+        // console.assert(this.frictionOfRotation);
         if (Math.sign(this.angularSpeed) == Math.sign(this.frictionOfRotation)) {
             this.frictionOfRotation *= (-1);
         }
