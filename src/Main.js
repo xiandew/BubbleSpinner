@@ -80,17 +80,9 @@ wx.onShareAppMessage(() => {
 wx.onShow(res => {
     let shareTicket = res.shareTicket;
     if (shareTicket) {
-        gameInfo.showRank = true;
-
-        // for muting the showGroupRank button
-        gameInfo.showGroupRank = true;
-
-        gameInfo.openDataContext.postMessage({
-            cmd: "clearSharedCanvas"
-        });
-        gameInfo.openDataContext.postMessage({
-            cmd: "groupRankList",
-            ticket: shareTicket
+        DataStore.openDataContext.postMessage({
+            action: "RankScene",
+            shareTicket: shareTicket
         });
     }
 });
