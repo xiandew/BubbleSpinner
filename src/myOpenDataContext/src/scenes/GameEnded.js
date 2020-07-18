@@ -3,7 +3,6 @@ import Sprite from "../base/Sprite.js";
 import Scene from "./Scene.js";
 import Grid from "../utils/Grid.js";
 import Text from "../utils/Text.js";
-import Week from "../utils/Week.js";
 
 export default class GameEnded extends Scene {
     constructor() {
@@ -49,29 +48,16 @@ export default class GameEnded extends Scene {
             this.header.fontSize,
             this.leaderboardThumbnailCanvas.height
         );
+    }
 
-        this.drawRecords();
+    LoadRecords() {
+        this.drawLoading();
 
         wx.getFriendCloudStorage({
-            keyList: ["week", "wkRecord", "currentScore", "maxRecord"],
+            keyList: ["week", "wkRecord", "currentScore", "maxRecord", "record"],
             success: (res) => {
 
-                let userRecords = res.data.map(rawUserRecord => {
-                    let userRecord = {
-                        nickname: rawUserRecord.nickname,
-                        avatarUrl: rawUserRecord.avatarUrl,
-                        week: null,
-                        wkRecord: null,
-                        currentScore: null,
-                        maxRecord: null
-                    };
-                    rawUserRecord.KVDataList.forEach(KVData => { userRecord[KVData.key] = KVData.value });
-                    return userRecord;
-                });
-
-                let currentWeek = Week.getCurrentWeek();
-                let currentWeekRecords = userRecords//.filter(userRecord => userRecord.week == currentWeek);
-                currentWeekRecords.sort((r1, r2) => r2.wkRecord - r1.wkRecord);
+                DataStore.currentWeekRecords = DataStore.getCurrentWeekRecords(res.data);
 
                 // Find the one record before, the user's record and the one after
                 wx.getUserInfo({
@@ -80,13 +66,43 @@ export default class GameEnded extends Scene {
                         let [user] = res.data;
                         let nickname = user.nickName;
                         let avatarUrl = user.avatarUrl;
-                        let rank = currentWeekRecords.findIndex(r => r.nickname == nickname && r.avatarUrl == avatarUrl);
+                        let rank = DataStore.currentWeekRecords.findIndex(r => r.nickname == nickname && r.avatarUrl == avatarUrl);
 
                         this.drawRecords([
-                            currentWeekRecords[rank - 1],
-                            currentWeekRecords[rank],
-                            currentWeekRecords[rank + 1]
-                        ].map((r, i) => { r.rank = rank + i; return r; }));
+                            DataStore.currentWeekRecords[rank - 1],
+                            DataStore.currentWeekRecords[rank],
+                            DataStore.currentWeekRecords[rank + 1]
+                        ].map((r, i) => { if (r) r.rank = rank + i; return r; }));
+                    }
+                });
+            }
+        });
+    }
+
+    updateRecord() {
+        this.drawLoading();
+
+        wx.getUserCloudStorage({
+            // keyList: ["week", "wkRecord", "maxRecord", "currentScore"] are deprecated,
+            // Correct way should be store all relevant information of the user in one key for each leaderboard
+            keyList: ["week", "wkRecord", "maxRecord", "record"],
+            success: res => {
+                let record = res.KVDataList.find(KVData => KVData.key === "record");
+                if (record) record = JSON.parse(record.value);
+                let deprecatedRecord = res.KVDataList.reduce((acc, cur) => { acc[cur.key] = cur.value; return acc }, {});
+
+                let today = new Date();
+                if (!record && deprecatedRecord) {
+                    record = DataStore.upgradeDeprecatedRecord(deprecatedRecord);
+                }
+
+                record.currentScore = DataStore.currentScore;
+                record.lastUpdate = today.getTime();
+
+                wx.setUserCloudStorage({
+                    KVDataList: [{ key: "record", value: JSON.stringify(record) }],
+                    success: () => {
+                        this.LoadRecords();
                     }
                 });
             }
@@ -94,7 +110,8 @@ export default class GameEnded extends Scene {
     }
 
     drawLayout() {
-        this.ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.fillStyle = "rgba(0, 0, 0, 0)";
         this.ctx.strokeStyle = "rgba(80, 80, 80, 1)";
         this.leaderboardThumbnailBackground.draw(this.ctx);
 
@@ -114,14 +131,16 @@ export default class GameEnded extends Scene {
         this.ctx.stroke();
     }
 
+    drawLoading() {
+        this.leaderboardThumbnailContext.clearRect(0, 0, this.leaderboardThumbnailCanvas.width, this.leaderboardThumbnailCanvas.height);
+        this.leaderboardThumbnailContext.fillStyle = "#888888";
+        this.leaderboardThumbnailContext.textAlign = "center";
+        this.loading.draw(this.leaderboardThumbnailContext, 0.5 * this.leaderboardThumbnailCanvas.width, 0.5 * this.leaderboardThumbnailCanvas.height);
+        this.render();
+    }
+
     drawRecords(records) {
         this.leaderboardThumbnailContext.clearRect(0, 0, this.leaderboardThumbnailCanvas.width, this.leaderboardThumbnailCanvas.height);
-        if (!records) {
-            this.leaderboardThumbnailContext.fillStyle = "#888888";
-            this.leaderboardThumbnailContext.textAlign = "center";
-            this.loading.draw(this.leaderboardThumbnailContext, 0.5 * this.leaderboardThumbnailCanvas.width, 0.5 * this.leaderboardThumbnailCanvas.height);
-            return this.render();
-        }
 
         let grid = new Grid(0, this.leaderboardThumbnailCanvas.height, 0, this.leaderboardThumbnailBackground.pr, 0, this.leaderboardThumbnailBackground.pl, this.leaderboardThumbnailCanvas.width / 3);
 
@@ -164,12 +183,15 @@ export default class GameEnded extends Scene {
             this.bitmapText.draw(this.leaderboardThumbnailContext, record.wkRecord, grid.fontSize * 1.2, grid.center, grid.top + rank.lineHeight + grid.avatarSize + nickname.lineHeight, "center");
         });
 
+        // Redraw the layout since we need to wipe out the previous drawing of the current score and the max record
+        this.drawLayout();
+
         // Draw the current score
-        this.bitmapText.draw(this.ctx, records[1].currentScore, 0.15 * DataStore.canvasWidth, 0.5 * DataStore.canvasWidth, 0.1 * DataStore.canvasHeight, "center");
+        this.bitmapText.draw(this.ctx, records[1].currentScore, 0.17 * DataStore.canvasWidth, 0.5 * DataStore.canvasWidth, 0.1 * DataStore.canvasHeight, "center");
 
         // Draw the max record
         this.ctx.textAlign = "center"
-        let maxRecord = new Text(`历史最高分: ${records[1].maxRecord}`, 1.2 * this.header.fontSize, 6 * this.header.fontSize);
+        let maxRecord = new Text(`历史最高分: ${records[1].wxgame.score}`, 1.2 * this.header.fontSize, 6 * this.header.fontSize);
         maxRecord.draw(this.ctx, 0.5 * DataStore.canvasWidth, DataStore.canvasHeight - 0.5 * maxRecord.lineHeight);
 
         this.render();
