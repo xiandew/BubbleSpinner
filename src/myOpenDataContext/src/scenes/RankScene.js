@@ -86,8 +86,20 @@ export default class RankScene extends Scene {
         this.render();
     }
 
-    loadRecords() {
+    loadRecords(shareTicket) {
         this.drawLoading();
+
+        if (shareTicket) {
+            wx.getGroupCloudStorage({
+                shareTicket: shareTicket,
+                keyList: ["week", "wkRecord", "record"],
+                success: res => {
+                    this.drawRecords(DataStore.getCurrentWeekRecords(res.data));
+                }
+            });
+            return;
+        }
+
         if (DataStore.currentWeekRecords) {
             return this.drawRecords(DataStore.currentWeekRecords);
         }

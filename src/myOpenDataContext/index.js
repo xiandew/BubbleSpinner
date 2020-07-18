@@ -13,7 +13,7 @@ wx.onMessage(function (msg) {
 
     if (action === "RankScene") {
         DataStore.currentScene = RankScene.toString();
-        if (DataStore.assets) DataStore.RankScene.loadRecords();
+        if (DataStore.assets) DataStore.RankScene.loadRecords(msg.shareTicket);
     }
 
     if (action === "GameEnded") {
