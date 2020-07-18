@@ -1,7 +1,6 @@
 export default class Week {
-    static getCurrentWeek() {
-        let today = new Date();
-        let newYearsDate = new Date(today.getFullYear(), 0, 1);
+    static getFirstMondayOfTheYear(year) {
+        let newYearsDate = new Date(year, 0, 1);
 
         // start from Monday
         let offsetDays = 1;
@@ -10,10 +9,33 @@ export default class Week {
             offsetDays += (7 - newYearsDay);
         }
 
-        let firstMonday = new Date(today.getFullYear(), 0, 1 + offsetDays);
-        let days = Math.ceil(
-            (today.valueOf() - firstMonday.valueOf()) / 86400000
-        );
+        return new Date(year, 0, 1 + offsetDays);
+    }
+
+    static getMondayByWeek(week, year = new Date().getFullYear()) {
+        let firstMondayOfYear = Week.getFirstMondayOfTheYear(year);
+        let thisMonday = new Date();
+        thisMonday.setDate(firstMondayOfYear.getDate() + (week - 1) * 7);
+        return thisMonday;
+    }
+
+    static getTuesdayByWeek(week, year = new Date().getFullYear()) {
+        let thisTuesday = new Date();
+        thisTuesday.setDate(Week.getMondayByWeek(week, year).getDate() + 1);
+        return thisTuesday;
+    }
+
+    // Ref: https://stackoverflow.com/questions/4156434/javascript-get-the-first-day-of-the-week-from-current-date#answer-4156516
+    static getThisMonday(today = new Date()) {
+        today = new Date(today);
+        let day = today.getDay();
+        let diff = today.getDate() - day + (day == 0 ? -6 : 1);
+        return new Date(today.setDate(diff));
+    }
+
+    static getThisWeek(today = new Date()) {
+        let firstMonday = Week.getFirstMondayOfTheYear(today.getFullYear());
+        let days = Math.ceil((today.valueOf() - firstMonday.valueOf()) / 86400000);
 
         // Count the first full week as 1 and the last as 52
         return Math.ceil(days / 7) + 1;
