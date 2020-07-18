@@ -58,7 +58,7 @@ class BubbleScore extends Score {
     }
 
     getScore() {
-        return DataStore.level < 2 ? 1 : DataStore.level - 1;
+        return DataStore.level <= 1 ? 1 : DataStore.level;
     }
 
     render(ctx) {
