@@ -51,6 +51,7 @@ export default class MainScene extends Scene {
 
         this.health.resetHealth();
         this.spinner.reload();
+        this.shooter.reload();
     }
 
     // loop all the frames
