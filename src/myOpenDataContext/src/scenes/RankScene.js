@@ -43,6 +43,12 @@ export default class RankScene extends Scene {
             this.leaderboardCanvas.height
         );
 
+        this.noRecords = new Text(
+            "本周暂无记录",
+            this.header.fontSize,
+            this.leaderboardCanvas.height
+        );
+
         this.sy = 0;
         wx.onTouchStart(e => {
             if (DataStore.currentScene != RankScene.toString()) return;
@@ -85,6 +91,13 @@ export default class RankScene extends Scene {
         this.render();
     }
 
+    drawNoRecords() {
+        this.leaderboardContext.fillStyle = "#888888";
+        this.leaderboardContext.textAlign = "center";
+        this.noRecords.draw(this.leaderboardContext, 0.5 * this.leaderboardCanvas.width, 0.5 * this.leaderboardCanvas.height);
+        this.render();
+    }
+
     loadRecords(shareTicket) {
         this.drawLoading();
 
@@ -114,6 +127,8 @@ export default class RankScene extends Scene {
 
     drawRecords(records) {
         this.leaderboardContext.clearRect(0, 0, this.leaderboardCanvas.width, this.leaderboardCanvas.height);
+
+        if (!records.length) return this.drawNoRecords();
 
         let grid = new Grid(0, 0.178 * this.leaderboardCanvas.width, 0, this.leaderboardBackground.pr, 0, this.leaderboardBackground.pl, this.leaderboardCanvas.width);
         this.leaderboardCanvas.height = Math.max(this.leaderboardCanvas.height, grid.height * records.length);
