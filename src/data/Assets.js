@@ -27,7 +27,7 @@ const Assets = [
 	["share-img", "assets/img/share.png"],
 
     // Bitmap font. Usage: MainScene
-	["Konstructiv", "assets/bmfonts/Konstructiv.png"],
+	["KinkubFlat", "assets/bmfonts/KinkubFlat.png"],
 ];
 
 export default Assets;

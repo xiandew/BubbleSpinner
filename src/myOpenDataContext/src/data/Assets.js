@@ -1,6 +1,6 @@
 // Store as two-dimension array for new Map()
 const Assets = [
-	["Konstructiv", "src/myOpenDataContext/assets/bmfonts/Konstructiv-white.png"],
+	["KinkubFlatWhite", "src/myOpenDataContext/assets/bmfonts/KinkubFlatWhite.png"],
 ];
 
 export default Assets;
