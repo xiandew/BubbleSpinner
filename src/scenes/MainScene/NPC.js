@@ -12,23 +12,26 @@ import UUID from "../../base/UUID";
  */
 export default class NPC {
     static State = class {
-        static SPAWNED = 1;
-        static AIMED = 2;
+        static UNSPAWNED = 1
+        static SPAWNED = 2;
+        static AIMED = 3;
     };
 
     constructor() {
         this.id = UUID.getUUID();
         this.spinner = Spinner.getInstance();
         this.health = Health.getInstance();
+        this.rendererManager = new RendererManager();
 
         SpawnedBubble.speed = 0.7 * Bubble.size;
-
-        this.spawnedBubbles = [];
         this.minSpawns = 2;
         this.maxSpawns = 8;
-        this.spawn();
+        this.reset();
+    }
 
-        this.rendererManager = new RendererManager();
+    reset() {
+        this.spawnedBubbles = [];
+        this.state = NPC.State.UNSPAWNED;
     }
 
     spawn() {
@@ -89,6 +92,10 @@ export default class NPC {
             return;
         }
 
+        if (this.state == NPC.State.UNSPAWNED) {
+            return this.spawn();
+        }
+
         if (this.state == NPC.State.SPAWNED) {
             this.aim();
         }
@@ -108,9 +115,8 @@ export default class NPC {
         });
 
         if (this.spawnedBubbles.every(bubble => bubble.inactive)) {
-            this.spawnedBubbles = [];
+            this.reset();
             this.health.resetHealth();
-            this.spawn();
         }
     }
 
