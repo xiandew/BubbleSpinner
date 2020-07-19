@@ -93,8 +93,12 @@ export default class GameEnded extends Scene {
                 let deprecatedRecord = res.KVDataList.reduce((acc, cur) => { acc[cur.key] = cur.value; return acc }, {});
 
                 let now = new Date();
-                if (!record && deprecatedRecord) {
-                    record = DataStore.upgradeDeprecatedRecord(deprecatedRecord);
+                if (!record) {
+                    if (deprecatedRecord) {
+                        record = DataStore.upgradeDeprecatedRecord(deprecatedRecord);
+                    } else {
+                        record = { wxgame: {} }
+                    }
                 }
 
                 // Update week record

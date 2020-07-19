@@ -70,7 +70,6 @@ DataStore.upgradeDeprecatedRecord = (deprecatedRecord) => {
         record.wkRecord = parseInt(deprecatedRecord.wkRecord);
         record.lastUpdate = Week.getTuesdayOfWeek(deprecatedRecord.week).getTime();
     }
-    record.currentScore = deprecatedRecord.currentScore && parseInt(deprecatedRecord.currentScore);
     return record;
 }
 
@@ -80,8 +79,20 @@ DataStore.getCurrentWeekRecords = (rawRecords) => {
         if (record) record = JSON.parse(record.value);
         let deprecatedRecord = rawRecord.KVDataList.reduce((acc, cur) => { acc[cur.key] = cur.value; return acc }, {});
 
-        if (!record && deprecatedRecord) {
-            record = DataStore.upgradeDeprecatedRecord(deprecatedRecord);
+        if (!record) {
+            if (deprecatedRecord) {
+                record = DataStore.upgradeDeprecatedRecord(deprecatedRecord);
+            } else {
+                let now = new Date();
+                record = {
+                    wxgame: {
+                        score: 0,
+                        update_time: now.getTime()
+                    },
+                    wkRecord: 0,
+                    lastUpdate: now.getTime()
+                }
+            }
         }
 
         record.nickname = rawRecord.nickname;
