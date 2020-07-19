@@ -25,9 +25,11 @@ export default class Score {
         for (let i = this.bubbleScores.length - 1; i >= 0; i--) {
             let bubbleScore = this.bubbleScores[i];
             if (bubbleScore.bubble.getY() > DataStore.screenHeight - 5 * Bubble.size) {
-                this.rendererManager.setRenderer(bubbleScore, "FadeOutUp");
                 this.bubbleScores.splice(i, 1);
-                DataStore.score += bubbleScore.score;
+                if (DataStore.currentScene === DataStore.MainScene.toString()) {
+                    this.rendererManager.setRenderer(bubbleScore, "FadeOutUp");
+                    DataStore.score += bubbleScore.score;
+                }
             }
         }
     }
