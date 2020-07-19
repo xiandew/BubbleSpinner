@@ -75,10 +75,13 @@ export default class SpinnerController {
         // remove the first hex which is in the poisiton of the pivot
         spinner.shift();
 
+        let bubbleAssets = this.getBubbleAssets();
         let bubbles = new Array(spinner.length);
         spinner.forEach((hex, i) => {
+            let j = i % bubbleAssets.length;
+            if (!j) bubbleAssets = shuffle(bubbleAssets);
             let { x, y } = this.hexToCoordinates(hex);
-            let bubble = new Bubble(this.randomBubbleAsset(), x, y);
+            let bubble = new Bubble(bubbleAssets[j], x, y);
             hex.setObj(bubble);
             bubbles[i] = bubble;
         });
