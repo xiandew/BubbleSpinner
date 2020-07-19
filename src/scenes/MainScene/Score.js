@@ -1,7 +1,7 @@
 import DataStore from "../../data/DataStore.js";
 import BitmapFont from "../../utils/BitmapFont.js";
 import BitmapText from "../../utils/BitmapText.js";
-import KinkubFlat from "../../../assets/bmfonts/KinkubFlat.js";
+import DustyPro from "../../../assets/bmfonts/DustyPro.js";
 import RendererManager from "../../renderer/RendererManager.js";
 import UUID from "../../base/UUID.js";
 import Bubble from "./Bubble.js";
@@ -10,7 +10,7 @@ export default class Score {
     constructor() {
         this.id = UUID.getUUID();
         this.bitmapText = new BitmapText(
-            new BitmapFont(DataStore.assets.get("KinkubFlat"), KinkubFlat),
+            new BitmapFont(DataStore.assets.get("DustyPro"), DustyPro),
         );
 
         this.fontSize = 0.075 * DataStore.screenWidth;
