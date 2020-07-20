@@ -16,6 +16,7 @@ export default class Week {
         let firstMondayOfYear = Week.getFirstMondayOfTheYear(year);
         let thisMonday = new Date();
         thisMonday.setDate(firstMondayOfYear.getDate() + (week - 1) * 7);
+        thisMonday.setHours(0, 0, 0, 0);
         return thisMonday;
     }
 
@@ -30,7 +31,9 @@ export default class Week {
         today = new Date(today);
         let day = today.getDay();
         let diff = today.getDate() - day + (day == 0 ? -6 : 1);
-        return new Date(today.setDate(diff));
+        today.setDate(diff);
+        today.setHours(0, 0, 0, 0);
+        return new Date(today);
     }
 
     static getThisWeek(today = new Date()) {
