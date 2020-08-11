@@ -54,6 +54,8 @@ export default class RankScene extends Scene {
             }
 
             if (this.returnBtn.isTouched(e)) {
+                DataStore.AdController.showInterstitialAdOnce();
+
                 DataStore.currentScene = DataStore.lastScene;
                 DataStore.lastScene = this.toString();
                 DataStore.openDataContext.postMessage({
