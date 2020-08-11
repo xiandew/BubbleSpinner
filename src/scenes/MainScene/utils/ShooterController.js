@@ -39,9 +39,17 @@ export default class ShooterController {
         // Exploration vs exploitation
         let d = a.concat((new Array(a.length)).fill(c));
 
+        let t = d[Math.floor(Math.random() * d.length)];
+
+        // Prevent the case that the shooter continuously produces one color of bubble
+        // when the spinner is largely biased
+        if (t == c && this.shooter.currShot && t == this.shooter.currShot.texture.img) {
+            t = a[Math.floor(Math.random() * a.length)];
+        }
+
         // return a random choice from `d`
         return new Sprite(
-            d[Math.floor(Math.random() * d.length)],
+            t,
             0.5 * DataStore.screenWidth,
             DataStore.screenHeight - 0.5 * Bubble.size,
             0.5 * Bubble.size,
