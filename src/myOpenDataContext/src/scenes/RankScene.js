@@ -22,7 +22,11 @@ export default class RankScene extends Scene {
             0.04 * DataStore.canvasHeight
         );
 
-        this.drawLayout();
+        this.groupRank = new Text(
+            "群排行",
+            0.015 * DataStore.canvasHeight,
+            0.04 * DataStore.canvasHeight
+        );
 
         // Canvas for the leaderboard
         this.leaderboardCanvas = wx.createCanvas();
@@ -67,6 +71,7 @@ export default class RankScene extends Scene {
     }
 
     drawLayout() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
         this.ctx.strokeStyle = "rgba(80, 80, 80, 1)";
         this.ctx.lineWidth = 2;
@@ -101,6 +106,7 @@ export default class RankScene extends Scene {
     }
 
     loadRecords(shareTicket) {
+        this.drawLayout();
         this.drawLoading();
 
         if (shareTicket) {
@@ -108,6 +114,12 @@ export default class RankScene extends Scene {
                 shareTicket: shareTicket,
                 keyList: ["week", "wkRecord", "record"],
                 success: res => {
+                    // Meta
+                    this.ctx.fillStyle = "#ffffff";
+                    this.ctx.textAlign = "right";
+                    this.ctx.textBaseline = "top";
+                    this.groupRank.draw(this.ctx, DataStore.canvasWidth - this.leaderboardBackground.mr - this.leaderboardBackground.pr, this.leaderboardBackground.top + 0.5 * (this.header.lineHeight - this.header.fontSize));
+
                     this.drawRecords(DataStore.getCurrentWeekRecords(res.data));
                 }
             });
