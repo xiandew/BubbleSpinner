@@ -37,6 +37,7 @@ export default class MainScene extends Scene {
         this.rendererManager.render(this.ctx);
 
         if (DataStore.currentScene == DataStore.GameEnded.toString()) {
+            DataStore.AdController.showInterstitialAdOnce();
             DataStore.GameEnded.render();
         }
 
