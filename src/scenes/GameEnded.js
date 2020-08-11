@@ -57,6 +57,8 @@ export default class GameEnded extends Scene {
             }
 
             if (this.restartBtn.isTouched(e)) {
+                DataStore.AdController.resetInterstitialAdShownOnce();
+
                 DataStore.openDataContext.postMessage({
                     action: "Restart"
                 });

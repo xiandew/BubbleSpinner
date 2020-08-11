@@ -6,6 +6,7 @@ import MainMenu from "./scenes/MainMenu.js";
 import MainScene from "./scenes/MainScene.js";
 import RankScene from "./scenes/RankScene.js";
 import GameEnded from "./scenes/GameEnded.js";
+import AdController from "./utils/AdController.js";
 
 // The entry class of the game
 export default class Main {
@@ -59,6 +60,9 @@ export default class Main {
         DataStore.MainScene = MainScene.getInstance();
         DataStore.RankScene = RankScene.getInstance();
         DataStore.GameEnded = GameEnded.getInstance();
+
+        // init ad controller
+        DataStore.AdController = AdController.getInstance();
 
         // start MainMenu scene
         DataStore.MainMenu.run();
