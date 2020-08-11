@@ -85,6 +85,7 @@ export default class RankScene extends Scene {
     }
 
     drawLoading() {
+        this.leaderboardContext.clearRect(0, 0, this.leaderboardCanvas.width, this.leaderboardCanvas.height);
         this.leaderboardContext.fillStyle = "#888888";
         this.leaderboardContext.textAlign = "center";
         this.loading.draw(this.leaderboardContext, 0.5 * this.leaderboardCanvas.width, 0.5 * this.leaderboardCanvas.height);
@@ -92,6 +93,7 @@ export default class RankScene extends Scene {
     }
 
     drawNoRecords() {
+        this.leaderboardContext.clearRect(0, 0, this.leaderboardCanvas.width, this.leaderboardCanvas.height);
         this.leaderboardContext.fillStyle = "#888888";
         this.leaderboardContext.textAlign = "center";
         this.noRecords.draw(this.leaderboardContext, 0.5 * this.leaderboardCanvas.width, 0.5 * this.leaderboardCanvas.height);

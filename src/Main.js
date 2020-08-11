@@ -88,5 +88,7 @@ wx.onShow(res => {
             action: "RankScene",
             shareTicket: shareTicket
         });
+        DataStore.lastScene = DataStore.MainMenu.toString();
+        DataStore.currentScene = DataStore.RankScene.toString();
     }
 });
