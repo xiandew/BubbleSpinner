@@ -1,13 +1,18 @@
+import CompatibilityManager from "./CompatibilityManager";
+
+
 export default class AdController {
     constructor() {
         this.interstitialAd = null;
         this.interstitialAdShownOnce = false;
 
-        // Init ad
-        if (wx.createInterstitialAd) {
-            this.interstitialAd = wx.createInterstitialAd({
-                adUnitId: 'adunit-05504e088717e5b8'
-            });
+        if (CompatibilityManager.getInstance().checkSDKVersion('2.6.0') >= 0) {
+            // Init ad
+            if (wx.createInterstitialAd) {
+                this.interstitialAd = wx.createInterstitialAd({
+                    adUnitId: 'adunit-05504e088717e5b8'
+                });
+            }
         }
     }
 
