@@ -23,7 +23,7 @@ export default class RankScene extends Scene {
         );
 
         this.groupRank = new Text(
-            "群排行",
+            "每周一凌晨刷新 · 群排行",
             0.015 * DataStore.canvasHeight,
             0.04 * DataStore.canvasHeight
         );
@@ -70,7 +70,7 @@ export default class RankScene extends Scene {
         });
     }
 
-    drawLayout() {
+    drawLayout(isGroupRank) {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
         this.ctx.strokeStyle = "rgba(80, 80, 80, 1)";
@@ -80,7 +80,7 @@ export default class RankScene extends Scene {
         this.ctx.fillStyle = "#ffffff";
         this.ctx.textAlign = "left";
         this.ctx.textBaseline = "top";
-        this.header.draw(this.ctx, this.leaderboardBackground.mr + 0.8 * this.leaderboardBackground.pr, this.leaderboardBackground.top + 0.5 * (this.header.lineHeight - this.header.fontSize));
+        (isGroupRank ? this.groupRank : this.header).draw(this.ctx, this.leaderboardBackground.mr + 0.8 * this.leaderboardBackground.pr, this.leaderboardBackground.top + 0.5 * (this.header.lineHeight - this.header.fontSize));
 
         // hr (top = 20%)
         this.ctx.beginPath();
@@ -106,7 +106,7 @@ export default class RankScene extends Scene {
     }
 
     loadRecords(shareTicket) {
-        this.drawLayout();
+        this.drawLayout(shareTicket);
         this.drawLoading();
 
         if (shareTicket) {
@@ -114,12 +114,6 @@ export default class RankScene extends Scene {
                 shareTicket: shareTicket,
                 keyList: ["week", "wkRecord", "record"],
                 success: res => {
-                    // Meta
-                    this.ctx.fillStyle = "#ffffff";
-                    this.ctx.textAlign = "right";
-                    this.ctx.textBaseline = "top";
-                    this.groupRank.draw(this.ctx, DataStore.canvasWidth - this.leaderboardBackground.mr - this.leaderboardBackground.pr, this.leaderboardBackground.top + 0.5 * (this.header.lineHeight - this.header.fontSize));
-
                     this.drawRecords(DataStore.getCurrentWeekRecords(res.data));
                 }
             });
