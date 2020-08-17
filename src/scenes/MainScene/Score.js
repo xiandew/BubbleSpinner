@@ -27,8 +27,8 @@ export default class Score {
             if (bubbleScore.bubble.getY() > DataStore.screenHeight - 5 * Bubble.size) {
                 this.bubbleScores.splice(i, 1);
                 if (DataStore.currentScene === DataStore.MainScene.toString()) {
+                    DataStore.score += bubbleScore.getScore();
                     this.rendererManager.setRenderer(bubbleScore, "FadeOutUp");
-                    DataStore.score += bubbleScore.score;
                 }
             }
         }
@@ -52,15 +52,40 @@ export default class Score {
 }
 
 class BubbleScore extends Score {
+    static thresholdUnit = 100;
+
     constructor(bubble) {
         super();
         this.bubble = bubble;
-        this.score = this.getScore();
         this.fontSize = Bubble.size * 1.2;
+
+        // In case the adding of the bubble score happens after levelling up
+        this.level = DataStore.level;
     }
 
     getScore() {
-        return DataStore.level <= 1 ? 1 : DataStore.level;
+        let getThreshold = (scaledScore) => {
+            return [...Array(scaledScore + 1).keys()].reduce((a, c) => a + c * BubbleScore.thresholdUnit, 0);
+        }
+
+        /**
+         *
+         * @param {*} scaledScore 
+         * @param {*} threshold =
+         *  Lv0: 100
+         *  Lv1: 100 + 200 + 100
+         *  Lv2: 100 + 200 + 300 + 200 + 100
+         */
+        let getScaledScore = (scaledScore, threshold) => {
+            if (!scaledScore || DataStore.score < threshold) {
+                return scaledScore;
+            } else {
+                return getScaledScore(scaledScore - 1, threshold + (scaledScore - 1) * BubbleScore.thresholdUnit);
+            }
+        }
+
+        this.score = getScaledScore(this.level + 1, getThreshold(this.level + 1));
+        return this.score;
     }
 
     render(ctx) {
