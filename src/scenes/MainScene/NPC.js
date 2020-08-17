@@ -37,12 +37,11 @@ export default class NPC {
     spawn() {
         let numOfSpawns = this.minSpawns + Math.round(Math.random() * (this.maxSpawns - this.minSpawns));
         // console.assert(!this.spawnedBubbles.length);
-        for (let i = 0; i < numOfSpawns; i++) {
+        for (let i = 0, initAngle = Math.random() * Math.PI * 2, sepAngle = Math.PI * 2 / numOfSpawns; i < numOfSpawns; i++) {
 
             // Get the initial position of each NPC bubbles
-            let angle = Math.random() * Math.PI * 2;
-            let x = Math.cos(angle) * DataStore.screenHeight;
-            let y = Math.sin(angle) * DataStore.screenHeight;
+            let x = Math.cos(initAngle + sepAngle * i) * DataStore.screenHeight;
+            let y = Math.sin(initAngle + sepAngle * i) * DataStore.screenHeight;
             function mid(arr) {
                 arr.sort((a, b) => { return a - b; });
                 return arr[Math.floor(arr.length / 2)];
