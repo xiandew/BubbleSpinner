@@ -21,12 +21,13 @@
     <script>
         var container = document.getElementById("bubbleSpinnerContainer");
         var screenWidth, screenHeight;
-        if (window.innerHeight > window.innerWidth) {
+        var aspectRatio = 568 / 320;
+        if (window.innerHeight / window.innerWidth > aspectRatio) {
             screenWidth = window.innerWidth;
-            screenHeight = screenWidth / 320 * 568;
+            screenHeight = screenWidth * aspectRatio;
         } else {
             screenHeight = window.innerHeight;
-            screenWidth = screenHeight / 568 * 320;
+            screenWidth = screenHeight / aspectRatio;
         }
 
         window.onresize = function () {
