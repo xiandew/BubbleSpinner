@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Bubble Spinner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="bubbleSpinnerContainer">
+        <canvas id="myCanvas"></canvas>
+    </div>
+
+    <script src="./phantom-limb.js"></script>
+    <script>
+        var screenWidth, screenHeight;
+        if (window.innerHeight > window.innerWidth) {
+            screenWidth = window.innerWidth();
+            screenHeight = screenWidth / 320 * 568;
+        } else {
+            screenHeight = window.innerHeight;
+            screenWidth = screenHeight / 568 * 320;
+        }
+
+        var GameGlobal = {};
+        var container = document.getElementById("bubbleSpinnerContainer");
+        var canvas = document.getElementById("myCanvas");
+        var sharedCanvas = document.createElement('canvas');
+        var wx = {
+            createCanvas: function () {
+                var canvas = document.createElement('canvas');
+                // container.appendChild(canvas);
+                return canvas;
+            },
+            createImage: function () {
+                var img = document.createElement("IMG");
+                return img;
+            },
+            getSystemInfoSync: function () {
+                return {
+                    pixelRatio: 1,
+                    screenWidth: screenWidth,
+                    screenHeight: screenHeight,
+                    SDKVersion: "0.0.1"
+                }
+            },
+            getOpenDataContext: function () {
+                return {
+                    postMessage: function () { },
+                    canvas: sharedCanvas,
+                }
+            },
+            onTouchStart: function (cb) {
+                canvas.addEventListener("touchstart", cb);
+            },
+            onTouchCancel: function (cb) {
+                canvas.addEventListener("touchcancel", cb);
+            },
+            onTouchMove: function (cb) {
+                canvas.addEventListener("touchmove", cb);
+            },
+            onTouchEnd: function (cb) {
+                canvas.addEventListener("touchend", cb);
+            },
+            offTouchEnd: function (cb) {
+                canvas.removeEventListener("touchend", cb);
+            },
+            setPreferredFramesPerSecond: function () { },
+            showShareMenu: function () { },
+            onShareAppMessage: function () { },
+            onShow: function () { },
+        }
+
+    </script>
+    <script src="./dist/bubble-spinner.min.js"></script>
+</body>
+
+</html>
