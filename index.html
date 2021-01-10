@@ -13,12 +13,13 @@
 </head>
 
 <body>
-    <div id="bubbleSpinnerContainer">
+    <div id="bubbleSpinnerContainer" style="overflow: hidden;">
         <canvas id="myCanvas"></canvas>
     </div>
 
     <script src="./phantom-limb.js"></script>
     <script>
+        var container = document.getElementById("bubbleSpinnerContainer");
         var screenWidth, screenHeight;
         if (window.innerHeight > window.innerWidth) {
             screenWidth = window.innerWidth();
@@ -28,8 +29,12 @@
             screenWidth = screenHeight / 568 * 320;
         }
 
+        window.onresize = function () {
+            container.style.width = window.innerWidth + "px";
+            container.style.height = window.innerHeight + "px";
+        };
+
         var GameGlobal = {};
-        var container = document.getElementById("bubbleSpinnerContainer");
         var canvas = document.getElementById("myCanvas");
         var sharedCanvas = document.createElement('canvas');
         var wx = {
