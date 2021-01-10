@@ -14,7 +14,7 @@
 
 <body>
     <div id="bubbleSpinnerContainer" style="overflow: hidden;">
-        <canvas id="myCanvas" style="border: 1px solid #e5e5e5;"></canvas>
+        <canvas id="myCanvas" style="border: 1px solid #e5e5e5; max-width: 100%; max-height: 100%;"></canvas>
     </div>
 
     <script src="./phantom-limb.js"></script>
@@ -51,7 +51,7 @@
             },
             getSystemInfoSync: function () {
                 return {
-                    pixelRatio: 1,
+                    pixelRatio: window.devicePixelRatio,
                     screenWidth: screenWidth,
                     screenHeight: screenHeight,
                     SDKVersion: "0.0.1"
