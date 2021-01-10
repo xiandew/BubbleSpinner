@@ -14,7 +14,7 @@
 
 <body>
     <div id="bubbleSpinnerContainer" style="overflow: hidden;">
-        <canvas id="myCanvas"></canvas>
+        <canvas id="myCanvas" style="border: 1px solid #e5e5e5;"></canvas>
     </div>
 
     <script src="./phantom-limb.js"></script>
@@ -33,6 +33,7 @@
             container.style.width = window.innerWidth + "px";
             container.style.height = window.innerHeight + "px";
         };
+        window.onresize();
 
         var GameGlobal = {};
         var canvas = document.getElementById("myCanvas");
