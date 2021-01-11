@@ -18,21 +18,32 @@
             style="border: 1px solid #e5e5e5; max-width: 100%; max-height: 100%;"></canvas>
     </div>
 
-    <script src="./phantom-limb.js"></script>
+    <script
+        src="https://xiandew.github.io/BubbleSpinner/phantom-limb.js"></script>
     <script>
         var container = document.getElementById("bubbleSpinnerContainer");
         var screenWidth, screenHeight;
         var aspectRatio = 568 / 320;
-        if (window.innerHeight / window.innerWidth > aspectRatio) {
-            screenWidth = window.innerWidth;
+
+        var baseWidth, baseHeight;
+        if (window.screen.availHeight > window.innerHeight) {
+            baseHeight = window.innerHeight;
+            baseWidth = window.innerWidth;
+        } else {
+            baseHeight = window.screen.availHeight;
+            baseWidth = window.screen.availWidth;
+        }
+
+        if (baseHeight / baseWidth > aspectRatio) {
+            screenWidth = baseWidth;
             screenHeight = screenWidth * aspectRatio;
         } else {
-            screenHeight = window.innerHeight;
+            screenHeight = baseHeight;
             screenWidth = screenHeight / aspectRatio;
         }
 
-        container.style.width = window.innerWidth + "px";
-        container.style.height = window.innerHeight + "px";
+        container.style.width = baseWidth + "px";
+        container.style.height = baseHeight + "px";
 
         var GameGlobal = {};
         var canvas = document.getElementById("myCanvas");
@@ -81,9 +92,9 @@
             onShareAppMessage: function () { },
             onShow: function () { },
         }
-
     </script>
-    <script src="./dist/bubble-spinner.min.js"></script>
+    <script
+        src="https://xiandew.github.io/BubbleSpinner/dist/bubble-spinner.min.js"></script>
 </body>
 
 </html>
