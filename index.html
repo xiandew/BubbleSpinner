@@ -18,9 +18,8 @@
             style="border: 1px solid #e5e5e5; max-width: 100%; max-height: 100%;"></canvas>
     </div>
 
-    <script
-        src="https://xiandew.github.io/BubbleSpinner/phantom-limb.js"></script>
     <script>
+        var phantomLimbConfig = { style: false }
         var container = document.getElementById("bubbleSpinnerContainer");
         var screenWidth, screenHeight;
         var aspectRatio = 568 / 320;
@@ -93,6 +92,8 @@
             onShow: function () { },
         }
     </script>
+    <script
+        src="https://xiandew.github.io/BubbleSpinner/phantom-limb.js"></script>
     <script
         src="https://xiandew.github.io/BubbleSpinner/dist/bubble-spinner.min.js"></script>
 </body>
