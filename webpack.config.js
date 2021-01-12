@@ -11,6 +11,8 @@ module.exports = {
         "bubble-spinner.min": path.join(__dirname, './game')
     },
 
+    target: "es5",
+
     module: {
         rules: [{
             test: /libs/,
@@ -18,19 +20,9 @@ module.exports = {
         }, {
             test: /\.(j|t)sx?$/,
             exclude: [/node_modules/],
-            use: [{
+            use: {
                 loader: "babel-loader",
-                options: {
-                    presets: ['babel-preset-expo'],
-                    env: {
-                        development: {
-                            plugins: [
-                                '@babel/plugin-transform-react-jsx-source',
-                            ],
-                        },
-                    },
-                }
-            }]
+            }
         }],
     },
 
