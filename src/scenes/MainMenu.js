@@ -25,6 +25,21 @@ export default class MainMenu extends Scene {
             0.175 * DataStore.screenWidth,
         );
 
+        const navLogoSize = 0.15 * DataStore.screenWidth;
+        const navLogoSep = 2 * navLogoSize;
+        this.navLogos = [{
+            logo: "whirlychicken-logo",
+            appId: "wxbbe6dad294fc15cc"
+        }].map((e, i, t) => {
+            e.logo = new Sprite(
+                DataStore.assets.get(e.logo),
+                navLogoSize * 0.75,
+                0.5 * DataStore.screenHeight + (i - t.length / 2 + 0.5) * navLogoSep,
+                navLogoSize
+            );
+            return e;
+        });
+
         let mask = wx.createCanvas();
         let maskCtx = mask.getContext("2d");
         maskCtx.fillStyle = "rgba(117, 119, 126, 0.8)";
@@ -57,8 +72,19 @@ export default class MainMenu extends Scene {
                 return;
             }
 
+            this.navLogos.forEach(({ logo, appId }) => {
+                if (logo.isTouched(e)) {
+                    wx.navigateToMiniProgram({
+                        appId: appId,
+                        fail: () => { },
+                        cancel: () => { }
+                    });
+                }
+            });
+
             if (this.startBtn.isTouched(e)) {
                 this.touchHandler.destroy();
+                this.navLogos.forEach(({ logo }) => this.rendererManager.remove(logo));
                 this.rendererManager.remove(this.branding);
                 this.rendererManager.remove(this.startBtn);
                 this.rendererManager.remove(this.rankBtn);
@@ -81,6 +107,7 @@ export default class MainMenu extends Scene {
         this.rendererManager.setRenderer(this.logo, "Rotate");
         this.rendererManager.setRenderer(this.mask);
         this.rendererManager.setRenderer(this.branding);
+        this.navLogos.forEach(({ logo }) => this.rendererManager.setRenderer(logo));
         this.rendererManager.setRenderer(this.startBtn);
         this.rendererManager.setRenderer(this.rankBtn);
     }
