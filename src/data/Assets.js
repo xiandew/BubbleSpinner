@@ -5,6 +5,7 @@ const Assets = [
     ["logo", "assets/img/logo-2d.png"],
     ["start-btn", "assets/img/start-btn.png"],
     ["rank-btn", "assets/img/rank-btn.png"],
+    ["whirlychicken-logo", "assets/img/whirlychicken-logo-circle.png"],
 
     // Usage: MainScene
     ["pivot", "assets/img/pivot.png"],
