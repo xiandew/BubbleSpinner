@@ -8,7 +8,7 @@ export default class UUID {
             UUID.assigned.push(uuid);
             return uuid;
         } else {
-            return this.getUUID();
+            return UUID.getUUID();
         }
     }
 }
