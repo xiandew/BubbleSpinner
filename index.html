@@ -9,93 +9,52 @@
             margin: 0;
             padding: 0;
         }
+
+        body {
+            text-align: center;
+            background-color: black;
+            overflow: hidden;
+        }
     </style>
 </head>
 
-<body style="overflow: hidden;">
-    <div id="bubbleSpinnerContainer">
-        <canvas id="myCanvas"
-            style="border: 1px solid #e5e5e5; max-width: 100%; max-height: 100%;"></canvas>
-    </div>
+<body>
+    <iframe id="container" frameborder="0"></iframe>
 
-    <script>
-        var phantomLimbConfig = { style: false }
-        var container = document.getElementById("bubbleSpinnerContainer");
-        var screenWidth, screenHeight;
-        var aspectRatio = 568 / 320;
+    <script type="text/javascript">
+        restart()
 
-        var baseWidth, baseHeight;
-        if (window.screen.availHeight > window.innerHeight) {
-            baseHeight = window.innerHeight;
-            baseWidth = window.innerWidth;
-        } else {
-            baseHeight = window.screen.availHeight;
-            baseWidth = window.screen.availWidth;
-        }
+        window.onresize = restart;
 
-        if (baseHeight / baseWidth > aspectRatio) {
-            screenWidth = baseWidth;
-            screenHeight = screenWidth * aspectRatio;
-        } else {
-            screenHeight = baseHeight;
-            screenWidth = screenHeight / aspectRatio;
-        }
+        function restart() {
+            var container = document.getElementById("container");
+            var screenWidth, screenHeight;
+            var aspectRatio = 568 / 320;
 
-        container.style.width = baseWidth + "px";
-        container.style.height = baseHeight + "px";
+            var baseWidth, baseHeight;
+            if (window.screen.availHeight > window.innerHeight) {
+                baseHeight = window.innerHeight;
+                baseWidth = window.innerWidth;
+            } else {
+                baseHeight = window.screen.availHeight;
+                baseWidth = window.screen.availWidth;
+            }
 
-        var GameGlobal = {};
-        var canvas = document.getElementById("myCanvas");
-        var sharedCanvas = document.createElement('canvas');
-        var wx = {
-            createCanvas: function () {
-                var canvas = document.createElement('canvas');
-                // container.appendChild(canvas);
-                return canvas;
-            },
-            createImage: function () {
-                var img = document.createElement("IMG");
-                return img;
-            },
-            getSystemInfoSync: function () {
-                return {
-                    pixelRatio: window.devicePixelRatio,
-                    screenWidth: screenWidth,
-                    screenHeight: screenHeight,
-                    SDKVersion: "0.0.1"
-                }
-            },
-            getOpenDataContext: function () {
-                return {
-                    postMessage: function () { },
-                    canvas: sharedCanvas,
-                }
-            },
-            onTouchStart: function (cb) {
-                canvas.addEventListener("touchstart", cb);
-            },
-            onTouchCancel: function (cb) {
-                canvas.addEventListener("touchcancel", cb);
-            },
-            onTouchMove: function (cb) {
-                canvas.addEventListener("touchmove", cb);
-            },
-            onTouchEnd: function (cb) {
-                canvas.addEventListener("touchend", cb);
-            },
-            offTouchEnd: function (cb) {
-                canvas.removeEventListener("touchend", cb);
-            },
-            setPreferredFramesPerSecond: function () { },
-            showShareMenu: function () { },
-            onShareAppMessage: function () { },
-            onShow: function () { },
+            if (baseHeight / baseWidth > aspectRatio) {
+                screenWidth = baseWidth;
+                screenHeight = screenWidth * aspectRatio;
+            } else {
+                screenHeight = baseHeight;
+                screenWidth = screenHeight / aspectRatio;
+            }
+
+            container.style.width = screenWidth + "px";
+            container.style.height = screenHeight + "px";
+            container.src = "./game.html";
         }
     </script>
-    <script
-        src="./phantom-limb.js"></script>
-    <script
-        src="./dist/bubble-spinner.min.js"></script>
+    </head>
+    </script>
 </body>
 
 </html>
