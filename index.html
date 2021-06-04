@@ -31,20 +31,11 @@
             var screenWidth, screenHeight;
             var aspectRatio = 568 / 320;
 
-            var baseWidth, baseHeight;
-            if (window.screen.availHeight > window.innerHeight) {
-                baseHeight = window.innerHeight;
-                baseWidth = window.innerWidth;
-            } else {
-                baseHeight = window.screen.availHeight;
-                baseWidth = window.screen.availWidth;
-            }
-
-            if (baseHeight / baseWidth > aspectRatio) {
-                screenWidth = baseWidth;
+            if (window.innerHeight / window.innerWidth > aspectRatio) {
+                screenWidth = window.innerHeight;
                 screenHeight = screenWidth * aspectRatio;
             } else {
-                screenHeight = baseHeight;
+                screenHeight = window.innerHeight;
                 screenWidth = screenHeight / aspectRatio;
             }
 
