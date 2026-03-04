@@ -15,7 +15,7 @@ export default class Score {
 
         this.fontSize = 0.075 * DataStore.screenWidth;
         this.x = 0.055 * DataStore.screenWidth;
-        this.y = 0.165 * DataStore.screenWidth;
+        this.y = DataStore.menuButtonCenterY + Bubble.size;
 
         this.bubbleScores = [];
         this.rendererManager = new RendererManager();
@@ -51,18 +51,36 @@ export default class Score {
     }
 }
 
+// Map bubble image-name prefix → a lighter tint colour
+const BUBBLE_TINT = {
+    blue:   "rgba(140, 195, 255, 0.95)",
+    cyan:   "rgba(100, 225, 235, 0.95)",
+    red:    "rgba(255, 145, 145, 0.95)",
+    yellow: "rgba(255, 230, 110, 0.95)",
+    pink:   "rgba(255, 175, 210, 0.95)",
+    green:  "rgba(140, 225, 140, 0.95)",
+    gray:   "rgba(200, 200, 200, 0.95)",
+};
+
+function bubbleTint(bubble) {
+    const src = bubble.texture.img.src || "";
+    const match = src.match(/(blue|cyan|red|yellow|pink|green|gray)-bubble/);
+    return match ? (BUBBLE_TINT[match[1]] || "rgba(255,255,255,0.95)") : "rgba(255,255,255,0.95)";
+}
+
 class BubbleScore {
     constructor(bubble, bitmapText, x, y) {
-        this.id = UUID.getUUID();
+        this.id    = UUID.getUUID();
         this.bubble = bubble;
         this.bitmapText = bitmapText;
-        this.x = x;
-        this.y = y;
+        this.x     = x;
+        this.y     = y;
         this.score = DataStore.level + 1;
         this.fontSize = Bubble.size * 1.2;
+        this.color = bubbleTint(bubble);
     }
 
     render(ctx) {
-        this.bitmapText.draw(ctx, `+${this.score}`, this.fontSize, this.x, this.y, "center");
+        this.bitmapText.drawTinted(ctx, `+${this.score}`, this.color, this.fontSize, this.x, this.y, "center");
     }
 }

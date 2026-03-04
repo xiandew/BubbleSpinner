@@ -27,7 +27,7 @@ export default class Health {
             return new Bubble(
                 DataStore.assets.get("gray-bubble"),
                 Bubble.size + Bubble.size * 1.05 * i,
-                Bubble.size,
+                DataStore.menuButtonCenterY,
             )
         });
         this.sprites.forEach(sprite => {

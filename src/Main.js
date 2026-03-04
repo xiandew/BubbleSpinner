@@ -51,6 +51,10 @@ export default class Main {
         DataStore.fps = 60;
         wx.setPreferredFramesPerSecond(DataStore.fps);
 
+        // Vertical centre of the WeChat capsule button — safe zone below the camera cutout
+        const menuButtonRect = wx.getMenuButtonBoundingClientRect();
+        DataStore.menuButtonCenterY = 0.5 * (menuButtonRect.top + menuButtonRect.bottom);
+
         // init shared (used in more than one scenes) game data
         DataStore.score = 0;
         DataStore.level = 0;
