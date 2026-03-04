@@ -3,6 +3,7 @@ import TouchHandler from "../../utils/TouchHandler.js";
 import UUID from "../../base/UUID.js";
 import RendererManager from "../../renderer/RendererManager.js";
 import DataStore from "../../data/DataStore.js";
+import Audio from "../../utils/Audio.js";
 
 
 export default class Shooter {
@@ -40,6 +41,7 @@ export default class Shooter {
         this.touchHandler.onTouchEnd(() => {
             if (this.state == Shooter.State.AIMING) {
                 this.state = Shooter.State.SHOOTING;
+                Audio.getInstance().play("a_shoot");
 
                 let angle = Math.atan2(
                     this.touchY - this.currShot.getY(),

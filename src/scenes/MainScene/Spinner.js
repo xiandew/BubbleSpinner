@@ -6,6 +6,7 @@ import DataStore from "../../data/DataStore.js";
 import Score from "./Score.js";
 import Health from "./Health.js";
 import { SpawnedBubble } from "./NPC.js";
+import Audio from "../../utils/Audio.js";
 
 
 /**
@@ -88,6 +89,8 @@ export default class Spinner {
             return;
         }
 
+        Audio.getInstance().play("a_hit");
+
         // Find same bubbles
         let sameBubbles = ((rootBubble) => {
             let found = [];
@@ -154,6 +157,14 @@ export default class Spinner {
                 return found;
             })();
 
+            // Sound: combo scaled to total bubbles cleared; floater jingle if any detached
+            const _audio = Audio.getInstance();
+            const _hasFloaters = sameOrFloatingBubbles.some(b => !sameBubblesSet.has(b));
+            _audio.playCombo(sameOrFloatingBubbles.length);
+            if (_hasFloaters) {
+                setTimeout(() => _audio.play("a_floater_popup"), 150);
+            }
+
             // Remove same bubbles and floating bubbles from the spinner
             sameOrFloatingBubbles.forEach(bubble => {
                 let i = this.bubbles.indexOf(bubble);
@@ -173,6 +184,11 @@ export default class Spinner {
 
         // Level up
         if (!this.bubbles.length) {
+            const audio = Audio.getInstance();
+            // DataStore.level is still the completed level index (0-based) here
+            audio.play("a_levelend_star_01");
+            if (DataStore.level >= 1) setTimeout(() => audio.play("a_levelend_star_02"), 400);
+            if (DataStore.level >= 2) setTimeout(() => audio.play("a_levelend_star_03"), 800);
             DataStore.level++;
             this.reload();
             return;
@@ -265,6 +281,7 @@ export default class Spinner {
                 bubble.startY <= 0
             )) {
                 this.state = Spinner.State.CRASH;
+                Audio.getInstance().play("a_levelend_fail");
                 DataStore.openDataContext.postMessage({
                     action: "GameEnded",
                     currentScore: DataStore.score

@@ -3,6 +3,9 @@ import Sprite from "../base/Sprite.js";
 import RendererManager from "../renderer/RendererManager.js";
 import TouchHandler from "../utils/TouchHandler.js";
 import Scene from "./Scene.js";
+import Audio from "../utils/Audio.js";
+
+const _tap = () => Audio.getInstance().play("button_next");
 
 /**
  * This scene is static (no animation)
@@ -49,6 +52,7 @@ export default class GameEnded extends Scene {
             if (DataStore.currentScene !== this.toString()) return;
 
             if (this.leaderboardThumbnailBackground.isTouched(e)) {
+                _tap();
                 DataStore.openDataContext.postMessage({
                     action: "RankScene"
                 });

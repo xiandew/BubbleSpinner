@@ -3,6 +3,10 @@ import Sprite from "../base/Sprite.js";
 import RendererManager from "../renderer/RendererManager.js";
 import TouchHandler from "../utils/TouchHandler.js";
 import Scene from "./Scene.js";
+import Audio from "../utils/Audio.js";
+import SoundButton from "./MainScene/SoundButton.js";
+
+const _tap = () => Audio.getInstance().play("button_next");
 
 
 export default class MainMenu extends Scene {
@@ -59,11 +63,24 @@ export default class MainMenu extends Scene {
             0.45 * DataStore.screenWidth
         );
 
+        // Sound + leaderboard buttons: centered as a pair on the same row
+        // Each button is 0.08 × screenWidth; gap between edges = 0.04 × screenWidth
+        // → center-to-center = 0.12 × screenWidth, each offset 0.06 from midpoint
+        const iconBtnSize = 0.08 * DataStore.screenWidth;
+        const iconBtnY    = 0.92 * DataStore.screenHeight;
+        const iconBtnOffset = 0.1 * DataStore.screenWidth;
+
+        this.soundButton = new SoundButton(
+            0.5 * DataStore.screenWidth - iconBtnOffset,
+            iconBtnY,
+            iconBtnSize
+        );
+
         this.rankBtn = new Sprite(
             DataStore.assets.get("rank-btn"),
-            0.5 * DataStore.screenWidth,
-            0.92 * DataStore.screenHeight,
-            0.08 * DataStore.screenWidth
+            0.5 * DataStore.screenWidth + iconBtnOffset,
+            iconBtnY,
+            iconBtnSize
         );
 
         this.touchHandler = new TouchHandler();
@@ -74,6 +91,7 @@ export default class MainMenu extends Scene {
 
             this.navLogos.forEach(({ logo, appId }) => {
                 if (logo.isTouched(e)) {
+                    _tap();
                     wx.navigateToMiniProgram({
                         appId: appId,
                         fail: () => { },
@@ -83,11 +101,14 @@ export default class MainMenu extends Scene {
             });
 
             if (this.startBtn.isTouched(e)) {
+                Audio.getInstance().play("a_levelStart");
+
                 this.touchHandler.destroy();
                 this.navLogos.forEach(({ logo }) => this.rendererManager.remove(logo));
                 this.rendererManager.remove(this.branding);
                 this.rendererManager.remove(this.startBtn);
                 this.rendererManager.remove(this.rankBtn);
+                this.rendererManager.remove(this.soundButton);
                 this.rendererManager.setRenderer(this.logo, "RotateOut");
                 this.rendererManager.setRenderer(this.mask, "FadeOut");
                 DataStore.lastScene = this.toString();
@@ -95,11 +116,16 @@ export default class MainMenu extends Scene {
             }
 
             if (this.rankBtn.isTouched(e)) {
+                _tap();
                 DataStore.openDataContext.postMessage({
                     action: "RankScene"
                 });
                 DataStore.lastScene = this.toString();
                 DataStore.currentScene = DataStore.RankScene.toString();
+            }
+
+            if (this.soundButton.isTouched(e)) {
+                this.soundButton.toggle();
             }
         });
 
@@ -110,6 +136,7 @@ export default class MainMenu extends Scene {
         this.navLogos.forEach(({ logo }) => this.rendererManager.setRenderer(logo));
         this.rendererManager.setRenderer(this.startBtn);
         this.rendererManager.setRenderer(this.rankBtn);
+        this.rendererManager.setRenderer(this.soundButton);
     }
 
     render() {

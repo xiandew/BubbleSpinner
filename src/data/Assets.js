@@ -24,6 +24,10 @@ const Assets = [
     ["group-rank-btn", "assets/img/group-rank-btn.png"],
     ["return-btn", "assets/img/return.png"],
 
+    // Usage: SoundButton (MainMenu HUD)
+    ["sound-on",  "assets/img/sound-on.png"],
+    ["sound-off", "assets/img/sound-off.png"],
+
     // Usage: wx.onShareAppMessage()
     ["share-img", "assets/img/share.png"],
 

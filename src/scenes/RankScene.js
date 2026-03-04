@@ -3,6 +3,10 @@ import Sprite from "../base/Sprite.js";
 import RendererManager from "../renderer/RendererManager.js";
 import TouchHandler from "../utils/TouchHandler.js";
 import Scene from "./Scene.js";
+import Audio from "../utils/Audio.js";
+
+const _tap  = () => Audio.getInstance().play("button_next");
+const _back = () => Audio.getInstance().play("button_back");
 
 /**
  * This scene is static (no animation). It composes of two parts. One part is
@@ -47,6 +51,7 @@ export default class RankScene extends Scene {
             if (DataStore.currentScene !== this.toString()) return;
 
             if (this.groupRankBtn.isTouched(e)) {
+                _tap();
                 wx.shareAppMessage({
                     title: "查看群排行",
                     imageUrl: DataStore.assets.get("share-img").src
@@ -54,6 +59,7 @@ export default class RankScene extends Scene {
             }
 
             if (this.returnBtn.isTouched(e)) {
+                _back();
                 DataStore.currentScene = DataStore.lastScene;
                 DataStore.lastScene = this.toString();
                 DataStore.openDataContext.postMessage({

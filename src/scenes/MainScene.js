@@ -6,6 +6,7 @@ import Scene from "./Scene.js";
 import Health from "./MainScene/Health.js";
 import Score from "./MainScene/Score.js";
 import NPC from "./MainScene/NPC.js";
+import Audio from "../utils/Audio.js";
 
 
 export default class MainScene extends Scene {
@@ -50,6 +51,7 @@ export default class MainScene extends Scene {
         DataStore.score = 0;
         DataStore.level = 0;
 
+        Audio.getInstance().play("a_levelStart");
         this.health.resetHealth();
         this.spinner.reload();
         this.shooter.reload();
