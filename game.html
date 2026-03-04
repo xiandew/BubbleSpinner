@@ -68,6 +68,17 @@
                 canvas.removeEventListener("touchend", cb);
             },
             setPreferredFramesPerSecond: function () { },
+            getMenuButtonBoundingClientRect: function () {
+                var paddingTop = 8;
+                var paddingRight = 8;
+                var width = 80;
+                var height = 30;
+                var top = paddingTop;
+                var bottom = top + height;
+                var right = window.innerWidth - paddingRight;
+                var left = right - width;
+                return { top: top, bottom: bottom, left: left, right: right, width: width, height: height };
+            },
             showShareMenu: function () { },
             onShareAppMessage: function () { },
             onShow: function () { },
