@@ -42,8 +42,12 @@ jobs:
       - name: Prepare deploy directory
         run: |
           mkdir -p deploy
-          cp -r dist deploy/
-          cp index.html game.html phantom-limb.js deploy/
+          PHANTOM_HASH=$(md5sum phantom-limb.js | cut -d' ' -f1)
+          cp index.html deploy/index.html
+          cp dist/game.html deploy/game.html
+          sed -i "s/__PHANTOM_HASH__/$PHANTOM_HASH/g" deploy/game.html
+          cp dist/bubble-spinner.min.*.js deploy/
+          cp phantom-limb.js deploy/
           cp -r assets deploy/
 
       - name: Upload artifact

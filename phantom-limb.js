@@ -72,16 +72,22 @@
 
 	// Create a synthetic event from a real event and a finger.
 	function createMouseEvent(eventName, originalEvent, finger) {
-		var e = document.createEvent('MouseEvent');
-
-		e.initMouseEvent(eventName, true, true,
-			originalEvent.view, originalEvent.detail,
-			finger.x || originalEvent.screenX, finger.y || originalEvent.screenY,
-			finger.x || originalEvent.clientX, finger.y || originalEvent.clientY,
-			originalEvent.ctrlKey, originalEvent.shiftKey,
-			originalEvent.altKey, originalEvent.metaKey,
-			originalEvent.button, finger.target || originalEvent.relatedTarget
-		);
+		var e = new MouseEvent(eventName, {
+			bubbles: true,
+			cancelable: true,
+			view: originalEvent.view,
+			detail: originalEvent.detail,
+			screenX: finger.x || originalEvent.screenX,
+			screenY: finger.y || originalEvent.screenY,
+			clientX: finger.x || originalEvent.clientX,
+			clientY: finger.y || originalEvent.clientY,
+			ctrlKey: originalEvent.ctrlKey,
+			shiftKey: originalEvent.shiftKey,
+			altKey: originalEvent.altKey,
+			metaKey: originalEvent.metaKey,
+			button: originalEvent.button,
+			relatedTarget: finger.target || originalEvent.relatedTarget
+		});
 
 		e.synthetic = true;
 

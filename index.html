@@ -1,8 +1,9 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bubble Spinner</title>
     <style>
         * {
@@ -11,40 +12,44 @@
         }
 
         body {
-            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             background-color: black;
+            width: 100vw;
+            height: 100vh;
             overflow: hidden;
+        }
+
+        #container {
+            border: none;
+            display: block;
         }
     </style>
 </head>
 
 <body>
-    <iframe id="container" frameborder="0"></iframe>
+    <iframe id="container" src="./game.html" scrolling="no"></iframe>
 
-    <script type="text/javascript">
-        restart()
+    <script>
+        var ASPECT_RATIO = 568 / 320;
 
-        window.onresize = restart;
-
-        function restart() {
+        function resize() {
             var container = document.getElementById("container");
             var screenWidth, screenHeight;
-            var aspectRatio = 568 / 320;
-
-            if (window.innerHeight / window.innerWidth > aspectRatio) {
-                screenWidth = window.innerHeight;
-                screenHeight = screenWidth * aspectRatio;
+            if (window.innerHeight / window.innerWidth > ASPECT_RATIO) {
+                screenWidth = window.innerWidth;
+                screenHeight = screenWidth * ASPECT_RATIO;
             } else {
                 screenHeight = window.innerHeight;
-                screenWidth = screenHeight / aspectRatio;
+                screenWidth = screenHeight / ASPECT_RATIO;
             }
-
             container.style.width = screenWidth + "px";
             container.style.height = screenHeight + "px";
-            container.src = "./game.html";
         }
-    </script>
-    </head>
+
+        resize();
+        window.onresize = resize;
     </script>
 </body>
 

@@ -1,6 +1,7 @@
 const path = require('path');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
 
@@ -28,7 +29,7 @@ module.exports = {
 
     output: {
         path: path.join(__dirname, './dist'),
-        filename: '[name].js'
+        filename: '[name].[contenthash].js'
     },
 
     optimization: {
@@ -50,6 +51,11 @@ module.exports = {
     },
 
     plugins: [
-        new CleanWebpackPlugin()
+        new CleanWebpackPlugin(),
+        new HtmlWebpackPlugin({
+            template: path.join(__dirname, './game.html'),
+            filename: 'game.html',
+            inject: 'body',
+        })
     ],
 }
