@@ -1,5 +1,4 @@
 import CompatibilityManager from "./CompatibilityManager";
-import { GameEndedInterstitialAdUnitId } from "../../creds";
 
 
 export default class AdController {
@@ -10,7 +9,7 @@ export default class AdController {
         if (CompatibilityManager.getInstance().checkSDKVersion('2.6.0') >= 0) {
             if (wx.createInterstitialAd) {
                 this.interstitialAd = wx.createInterstitialAd({
-                    adUnitId: GameEndedInterstitialAdUnitId
+                    adUnitId: "adunit-05504e088717e5b8"
                 });
             }
         }
