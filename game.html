@@ -79,6 +79,20 @@
                 var left = right - width;
                 return { top: top, bottom: bottom, left: left, right: right, width: width, height: height };
             },
+            createInnerAudioContext: function () {
+                var audio = new Audio();
+                return {
+                    set src(v) { audio.src = v; },
+                    get src() { return audio.src; },
+                    set volume(v) { audio.volume = v; },
+                    get volume() { return audio.volume; },
+                    play: function () { audio.currentTime = 0; audio.play().catch(function () {}); },
+                    stop: function () { audio.pause(); audio.currentTime = 0; },
+                    pause: function () { audio.pause(); },
+                    destroy: function () { audio.src = ""; },
+                    onError: function () {},
+                };
+            },
             showShareMenu: function () { },
             onShareAppMessage: function () { },
             onShow: function () { },
