@@ -11,7 +11,7 @@ module.exports = {
         "bubble-spinner.min": path.join(__dirname, './game')
     },
 
-    target: "es5",
+    target: ["web", "es5"],
 
     module: {
         rules: [{

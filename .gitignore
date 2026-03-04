@@ -14,5 +14,9 @@ $RECYCLE.BIN/
 node_modules/
 package-lock.json
 
+# wx
 project.config.json
 project.private.config.json
+
+# Build output
+dist
