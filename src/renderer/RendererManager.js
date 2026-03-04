@@ -5,7 +5,7 @@ import RotateInAnimator from "./animator/RotateInAnimator.js";
 import FadeOutAnimator from "./animator/FadeOutAnimator.js";
 import ZoomInAnimator from "./animator/ZoomInAnimator.js";
 import ZoomInUpAnimator from "./animator/ZoomInUpAnimator.js";
-import TraceRenderer from "./TraceRenderer.js";
+import AimingBarRenderer from "./AimingBarRenderer.js";
 import GravityAndBounceAnimator from "./animator/GravityAndBounceAnimator.js";
 import CollisionAndGravityAnimator from "./animator/CollisionAndGravityAnimator.js";
 import FadeOutUpAnimator from "./animator/FadeOutUpAnimator.js";
@@ -26,7 +26,7 @@ export default class RendererManager {
             animation === "FadeOut" ? new FadeOutAnimator(target) :
             animation === "ZoomIn" ? new ZoomInAnimator(target) :
             animation === "ZoomInUp" ? new ZoomInUpAnimator(target) :
-            animation === "Trace" ? new TraceRenderer(target) :
+            animation === "Trace" ? new AimingBarRenderer(target) :
             animation === "GravityAndBounce" ? new GravityAndBounceAnimator(target) :
             animation === "CollisionAndGravity" ? new CollisionAndGravityAnimator(target, ...args) :
             animation === "FadeOutUp" ? new FadeOutUpAnimator(target) :
