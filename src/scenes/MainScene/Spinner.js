@@ -43,11 +43,15 @@ export default class Spinner {
 
 
     collides(other) {
-        for (let bubble of Array.from(this.bubbles).concat(this.pivot)) {
+        for (const bubble of this.bubbles) {
             if (bubble.collides(other)) {
                 this.onCollision(bubble, other);
                 return true;
             }
+        }
+        if (this.pivot.collides(other)) {
+            this.onCollision(this.pivot, other);
+            return true;
         }
         return false;
     }
@@ -87,7 +91,7 @@ export default class Spinner {
         // Find same bubbles
         let sameBubbles = ((rootBubble) => {
             let found = [];
-            let visited = [];
+            let visited = new Set();
             let fringes = [[rootBubble]];
 
             while (true) {
@@ -96,8 +100,8 @@ export default class Spinner {
                 fringes[fringes.length - 2].forEach(bubble => {
                     this.controller.getAdjacentHexes(bubble.hex).forEach(hex => {
                         let bubble = hex.obj;
-                        if (bubble && !visited.includes(bubble)) {
-                            visited.push(bubble);
+                        if (bubble && !visited.has(bubble)) {
+                            visited.add(bubble);
                             if (bubble.texture.img == rootBubble.texture.img) {
                                 found.push(bubble);
                                 fringes[fringes.length - 1].push(bubble);
@@ -115,11 +119,12 @@ export default class Spinner {
         })(newBubble);
 
         if (sameBubbles.length >= 3) {
+            const sameBubblesSet = new Set(sameBubbles);
 
             // Find same bubbles and floating bubbles
             let sameOrFloatingBubbles = (() => {
                 let found = [];
-                let visited = [];
+                let visited = new Set();
                 let fringes = [[this.pivot]];
 
                 while (true) {
@@ -128,8 +133,8 @@ export default class Spinner {
                     fringes[fringes.length - 2].forEach(bubble => {
                         this.controller.getAdjacentHexes(bubble.hex).forEach(hex => {
                             let bubble = hex.obj;
-                            if (bubble && !visited.includes(bubble) && !sameBubbles.includes(bubble)) {
-                                visited.push(bubble);
+                            if (bubble && !visited.has(bubble) && !sameBubblesSet.has(bubble)) {
+                                visited.add(bubble);
                                 fringes[fringes.length - 1].push(bubble);
                             }
                         });
@@ -141,7 +146,7 @@ export default class Spinner {
                 }
 
                 this.bubbles.forEach(bubble => {
-                    if (!visited.includes(bubble)) {
+                    if (!visited.has(bubble)) {
                         found.push(bubble);
                     }
                 });

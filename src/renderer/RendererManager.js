@@ -10,6 +10,18 @@ import GravityAndBounceAnimator from "./animator/GravityAndBounceAnimator.js";
 import CollisionAndGravityAnimator from "./animator/CollisionAndGravityAnimator.js";
 import FadeOutUpAnimator from "./animator/FadeOutUpAnimator.js";
 
+const RENDERER_REGISTRY = {
+    "Rotate":              (t)          => new RotateAnimator(t),
+    "RotateOut":          (t)          => new RotateOutAnimator(t),
+    "RotateIn":           (t)          => new RotateInAnimator(t),
+    "FadeOut":            (t)          => new FadeOutAnimator(t),
+    "ZoomIn":             (t)          => new ZoomInAnimator(t),
+    "ZoomInUp":           (t)          => new ZoomInUpAnimator(t),
+    "Trace":              (t)          => new AimingBarRenderer(t),
+    "GravityAndBounce":   (t)          => new GravityAndBounceAnimator(t),
+    "CollisionAndGravity":(t, ...args) => new CollisionAndGravityAnimator(t, ...args),
+    "FadeOutUp":          (t)          => new FadeOutUpAnimator(t),
+};
 
 export default class RendererManager {
     constructor() {
@@ -19,18 +31,8 @@ export default class RendererManager {
 
     setRenderer(target, animation = null, ...args) {
         // console.assert(target.id);
-        let renderer =
-            animation === "Rotate" ? new RotateAnimator(target) :
-            animation === "RotateOut" ? new RotateOutAnimator(target) :
-            animation === "RotateIn" ? new RotateInAnimator(target) :
-            animation === "FadeOut" ? new FadeOutAnimator(target) :
-            animation === "ZoomIn" ? new ZoomInAnimator(target) :
-            animation === "ZoomInUp" ? new ZoomInUpAnimator(target) :
-            animation === "Trace" ? new AimingBarRenderer(target) :
-            animation === "GravityAndBounce" ? new GravityAndBounceAnimator(target) :
-            animation === "CollisionAndGravity" ? new CollisionAndGravityAnimator(target, ...args) :
-            animation === "FadeOutUp" ? new FadeOutUpAnimator(target) :
-            new Renderer(target)
+        const factory = animation && RENDERER_REGISTRY[animation];
+        const renderer = factory ? factory(target, ...args) : new Renderer(target);
 
         this.renderers[target.id] = renderer;
 

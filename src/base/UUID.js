@@ -1,11 +1,11 @@
 export default class UUID {
 
     static getUUID() {
-        UUID.assigned = UUID.assigned || [];
+        UUID.assigned = UUID.assigned || new Set();
 
         let uuid = uuidv4();
-        if (!(UUID.assigned.includes(uuid))) {
-            UUID.assigned.push(uuid);
+        if (!UUID.assigned.has(uuid)) {
+            UUID.assigned.add(uuid);
             return uuid;
         } else {
             return UUID.getUUID();

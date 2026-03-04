@@ -40,7 +40,7 @@ export default class Score {
     }
 
     addBubbleScore(bubble) {
-        this.bubbleScores.push(new BubbleScore(bubble));
+        this.bubbleScores.push(new BubbleScore(bubble, this.bitmapText, this.x, this.y));
     }
 
     static getInstance() {
@@ -51,16 +51,15 @@ export default class Score {
     }
 }
 
-class BubbleScore extends Score {
-    constructor(bubble) {
-        super();
+class BubbleScore {
+    constructor(bubble, bitmapText, x, y) {
+        this.id = UUID.getUUID();
         this.bubble = bubble;
-        this.score = this.getScore();
+        this.bitmapText = bitmapText;
+        this.x = x;
+        this.y = y;
+        this.score = DataStore.level + 1;
         this.fontSize = Bubble.size * 1.2;
-    }
-
-    getScore() {
-        return DataStore.level + 1;
     }
 
     render(ctx) {

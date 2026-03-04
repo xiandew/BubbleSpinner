@@ -1,4 +1,6 @@
 // Ref: https://www.redblobgames.com/grids/hexagons/codegen/output/lib.js
+const SQRT3 = Math.sqrt(3);
+
 export default class Hex {
     constructor(q, r, s) {
         this.q = q;
@@ -26,7 +28,7 @@ export default class Hex {
     // Ref: https://www.redblobgames.com/grids/hexagons/#hex-to-pixel
     toPixel() {
         // console.assert(Hex.size != undefined);
-        let x = Hex.size * (Math.sqrt(3) * this.q + Math.sqrt(3) / 2 * this.r);
+        let x = Hex.size * (SQRT3 * this.q + SQRT3 / 2 * this.r);
         let y = Hex.size * (3. / 2 * this.r);
         return { x: x, y: y };
     }

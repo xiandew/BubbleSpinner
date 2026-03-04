@@ -6,13 +6,6 @@ import Shooter from "../scenes/MainScene/Shooter.js";
 export default class AimingBarRenderer extends Renderer {
     constructor(target) {
         super(target);
-
-        this.canvas = wx.createCanvas();
-        this.canvas.width = canvas.width;
-        this.canvas.height = canvas.height;
-
-        this.ctx = this.canvas.getContext("2d");
-        this.ctx.scale(DataStore.pixelRatio, DataStore.pixelRatio);
     }
 
     render(ctx) {
@@ -38,19 +31,16 @@ export default class AimingBarRenderer extends Renderer {
             { dist: step * 3, radius: Bubble.size * 0.10 },
         ];
 
-        this.ctx.fillStyle = "rgba(0, 128, 0, 0.5)";
+        ctx.save();
+        ctx.fillStyle = "rgba(0, 128, 0, 0.5)";
         for (const { dist, radius } of dots) {
             if (dist >= totalDist) break;
             const x = startX + nx * dist;
             const y = startY + ny * dist;
-            this.ctx.beginPath();
-            this.ctx.arc(x, y, radius, 0, Math.PI * 2);
-            this.ctx.fill();
-            this.ctx.closePath();
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.fill();
         }
-
-        ctx.drawImage(this.canvas, 0, 0, DataStore.screenWidth, DataStore.screenHeight);
-
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        ctx.restore();
     }
 }

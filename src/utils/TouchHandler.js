@@ -3,7 +3,7 @@ export default class TouchHandler {
 
     onTouchStart(callback) {
         this.tsHandler = callback;
-        wx.onTouchStart(this.tshandler);
+        wx.onTouchStart(this.tsHandler);
     }
 
     onTouchMove(callback) {
