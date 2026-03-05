@@ -46,9 +46,12 @@ jobs:
           cp index.html deploy/index.html
           cp dist/game.html deploy/game.html
           sed -i "s/__PHANTOM_HASH__/$PHANTOM_HASH/g" deploy/game.html
+          cp dist/open-data-context.min.*.js deploy/
           cp dist/bubble-spinner.min.*.js deploy/
           cp phantom-limb.js deploy/
           cp -r assets deploy/
+          mkdir -p deploy/src/myOpenDataContext
+          cp -r src/myOpenDataContext/assets deploy/src/myOpenDataContext/assets
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

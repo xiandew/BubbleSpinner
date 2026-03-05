@@ -9,6 +9,7 @@ module.exports = {
 
     entry: {
         // "bubble-spinner": path.join(__dirname, './game'),
+        "open-data-context.min": path.join(__dirname, './src/myOpenDataContext/index'),
         "bubble-spinner.min": path.join(__dirname, './game')
     },
 
@@ -56,6 +57,8 @@ module.exports = {
             template: path.join(__dirname, './game.html'),
             filename: 'game.html',
             inject: 'body',
+            chunks: ['open-data-context.min', 'bubble-spinner.min'],
+            chunksSortMode: 'manual',
         })
     ],
 }

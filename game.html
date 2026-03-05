@@ -36,15 +36,93 @@
         var phantomLimbConfig = { style: false }
         var GameGlobal = {};
         var canvas = document.getElementById("myCanvas");
-        var sharedCanvas = document.createElement('canvas');
+
+        // Symbol used to unwrap our createImage Proxies before passing to native drawImage
+        var _IMAGE_UNWRAP = Symbol('rawImage');
+        // Patch all canvas 2d contexts so drawImage transparently unwraps our image Proxies
+        (function () {
+            var _nativeGetContext = HTMLCanvasElement.prototype.getContext;
+            HTMLCanvasElement.prototype.getContext = function (type, opts) {
+                var ctx = _nativeGetContext.call(this, type, opts);
+                if (ctx && type === '2d' && !ctx._drawImagePatched) {
+                    ctx._drawImagePatched = true;
+                    var _drawImage = ctx.drawImage.bind(ctx);
+                    ctx.drawImage = function (img) {
+                        if (img && img[_IMAGE_UNWRAP]) img = img[_IMAGE_UNWRAP];
+                        return _drawImage.apply(ctx, [img].concat(Array.prototype.slice.call(arguments, 1)));
+                    };
+                }
+                return ctx;
+            };
+        })();
+        var sharedCanvas = (function () {
+            var c = document.createElement('canvas');
+            var _getContext = c.getContext.bind(c);
+            c.getContext = function (type) {
+                var ctx = _getContext(type);
+                if (type === '2d' && !ctx._sharedCanvasPatched) {
+                    ctx._sharedCanvasPatched = true;
+                    // drawImage unwraps our createImage Proxies
+                    var _drawImage = ctx.drawImage.bind(ctx);
+                    ctx.drawImage = function (img) {
+                        if (img && img[_IMAGE_UNWRAP]) img = img[_IMAGE_UNWRAP];
+                        return _drawImage.apply(ctx, [img].concat(Array.prototype.slice.call(arguments, 1)));
+                    };
+                }
+                return ctx;
+            };
+            return c;
+        })();
+        var _shareMessageHandler = null;
+        var _wxMessageHandler = null;
+
+        function _wxShowToast(msg) {
+            alert(msg);
+        }
+
+        // Generates a simple placeholder avatar data URL (grey square + person silhouette)
+        var _avatarPlaceholderDataURL = (function () {
+            var size = 80;
+            var c = document.createElement('canvas');
+            c.width = size; c.height = size;
+            var cx = c.getContext('2d');
+            // Background square
+            cx.fillStyle = '#888888';
+            cx.fillRect(0, 0, size, size);
+            // Head
+            cx.fillStyle = '#cccccc';
+            cx.beginPath();
+            cx.arc(size / 2, size * 0.38, size * 0.2, 0, 2 * Math.PI);
+            cx.fill();
+            // Body
+            cx.beginPath();
+            cx.arc(size / 2, size * 0.95, size * 0.28, Math.PI, 0);
+            cx.fill();
+            return c.toDataURL();
+        })();
+
         var wx = {
             createCanvas: function () {
                 var canvas = document.createElement('canvas');
                 return canvas;
             },
             createImage: function () {
-                var img = document.createElement("IMG");
-                return img;
+                var img = new Image();
+                var extra = {};
+                return new Proxy(img, {
+                    set: function (target, prop, value) {
+                        if (prop === 'src' && !value) value = _avatarPlaceholderDataURL;
+                        extra[prop] = value; // always track; catches silent failures on getter-only props (e.g. x, y)
+                        try { target[prop] = value; } catch (e) { /* getter-only on some browsers */ }
+                        return true;
+                    },
+                    get: function (target, prop) {
+                        if (prop === _IMAGE_UNWRAP) return target;
+                        if (Object.prototype.hasOwnProperty.call(extra, prop)) return extra[prop];
+                        var v = target[prop];
+                        return typeof v === 'function' ? v.bind(target) : v;
+                    }
+                });
             },
             getSystemInfoSync: function () {
                 return {
@@ -56,9 +134,78 @@
             },
             getOpenDataContext: function () {
                 return {
-                    postMessage: function () { },
-                    canvas: sharedCanvas,
-                }
+                    postMessage: function (msg) {
+                        if (_wxMessageHandler) _wxMessageHandler(msg);
+                    },
+                    // Keep shared canvas dimensions in sync with main canvas
+                    get canvas() {
+                        sharedCanvas.width = canvas.width;
+                        sharedCanvas.height = canvas.height;
+                        return sharedCanvas;
+                    }
+                };
+            },
+            // Open data context APIs
+            onMessage: function (cb) {
+                _wxMessageHandler = cb;
+            },
+            getSharedCanvas: function () {
+                sharedCanvas.width = canvas.width;
+                sharedCanvas.height = canvas.height;
+                return sharedCanvas;
+            },
+            // WeChat cloud storage — persists the local player's score in localStorage;
+            // friend/group cloud storage returns empty data (no WeChat social graph).
+            getUserCloudStorage: function (opts) {
+                try {
+                    var KVDataList = (opts.keyList || []).reduce(function (acc, k) {
+                        var v = localStorage.getItem('wx_cloud_' + k);
+                        if (v !== null && v !== '') acc.push({ key: k, value: v });
+                        return acc;
+                    }, []);
+                    if (opts.success) opts.success({ KVDataList: KVDataList });
+                } catch (e) { if (opts.fail) opts.fail(e); }
+            },
+            setUserCloudStorage: function (opts) {
+                try {
+                    opts.KVDataList.forEach(function (kv) {
+                        localStorage.setItem('wx_cloud_' + kv.key, kv.value);
+                    });
+                    if (opts.success) opts.success();
+                } catch (e) { if (opts.fail) opts.fail(e); }
+            },
+            getFriendCloudStorage: function (opts) {
+                // No social graph in browser — return the local player's own record
+                // so the leaderboard shows at least their own score.
+                try {
+                    var KVDataList = (opts.keyList || []).reduce(function (acc, k) {
+                        var v = localStorage.getItem('wx_cloud_' + k);
+                        if (v !== null && v !== '') acc.push({ key: k, value: v });
+                        return acc;
+                    }, []);
+                    if (opts.success) opts.success({
+                        data: [{ KVDataList: KVDataList, nickname: 'You', avatarUrl: '' }]
+                    });
+                } catch (e) { if (opts.fail) opts.fail(e); }
+            },
+            getGroupCloudStorage: function (opts) {
+                // No group context in browser — same as friend storage.
+                try {
+                    var KVDataList = (opts.keyList || []).reduce(function (acc, k) {
+                        var v = localStorage.getItem('wx_cloud_' + k);
+                        if (v !== null && v !== '') acc.push({ key: k, value: v });
+                        return acc;
+                    }, []);
+                    if (opts.success) opts.success({
+                        data: [{ KVDataList: KVDataList, nickname: 'You', avatarUrl: '' }]
+                    });
+                } catch (e) { if (opts.fail) opts.fail(e); }
+            },
+            getUserInfo: function (opts) {
+                // GameEnded expects res.data[0].nickName / .avatarUrl
+                if (opts.success) opts.success({
+                    data: [{ nickName: 'You', avatarUrl: '' }]
+                });
             },
             onTouchStart: function (cb) {
                 canvas.addEventListener("touchstart", cb);
@@ -94,16 +241,37 @@
                     get src() { return audio.src; },
                     set volume(v) { audio.volume = v; },
                     get volume() { return audio.volume; },
-                    play: function () { audio.currentTime = 0; audio.play().catch(function () {}); },
+                    play: function () { audio.currentTime = 0; audio.play().catch(function () { }); },
                     stop: function () { audio.pause(); audio.currentTime = 0; },
                     pause: function () { audio.pause(); },
                     destroy: function () { audio.src = ""; },
-                    onError: function () {},
+                    onError: function () { },
                 };
             },
             showShareMenu: function () { },
-            onShareAppMessage: function () { },
-            onShow: function () { },
+            onShareAppMessage: function (cb) {
+                _shareMessageHandler = cb;
+            },
+            shareAppMessage: function (info) {
+                if (!navigator.share) {
+                    _wxShowToast('Sharing is not supported in this browser');
+                    return;
+                }
+                navigator.share({
+                    title: info.title || document.title,
+                    url: window.location.href
+                }).catch(function () { });
+            },
+            onShow: function (cb) {
+                // Mirrors WeChat onShow: fires when the app/page becomes visible.
+                // No shareTicket in browser, so the rank-scene branch is skipped.
+                document.addEventListener('visibilitychange', function () {
+                    if (!document.hidden) cb({});
+                });
+                window.addEventListener('pageshow', function (e) {
+                    if (e.persisted) cb({});
+                });
+            },
         }
     </script>
     <script src="./phantom-limb.js?v=__PHANTOM_HASH__"></script>
