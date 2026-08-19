@@ -51,15 +51,15 @@ export default class Score {
     }
 }
 
-// Map bubble image-name prefix → a lighter tint colour
+// Map bubble image-name prefix → the bubble's exact fill colour
 const BUBBLE_TINT = {
-    blue:   "rgba(140, 195, 255, 0.95)",
-    cyan:   "rgba(100, 225, 235, 0.95)",
-    red:    "rgba(255, 145, 145, 0.95)",
-    yellow: "rgba(255, 230, 110, 0.95)",
-    pink:   "rgba(255, 175, 210, 0.95)",
-    green:  "rgba(140, 225, 140, 0.95)",
-    gray:   "rgba(200, 200, 200, 0.95)",
+    blue:   "rgba(36, 126, 178, 0.95)",
+    cyan:   "rgba(1, 71, 101, 0.95)",
+    red:    "rgba(177, 71, 1, 0.95)",
+    yellow: "rgba(189, 156, 26, 0.95)",
+    pink:   "rgba(211, 146, 186, 0.95)",
+    green:  "rgba(1, 152, 106, 0.95)",
+    gray:   "rgba(136, 136, 136, 0.95)",
 };
 
 function bubbleTint(bubble) {
